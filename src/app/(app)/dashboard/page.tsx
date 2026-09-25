@@ -5,7 +5,7 @@ import type { EventRecord } from "@/types";
 import { DashboardGreeting, SectionTitle } from "@/components/DashboardGreeting";
 
 async function getSection(
-  supabase: Awaited<ReturnType<typeof createClient>>
+  supabase: Awaited<ReturnType<typeof createClient>>,
   filter: (q: any) => any
 ) {
   let query = supabase
