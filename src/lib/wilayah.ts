@@ -1,4 +1,8 @@
-// Free, public, static-file API for Indonesian administrative regions.
+// Indonesian administrative regions (City/Regency -> Kecamatan -> Kelurahan)
+// from the free static emsifa API. IDs are official BPS codes and are
+// hierarchical: a kelurahan id starts with its kecamatan id, which starts
+// with its city id (e.g. 3273 -> 3273010 -> 3273010001). Profiles store
+// these ids (stable) alongside the display names.
 // https://github.com/emsifa/api-wilayah-indonesia
 const BASE = "https://emsifa.github.io/api-wilayah-indonesia/api";
 
@@ -15,61 +19,113 @@ function toTitleCase(s: string): string {
     .replace(/\bDi\b/g, "DI");
 }
 
-// The "all cities" list requires merging regencies across every province,
-// so it's cached in memory after the first successful fetch (session-lived,
-// not persisted). A failed fetch is cached as null so the next call retries.
-let citiesCache: WilayahItem[] | null = null;
-let citiesPromise: Promise<WilayahItem[]> | null = null;
-
-export async function getAllCities(): Promise<WilayahItem[]> {
-  if (citiesCache) return citiesCache;
-  if (citiesPromise) return citiesPromise;
-
-  citiesPromise = (async () => {
-    try {
-      const provRes = await fetch(`${BASE}/provinces.json`);
-      if (!provRes.ok) throw new Error(`provinces fetch failed: ${provRes.status}`);
-      const provinces: { id: string; name: string }[] = await provRes.json();
-
-      const regencyLists = await Promise.all(
-        provinces.map((p) =>
-          fetch(`${BASE}/regencies/${p.id}.json`)
-            .then((r) => (r.ok ? r.json() : []))
-            .catch(() => [])
-        )
-      );
-
-      const all: WilayahItem[] = regencyLists
-        .flat()
-        .map((r: any) => ({ id: r.id, name: toTitleCase(r.name) }));
-
-      all.sort((a, b) => a.name.localeCompare(b.name));
-      citiesCache = all;
-      return all;
-    } catch (err) {
-      // Don't cache a failure — let the next attempt retry the network call.
-      citiesPromise = null;
-      throw err;
-    }
-  })();
-
-  return citiesPromise;
+function readCache<T>(key: string): T | null {
+  try {
+    const raw = window.localStorage.getItem(key);
+    return raw ? (JSON.parse(raw) as T) : null;
+  } catch {
+    return null;
+  }
 }
 
-export async function getDistricts(regencyId: string): Promise<WilayahItem[]> {
-  const res = await fetch(`${BASE}/districts/${regencyId}.json`);
-  if (!res.ok) throw new Error(`districts fetch failed: ${res.status}`);
-  const data = await res.json();
-  return (data as any[])
+function writeCache(key: string, value: unknown) {
+  try {
+    window.localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    // quota / private mode — the in-memory cache still works
+  }
+}
+
+// The region lists are static reference data, so they're cached in memory
+// and in localStorage (versioned key) instead of re-downloaded per visit.
+const CITIES_CACHE_KEY = "komunitas-wilayah-cities-v1";
+const memo = new Map<string, Promise<WilayahItem[]>>();
+
+function cached(key: string, load: () => Promise<WilayahItem[]>): Promise<WilayahItem[]> {
+  const existing = memo.get(key);
+  if (existing) return existing;
+  const promise = load().catch((err) => {
+    memo.delete(key); // don't cache failures — let the next call retry
+    throw err;
+  });
+  memo.set(key, promise);
+  return promise;
+}
+
+async function fetchList(path: string): Promise<WilayahItem[]> {
+  const res = await fetch(`${BASE}/${path}`);
+  if (!res.ok) throw new Error(`wilayah fetch failed: ${path} ${res.status}`);
+  const data: { id: string; name: string }[] = await res.json();
+  return data
     .map((d) => ({ id: d.id, name: toTitleCase(d.name) }))
-    .sort((a, b) => a.name.localeCompare(b.name));
+    .sort((a, b) => a.name.localeCompare(b.name, "id"));
 }
 
-export async function getVillages(districtId: string): Promise<WilayahItem[]> {
-  const res = await fetch(`${BASE}/villages/${districtId}.json`);
-  if (!res.ok) throw new Error(`villages fetch failed: ${res.status}`);
-  const data = await res.json();
-  return (data as any[])
-    .map((v) => ({ id: v.id, name: toTitleCase(v.name) }))
-    .sort((a, b) => a.name.localeCompare(b.name));
+export function getAllCities(): Promise<WilayahItem[]> {
+  return cached("cities", async () => {
+    const stored = readCache<WilayahItem[]>(CITIES_CACHE_KEY);
+    if (stored?.length) return stored;
+
+    const provinces = await fetchList("provinces.json");
+    const lists = await Promise.all(
+      provinces.map((p) => fetchList(`regencies/${p.id}.json`).catch(() => []))
+    );
+    const all = lists.flat().sort((a, b) => a.name.localeCompare(b.name, "id"));
+    if (all.length) writeCache(CITIES_CACHE_KEY, all);
+    return all;
+  });
+}
+
+export function getDistricts(cityId: string): Promise<WilayahItem[]> {
+  return cached(`districts:${cityId}`, () => fetchList(`districts/${cityId}.json`));
+}
+
+export function getVillages(kecamatanId: string): Promise<WilayahItem[]> {
+  return cached(`villages:${kecamatanId}`, () => fetchList(`villages/${kecamatanId}.json`));
+}
+
+// ---------------------------------------------------------------------------
+// Approximate coordinates for a selected area (manual-location fallback).
+// Uses OpenStreetMap Nominatim, trying the most specific query first.
+// ---------------------------------------------------------------------------
+
+const GEOCODE_CACHE_KEY = "komunitas-geocode-v1";
+
+function stripRegionPrefix(name: string): string {
+  return name.replace(/^(Kota|Kabupaten|Kab\.)\s+/i, "");
+}
+
+export async function geocodeArea(area: {
+  city: string;
+  kecamatan?: string;
+  kelurahan?: string;
+}): Promise<{ lat: number; lng: number } | null> {
+  const city = stripRegionPrefix(area.city);
+  const queries = [
+    area.kelurahan && area.kecamatan ? `${area.kelurahan}, ${area.kecamatan}, ${city}` : null,
+    area.kecamatan ? `${area.kecamatan}, ${city}` : null,
+    city,
+  ].filter((q): q is string => Boolean(q));
+
+  const cache = readCache<Record<string, { lat: number; lng: number }>>(GEOCODE_CACHE_KEY) ?? {};
+
+  for (const q of queries) {
+    if (cache[q]) return cache[q];
+    try {
+      const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=id&q=${encodeURIComponent(
+        `${q}, Indonesia`
+      )}`;
+      const res = await fetch(url, { headers: { Accept: "application/json" } });
+      if (!res.ok) continue;
+      const data: { lat: string; lon: string }[] = await res.json();
+      if (data[0]) {
+        const point = { lat: Number(data[0].lat), lng: Number(data[0].lon) };
+        writeCache(GEOCODE_CACHE_KEY, { ...cache, [q]: point });
+        return point;
+      }
+    } catch (err) {
+      console.error("[komunitas] geocode failed:", err);
+    }
+  }
+  return null;
 }

@@ -1,6 +1,11 @@
+// Mirrors supabase/schema.sql + supabase/migrations/*. Keep these in sync
+// when the schema changes (the project doesn't use generated types).
+
 export type UserRole = "admin" | "participant";
+export type Gender = "male" | "female";
 export type EventPrivacy = "public" | "private";
 export type JoinPermission = "open" | "approval_required";
+/** Stored `events.status` (Postgres enum `event_status`). */
 export type EventStatus =
   | "open"
   | "almost_full"
@@ -9,6 +14,8 @@ export type EventStatus =
   | "completed"
   | "cancelled";
 export type ParticipationStatus = "pending" | "approved" | "rejected" | "cancelled";
+
+export const GENDERS: Gender[] = ["male", "female"];
 
 export interface Interest {
   id: string;
@@ -31,14 +38,20 @@ export interface Profile {
   full_name: string | null;
   nickname: string | null;
   age: number | null;
-  gender: string | null;
+  gender: Gender | null;
   whatsapp_number: string | null;
-  kelurahan: string | null;
-  kecamatan: string | null;
   city: string | null;
+  city_id: string | null;
+  kecamatan: string | null;
+  kecamatan_id: string | null;
+  kelurahan: string | null;
+  kelurahan_id: string | null;
+  area_lat: number | null;
+  area_lng: number | null;
   bio: string | null;
   avatar_url: string | null;
   primary_interest_id: string | null;
+  onboarding_completed_at: string | null;
   created_at: string;
 }
 
@@ -51,11 +64,14 @@ export interface EventRecord {
   title: string;
   description: string | null;
   banner_url: string | null;
+  /** Local (Asia/Jakarta) calendar date, YYYY-MM-DD */
   event_date: string;
+  /** Local (Asia/Jakarta) wall-clock time, HH:MM[:SS] */
   start_time: string;
   end_time: string;
   max_participants: number;
-  fee: number;
+  /** Whole Rupiah. Postgres numeric — may arrive as a string; use toFee(). */
+  fee: number | string;
   location_name: string;
   address: string | null;
   latitude: number;
@@ -67,12 +83,13 @@ export interface EventRecord {
   privacy: EventPrivacy;
   join_permission: JoinPermission;
   status: EventStatus;
+  /** Approved participants, maintained by a DB trigger. */
+  participant_count: number;
   created_at: string;
-  // joined fields (populated by queries, not raw columns)
-  category?: Category;
-  participant_count?: number;
+  // joined / computed fields (populated by queries, not raw columns)
+  category?: Category | null;
   distance_km?: number;
-  organizer?: Profile;
+  organizer?: Pick<Profile, "id" | "nickname" | "full_name" | "username"> | null;
 }
 
 export interface EventParticipant {
@@ -83,11 +100,5 @@ export interface EventParticipant {
   joined_at: string;
 }
 
-export const STATUS_LABEL: Record<EventStatus, { label: string; dot: string }> = {
-  open: { label: "Open", dot: "🟢" },
-  almost_full: { label: "Almost Full", dot: "🟡" },
-  full: { label: "Full", dot: "🔴" },
-  ongoing: { label: "Ongoing", dot: "🔵" },
-  completed: { label: "Completed", dot: "⚪" },
-  cancelled: { label: "Cancelled", dot: "⚫" },
-};
+/** Columns selected for event lists (cards, dashboard, explore). */
+export const EVENT_LIST_SELECT = "*, category:categories(*)";

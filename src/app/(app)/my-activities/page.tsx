@@ -1,60 +1,47 @@
 import { createClient } from "@/lib/supabase/server";
+import { getServerT } from "@/lib/i18n/server";
 import { ActivityCard } from "@/components/ActivityCard";
-import type { EventRecord } from "@/types";
+import { EVENT_LIST_SELECT, type EventRecord, type ParticipationStatus } from "@/types";
 
 export default async function MyActivitiesPage() {
   const supabase = await createClient();
+  const { t } = await getServerT();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { data: created } = await supabase
-    .from("events")
-    .select("*, category:categories(*), event_participants(count)")
-    .eq("creator_id", user!.id)
-    .order("event_date", { ascending: false });
+  const [{ data: created }, { data: joinedRows }] = await Promise.all([
+    supabase
+      .from("events")
+      .select(EVENT_LIST_SELECT)
+      .eq("creator_id", user!.id)
+      .order("event_date", { ascending: false }),
+    supabase
+      .from("event_participants")
+      .select(`status, event:events(${EVENT_LIST_SELECT})`)
+      .eq("user_id", user!.id)
+      .in("status", ["approved", "pending"]),
+  ]);
 
-  const { data: joinedRows } = await supabase
-    .from("event_participants")
-    .select("event:events(*, category:categories(*), event_participants(count))")
-    .eq("user_id", user!.id)
-    .eq("status", "approved");
-
-  const createdEvents: EventRecord[] = (created ?? []).map((e: any) => ({
-    ...e,
-    participant_count: e.event_participants?.[0]?.count ?? 0,
-  }));
-
-  const joinedEvents: EventRecord[] = (joinedRows ?? [])
-    .map((r: any) => r.event)
-    .filter(Boolean)
-    .map((e: any) => ({
-      ...e,
-      participant_count: e.event_participants?.[0]?.count ?? 0,
-    }));
+  const rows = (joinedRows ?? []) as unknown as { status: ParticipationStatus; event: EventRecord | null }[];
+  const joined = rows.filter((r) => r.status === "approved" && r.event).map((r) => r.event!);
+  const pending = rows.filter((r) => r.status === "pending" && r.event).map((r) => r.event!);
 
   return (
     <div className="space-y-10">
       <div>
-        <h1 className="text-2xl font-bold">My Activities</h1>
-        <p className="mt-1 text-ink/60">Activities you&apos;ve created and joined.</p>
+        <h1 className="text-2xl font-bold">{t("my.title")}</h1>
+        <p className="mt-1 text-ink/60">{t("my.subtitle")}</p>
       </div>
 
-      <Section title="Created by me" events={createdEvents} empty="You haven't created any activities yet." />
-      <Section title="Joined" events={joinedEvents} empty="You haven't joined any activities yet." />
+      <Section title={t("my.created")} events={(created ?? []) as EventRecord[]} empty={t("my.emptyCreated")} />
+      <Section title={t("my.joined")} events={joined} empty={t("my.emptyJoined")} />
+      {pending.length > 0 && <Section title={t("my.pending")} events={pending} empty="" />}
     </div>
   );
 }
 
-function Section({
-  title,
-  events,
-  empty,
-}: {
-  title: string;
-  events: EventRecord[];
-  empty: string;
-}) {
+function Section({ title, events, empty }: { title: string; events: EventRecord[]; empty: string }) {
   return (
     <section>
       <h2 className="mb-4 text-lg font-semibold">{title}</h2>

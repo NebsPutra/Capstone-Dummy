@@ -5,8 +5,9 @@ import { usePathname } from "next/navigation";
 import { Home, PlusCircle, Search, CalendarDays, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import type { TranslationKey } from "@/lib/i18n/translations";
 
-const NAV = [
+const NAV: { href: string; key: TranslationKey; icon: typeof Home }[] = [
   { href: "/dashboard", key: "nav.dashboard", icon: Home },
   { href: "/explore", key: "nav.explore", icon: Search },
   { href: "/create", key: "nav.create", icon: PlusCircle },

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -32,27 +32,26 @@ function Recenter({ lat, lng }: { lat: number; lng: number }) {
   return null;
 }
 
+/** `marker` is null until the organizer pins a spot. */
 export function MapPicker({
-  lat,
-  lng,
+  center,
+  marker,
   onChange,
 }: {
-  lat: number;
-  lng: number;
+  center: { lat: number; lng: number };
+  marker: { lat: number; lng: number } | null;
   onChange: (lat: number, lng: number) => void;
 }) {
-  const [center] = useState<[number, number]>([lat, lng]);
-
   return (
     <div className="overflow-hidden rounded-xl border border-ink/10">
-      <MapContainer center={center} zoom={14} style={{ height: 280, width: "100%" }}>
+      <MapContainer center={[center.lat, center.lng]} zoom={14} style={{ height: 280, width: "100%" }}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <Marker position={[lat, lng]} icon={icon} />
+        {marker && <Marker position={[marker.lat, marker.lng]} icon={icon} />}
         <ClickHandler onPick={onChange} />
-        <Recenter lat={lat} lng={lng} />
+        <Recenter lat={center.lat} lng={center.lng} />
       </MapContainer>
     </div>
   );

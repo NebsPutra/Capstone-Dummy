@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/lib/i18n/LanguageContext";
+import { getServerLang } from "@/lib/i18n/server";
+import { ToastProvider } from "@/components/Toast";
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -15,15 +17,18 @@ export const metadata: Metadata = {
     "Discover and create social activities around you based on your interests and location.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const lang = await getServerLang();
   return (
-    <html lang="en" className={plusJakarta.variable}>
+    <html lang={lang} className={plusJakarta.variable}>
       <body className="font-sans antialiased">
-        <LanguageProvider>{children}</LanguageProvider>
+        <LanguageProvider initialLang={lang}>
+          <ToastProvider>{children}</ToastProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

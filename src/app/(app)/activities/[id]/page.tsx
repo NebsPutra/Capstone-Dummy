@@ -1,39 +1,43 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Pencil } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { getServerT } from "@/lib/i18n/server";
+import { getEventForViewer } from "@/lib/eventAccess";
+import { effectiveStatus } from "@/lib/events";
 import { formatDate, formatFee, formatTimeRange } from "@/lib/utils";
+import { whatsappDigits } from "@/lib/validation";
 import { StatusBadge } from "@/components/StatusBadge";
 import { JoinPanel } from "@/components/JoinPanel";
+import { OwnerPanel, type ParticipantRow } from "@/components/OwnerPanel";
 import { ShareBox } from "@/components/ShareBox";
 import { EventMapClient as EventMap } from "@/components/EventMapClient";
+import type { EventParticipant } from "@/types";
 
 export default async function EventDetailsPage({
   params,
+  searchParams,
 }: {
-  // Next.js 15+ made dynamic route params async
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ t?: string }>;
 }) {
   const { id } = await params;
+  const { t: token } = await searchParams;
   const supabase = await createClient();
+  const { t, td, lang } = await getServerT();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { data: event } = await supabase
-    .from("events")
-    .select("*, category:categories(*), organizer:profiles!events_creator_id_fkey(*)")
-    .eq("id", id)
-    .single();
+  const access = await getEventForViewer(supabase, id, token);
+  if (!access) notFound();
+  const { event, viaInvite } = access;
 
-  if (!event) notFound();
+  const isOwner = user?.id === event.creator_id;
+  const status = effectiveStatus(event);
 
-  const { count: participantCount } = await supabase
-    .from("event_participants")
-    .select("*", { count: "exact", head: true })
-    .eq("event_id", event.id)
-    .eq("status", "approved");
-
-  let myParticipation = null;
-  if (user) {
+  let myParticipation: EventParticipant | null = null;
+  if (user && !isOwner) {
     const { data } = await supabase
       .from("event_participants")
       .select("*")
@@ -43,10 +47,27 @@ export default async function EventDetailsPage({
     myParticipation = data;
   }
 
-  const isOwner = user?.id === event.creator_id;
+  let participants: ParticipantRow[] = [];
+  if (isOwner) {
+    const { data } = await supabase
+      .from("event_participants")
+      .select("id, status, joined_at, participant:profiles!event_participants_user_id_fkey(nickname, full_name)")
+      .eq("event_id", event.id)
+      .in("status", ["approved", "pending"])
+      .order("joined_at", { ascending: true });
+    participants = (data ?? []) as unknown as ParticipantRow[];
+  }
+
+  const showWhatsapp = event.whatsapp_public || isOwner || myParticipation?.status === "approved";
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
+      {viaInvite && (
+        <p className="rounded-xl bg-orange/10 px-4 py-3 text-sm font-medium text-orange-dark">
+          {t("event.inviteAccess")}
+        </p>
+      )}
+
       <div className="card overflow-hidden">
         <div className="flex h-40 items-center justify-center bg-cream-warm text-6xl">
           {event.category?.emoji ?? "✨"}
@@ -54,36 +75,36 @@ export default async function EventDetailsPage({
         <div className="space-y-4 p-6">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="text-sm font-medium text-orange-dark">{event.category?.label}</p>
+              <p className="text-sm font-medium text-orange-dark">
+                {event.category ? td(`category.${event.category.key}`, event.category.label) : null}
+                {event.privacy === "private" && ` · ${t("privacy.private")}`}
+              </p>
               <h1 className="mt-1 text-2xl font-bold">{event.title}</h1>
             </div>
-            <StatusBadge status={event.status} />
+            <StatusBadge status={status} />
           </div>
 
           <div className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-3">
-            <Info label="Date" value={formatDate(event.event_date)} />
-            <Info label="Time" value={formatTimeRange(event.start_time, event.end_time)} />
-            <Info label="Fee" value={formatFee(event.fee)} />
+            <Info label={t("event.date")} value={formatDate(event.event_date, lang)} />
+            <Info label={t("event.time")} value={formatTimeRange(event.start_time, event.end_time)} />
+            <Info label={t("event.fee")} value={formatFee(event.fee, lang)} />
+            <Info label={t("event.participants")} value={`${event.participant_count ?? 0}/${event.max_participants}`} />
+            <Info label={t("event.code")} value={event.event_code} />
             <Info
-              label="Participants"
-              value={`${participantCount ?? 0}/${event.max_participants}`}
-            />
-            <Info label="Event code" value={event.event_code} />
-            <Info
-              label="Organizer"
+              label={t("event.organizer")}
               value={event.organizer?.nickname || event.organizer?.full_name || "—"}
             />
           </div>
 
           {event.description && (
             <div>
-              <h3 className="mb-1 text-sm font-semibold">About this activity</h3>
-              <p className="text-sm leading-relaxed text-ink/70">{event.description}</p>
+              <h2 className="mb-1 text-sm font-semibold">{t("event.about")}</h2>
+              <p className="whitespace-pre-line text-sm leading-relaxed text-ink/70">{event.description}</p>
             </div>
           )}
 
           <div>
-            <h3 className="mb-1 text-sm font-semibold">📍 Location</h3>
+            <h2 className="mb-1 text-sm font-semibold">📍 {t("event.location")}</h2>
             <p className="text-sm text-ink/70">{event.location_name}</p>
             {event.address && <p className="text-sm text-ink/50">{event.address}</p>}
             <div className="mt-3">
@@ -95,37 +116,64 @@ export default async function EventDetailsPage({
               rel="noreferrer"
               className="mt-2 inline-block text-sm font-medium text-orange-dark"
             >
-              Open in Maps →
+              {t("event.openInMaps")}
             </a>
           </div>
 
           <div className="rounded-xl bg-cream-warm p-4">
-            <h3 className="mb-1 text-sm font-semibold">Organizer / PIC</h3>
-            <p className="text-sm text-ink/70">PIC: {event.pic_name}</p>
-            {event.whatsapp_public && (
-              <p className="text-sm text-ink/70">WhatsApp: {event.pic_whatsapp}</p>
+            <h2 className="mb-1 text-sm font-semibold">{t("event.picTitle")}</h2>
+            <p className="text-sm text-ink/70">
+              {t("event.pic")}: {event.pic_name}
+            </p>
+            {showWhatsapp && (
+              <p className="text-sm text-ink/70">
+                {t("event.whatsapp")}:{" "}
+                <a
+                  href={`https://wa.me/${whatsappDigits(event.pic_whatsapp)}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-medium text-orange-dark"
+                >
+                  {event.pic_whatsapp}
+                </a>
+              </p>
             )}
             {event.pic_contact_instructions && (
               <p className="mt-1 text-sm text-ink/60">{event.pic_contact_instructions}</p>
             )}
           </div>
+
+          {isOwner && status !== "cancelled" && status !== "completed" && status !== "ongoing" && (
+            <Link
+              href={`/activities/${event.id}/edit`}
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-orange-dark"
+            >
+              <Pencil size={15} /> {t("event.edit")}
+            </Link>
+          )}
         </div>
       </div>
 
       <JoinPanel
         eventId={event.id}
+        inviteToken={viaInvite ? token ?? null : null}
         joinPermission={event.join_permission}
-        status={event.status}
+        status={status}
         isOwner={isOwner}
         myParticipation={myParticipation}
       />
 
-      <ShareBox
-        eventId={event.id}
-        shareToken={event.share_token}
-        eventCode={event.event_code}
-        title={event.title}
-      />
+      {isOwner && (
+        <OwnerPanel
+          eventId={event.id}
+          status={status}
+          maxParticipants={event.max_participants}
+          approvedCount={event.participant_count}
+          participants={participants}
+        />
+      )}
+
+      <ShareBox shareToken={event.share_token} eventCode={event.event_code} title={event.title} />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { onboardingStep } from "@/lib/onboarding";
 import { Sidebar } from "@/components/Sidebar";
 import { MobileNav } from "@/components/MobileNav";
 import { Header } from "@/components/Header";
@@ -20,14 +21,22 @@ export default async function AppLayout({
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("full_name, nickname, avatar_url")
+    .select(
+      "role, full_name, nickname, avatar_url, onboarding_completed_at, whatsapp_number, gender, city_id, kecamatan_id, kelurahan_id, bio"
+    )
     .eq("id", user.id)
-    .single();
+    .maybeSingle();
+
+  // Signed in but registration unfinished (e.g. closed the browser after
+  // verifying email): not a full participant yet — resume registration.
+  if (onboardingStep(profile) !== "done") {
+    redirect("/register?resume=1");
+  }
 
   return (
     <div className="ambient-gradient flex min-h-screen">
-      <Sidebar />
-      <div className="flex min-h-screen flex-1 flex-col">
+      <Sidebar isAdmin={profile?.role === "admin"} />
+      <div className="flex min-h-screen min-w-0 flex-1 flex-col">
         <Header
           name={profile?.nickname || profile?.full_name}
           avatarUrl={profile?.avatar_url}

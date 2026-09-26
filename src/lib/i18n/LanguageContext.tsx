@@ -1,46 +1,64 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
-import { translations, type Lang } from "./translations";
+import { createContext, useContext, useState } from "react";
+import { useRouter } from "next/navigation";
+import {
+  LANG_COOKIE,
+  translate,
+  translateDynamic,
+  type Lang,
+  type TranslateVars,
+  type TranslationKey,
+} from "./translations";
 
 interface LanguageContextValue {
   lang: Lang;
   setLang: (lang: Lang) => void;
-  t: (key: string) => string;
+  t: (key: TranslationKey, vars?: TranslateVars) => string;
+  /** For keys built from DB values, e.g. td(`category.${c.key}`, c.label) */
+  td: (key: string, fallback: string) => string;
 }
 
 const LanguageContext = createContext<LanguageContextValue | null>(null);
 
-const STORAGE_KEY = "komunitas-lang";
+const ONE_YEAR = 60 * 60 * 24 * 365;
 
-export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [lang, setLangState] = useState<Lang>("en");
-
-  useEffect(() => {
-    const stored = window.localStorage.getItem(STORAGE_KEY) as Lang | null;
-    if (stored === "en" || stored === "id") {
-      setLangState(stored);
-    } else {
-      // Default to Indonesian for browsers set to Indonesian, English otherwise.
-      const browserLang = navigator.language?.toLowerCase() ?? "";
-      setLangState(browserLang.startsWith("id") ? "id" : "en");
-    }
-  }, []);
+/**
+ * The language is persisted in a cookie (so Server Components render in the
+ * right language on the first paint, with no English flash) and mirrored to
+ * localStorage. The root layout resolves the initial value server-side.
+ */
+export function LanguageProvider({
+  initialLang,
+  children,
+}: {
+  initialLang: Lang;
+  children: React.ReactNode;
+}) {
+  const router = useRouter();
+  const [lang, setLangState] = useState<Lang>(initialLang);
 
   function setLang(next: Lang) {
     setLangState(next);
-    window.localStorage.setItem(STORAGE_KEY, next);
+    document.cookie = `${LANG_COOKIE}=${next}; path=/; max-age=${ONE_YEAR}; samesite=lax`;
+    document.documentElement.lang = next;
+    try {
+      window.localStorage.setItem(LANG_COOKIE, next);
+    } catch {
+      // storage unavailable (private mode) — the cookie is enough
+    }
+    // Re-render Server Components with the new language.
+    router.refresh();
   }
 
-  function t(key: string): string {
-    return translations[lang][key] ?? translations.en[key] ?? key;
-  }
+  const value: LanguageContextValue = {
+    lang,
+    setLang,
+    t: (key, vars) => translate(lang, key, vars),
+    td: (key, fallback) => translateDynamic(lang, key, fallback),
+  };
 
-  return (
-    <LanguageContext.Provider value={{ lang, setLang, t }}>
-      {children}
-    </LanguageContext.Provider>
-  );
+  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
 }
 
 export function useLanguage(): LanguageContextValue {

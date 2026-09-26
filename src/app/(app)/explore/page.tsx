@@ -1,34 +1,56 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Search, MapPin } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Search } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { ActivityCard } from "@/components/ActivityCard";
-import { distanceKm } from "@/lib/utils";
-import type { Category, EventRecord } from "@/types";
+import { EventCodeJump } from "@/components/EventCodeJump";
+import { LocationBar } from "@/components/NearbyDashboard";
+import { ManualLocationDialog } from "@/components/ManualLocationDialog";
+import { Alert } from "@/components/ui";
+import { useUserLocation } from "@/lib/location";
+import { effectiveStatus } from "@/lib/events";
+import { friendlyErrorKey } from "@/lib/errors";
+import { distanceKm, jakartaNowStamp, jakartaToday } from "@/lib/utils";
+import { EVENT_LIST_SELECT, type Category, type EventRecord } from "@/types";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import type { TranslationKey } from "@/lib/i18n/translations";
 
-const TIME_FILTER_KEYS = ["nearby", "today", "tomorrow", "thisWeek", "upcoming", "ongoing"];
-const PRICE_FILTER_KEYS = ["free", "paid"];
-const DISTANCE_OPTIONS = [1, 3, 5, 10];
+const TIME_FILTERS = ["today", "tomorrow", "thisWeek", "upcoming", "ongoing"] as const;
+const PRICE_FILTERS = ["free", "paid"] as const;
+const DISTANCE_OPTIONS = [1, 5, 10, 20, 50];
+const PAGE_SIZE = 30;
 
+type TimeFilter = (typeof TIME_FILTERS)[number];
+type PriceFilter = (typeof PRICE_FILTERS)[number];
+
+/**
+ * Explore is intentionally NOT limited to 20 km: people can search by name,
+ * place or event code at any distance. Distance chips are optional filters.
+ */
 export default function ExplorePage() {
-  const supabase = createClient();
-  const { t } = useLanguage();
+  const supabase = useMemo(() => createClient(), []);
+  const { t, td } = useLanguage();
+  const { location, setManual, switchToGps } = useUserLocation({ autoPrompt: false });
 
   const [query, setQuery] = useState("");
+  const [debounced, setDebounced] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
-  const [timeFilter, setTimeFilter] = useState<string | null>(null);
-  const [priceFilter, setPriceFilter] = useState<string | null>(null);
+  const [timeFilter, setTimeFilter] = useState<TimeFilter | null>(null);
+  const [priceFilter, setPriceFilter] = useState<PriceFilter | null>(null);
   const [maxDistance, setMaxDistance] = useState<number | null>(null);
-
-  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
-  const [locationDenied, setLocationDenied] = useState(false);
-  const [manualArea, setManualArea] = useState("");
+  const [nearestFirst, setNearestFirst] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const [events, setEvents] = useState<EventRecord[]>([]);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<TranslationKey | null>(null);
+
+  const coords = location.status === "ready" ? { lat: location.lat, lng: location.lng } : null;
+
   useEffect(() => {
     supabase
       .from("categories")
@@ -36,72 +58,85 @@ export default function ExplorePage() {
       .then(({ data }) => setCategories(data ?? []));
   }, [supabase]);
 
+  // Debounce typing so every keystroke isn't a request.
   useEffect(() => {
-    if (!("geolocation" in navigator)) {
-      setLocationDenied(true);
-      return;
-    }
-    navigator.geolocation.getCurrentPosition(
-      (pos) => setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-      () => setLocationDenied(true)
-    );
-  }, []);
+    const id = setTimeout(() => setDebounced(query.trim()), 300);
+    return () => clearTimeout(id);
+  }, [query]);
+
+  // Reset paging whenever the server-side filters change.
+  useEffect(() => {
+    setPage(0);
+  }, [debounced, activeCategory, timeFilter, priceFilter]);
 
   useEffect(() => {
+    let cancelled = false;
     async function load() {
       setLoading(true);
+      setError(null);
+      const today = jakartaToday();
+      const nowTime = jakartaNowStamp().slice(11); // HH:MM
+
       let q = supabase
         .from("events")
-        .select("*, category:categories(*), event_participants(count)")
+        .select(EVENT_LIST_SELECT)
         .eq("privacy", "public")
-        .order("event_date", { ascending: true });
+        .neq("status", "cancelled")
+        .order("event_date", { ascending: true })
+        .order("start_time", { ascending: true });
 
-      if (query) q = q.ilike("title", `%${query}%`);
+      if (debounced) {
+        // Strip characters that have meaning in PostgREST filter syntax.
+        const term = debounced.replace(/[,()*%\\]/g, " ").trim();
+        if (term) {
+          q = q.or(
+            `title.ilike.%${term}%,location_name.ilike.%${term}%,address.ilike.%${term}%,event_code.ilike.%${term}%`
+          );
+        }
+      }
       if (activeCategory) q = q.eq("category_id", activeCategory);
 
-      const today = new Date();
-      const todayStr = today.toISOString().slice(0, 10);
-      if (timeFilter === "today") q = q.eq("event_date", todayStr);
-      if (timeFilter === "tomorrow") {
-        const t = new Date(today);
-        t.setDate(t.getDate() + 1);
-        q = q.eq("event_date", t.toISOString().slice(0, 10));
-      }
-      if (timeFilter === "thisWeek") {
-        const end = new Date(today);
-        end.setDate(end.getDate() + 7);
-        q = q.gte("event_date", todayStr).lte("event_date", end.toISOString().slice(0, 10));
-      }
-      if (timeFilter === "upcoming") q = q.gte("event_date", todayStr).eq("status", "open");
-      if (timeFilter === "ongoing") q = q.eq("status", "ongoing");
+      if (timeFilter === "today") q = q.eq("event_date", today);
+      else if (timeFilter === "tomorrow") q = q.eq("event_date", jakartaToday(1));
+      else if (timeFilter === "thisWeek") q = q.gte("event_date", today).lte("event_date", jakartaToday(7));
+      else if (timeFilter === "upcoming")
+        q = q.or(`event_date.gt.${today},and(event_date.eq.${today},start_time.gt.${nowTime})`);
+      else if (timeFilter === "ongoing")
+        q = q.eq("event_date", today).lte("start_time", nowTime).gt("end_time", nowTime);
+      else q = q.gte("event_date", today); // hide past days by default
 
       if (priceFilter === "free") q = q.eq("fee", 0);
       if (priceFilter === "paid") q = q.gt("fee", 0);
 
-      const { data } = await q.limit(60);
-      let list: EventRecord[] = (data ?? []).map((e: any) => ({
-        ...e,
-        participant_count: e.event_participants?.[0]?.count ?? 0,
-      }));
-
-      if (coords) {
-        list = list
-          .map((e) => ({
-            ...e,
-            distance_km: distanceKm(coords.lat, coords.lng, e.latitude, e.longitude),
-          }))
-          .sort((a, b) => (a.distance_km ?? 0) - (b.distance_km ?? 0));
+      const from = page * PAGE_SIZE;
+      const { data, error: loadError } = await q.range(from, from + PAGE_SIZE - 1);
+      if (cancelled) return;
+      if (loadError) {
+        setError(friendlyErrorKey(loadError, "explore"));
+        setLoading(false);
+        return;
       }
-
-      if (maxDistance && coords) {
-        list = list.filter((e) => (e.distance_km ?? Infinity) <= maxDistance);
-      }
-
-      setEvents(list);
+      const rows = (data ?? []) as EventRecord[];
+      setHasMore(rows.length === PAGE_SIZE);
+      setEvents((prev) => (page === 0 ? rows : [...prev, ...rows]));
       setLoading(false);
     }
     load();
-  }, [supabase, query, activeCategory, timeFilter, priceFilter, maxDistance, coords]);
+    return () => {
+      cancelled = true;
+    };
+  }, [supabase, debounced, activeCategory, timeFilter, priceFilter, page]);
+
+  const visible = useMemo(() => {
+    let list = events
+      .filter((e) => effectiveStatus(e) !== "completed")
+      .map((e) => (coords ? { ...e, distance_km: distanceKm(coords.lat, coords.lng, e.latitude, e.longitude) } : e));
+    if (coords && maxDistance) list = list.filter((e) => (e.distance_km ?? Infinity) <= maxDistance);
+    if (coords && (nearestFirst || maxDistance)) {
+      list = [...list].sort((a, b) => (a.distance_km ?? Infinity) - (b.distance_km ?? Infinity));
+    }
+    return list;
+  }, [events, coords?.lat, coords?.lng, maxDistance, nearestFirst]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="space-y-6">
@@ -110,20 +145,7 @@ export default function ExplorePage() {
         <p className="mt-1 text-ink/60">{t("explore.subtitle")}</p>
       </div>
 
-      {locationDenied && (
-        <div className="card flex items-start gap-3 p-4 text-sm">
-          <MapPin size={18} className="mt-0.5 shrink-0 text-orange-dark" />
-          <div className="flex-1">
-            <p className="text-ink/70">{t("explore.locationUnavailable")}</p>
-            <input
-              value={manualArea}
-              onChange={(e) => setManualArea(e.target.value)}
-              placeholder={t("explore.manualAreaPlaceholder")}
-              className="mt-2 w-full rounded-xl border border-ink/10 px-3 py-2 text-sm outline-none focus:border-orange"
-            />
-          </div>
-        </div>
-      )}
+      <EventCodeJump />
 
       <div className="relative">
         <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/40" />
@@ -131,6 +153,7 @@ export default function ExplorePage() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={t("explore.searchPlaceholder")}
+          aria-label={t("explore.searchPlaceholder")}
           className="w-full rounded-full border border-ink/10 bg-white py-3 pl-11 pr-4 text-sm outline-none focus:border-orange"
         />
       </div>
@@ -142,49 +165,81 @@ export default function ExplorePage() {
             active={activeCategory === c.id}
             onClick={() => setActiveCategory(activeCategory === c.id ? null : c.id)}
           >
-            {c.emoji} {c.label}
+            {c.emoji} {td(`category.${c.key}`, c.label)}
           </Chip>
         ))}
       </div>
 
       <div className="flex flex-wrap items-center gap-2 border-t border-ink/5 pt-4">
-        {TIME_FILTER_KEYS.map((key) => (
-          <Chip
-            key={key}
-            active={timeFilter === key}
-            onClick={() => setTimeFilter(timeFilter === key ? null : key)}
-          >
+        {TIME_FILTERS.map((key) => (
+          <Chip key={key} active={timeFilter === key} onClick={() => setTimeFilter(timeFilter === key ? null : key)}>
             {t(`explore.${key}`)}
           </Chip>
         ))}
         <span className="mx-1 h-4 w-px bg-ink/10" />
-        {PRICE_FILTER_KEYS.map((key) => (
-          <Chip
-            key={key}
-            active={priceFilter === key}
-            onClick={() => setPriceFilter(priceFilter === key ? null : key)}
-          >
+        {PRICE_FILTERS.map((key) => (
+          <Chip key={key} active={priceFilter === key} onClick={() => setPriceFilter(priceFilter === key ? null : key)}>
             {t(`explore.${key}`)}
           </Chip>
         ))}
         <span className="mx-1 h-4 w-px bg-ink/10" />
+        <Chip active={nearestFirst} disabled={!coords} onClick={() => setNearestFirst((v) => !v)}>
+          {t("explore.nearby")}
+        </Chip>
         {DISTANCE_OPTIONS.map((d) => (
-          <Chip key={d} active={maxDistance === d} onClick={() => setMaxDistance(maxDistance === d ? null : d)}>
-            {d} km
+          <Chip
+            key={d}
+            active={maxDistance === d}
+            disabled={!coords}
+            onClick={() => setMaxDistance(maxDistance === d ? null : d)}
+          >
+            {t("explore.within", { km: d })}
           </Chip>
         ))}
       </div>
 
-      {loading ? (
+      {!coords && (
+        <div className="space-y-2">
+          <p className="text-xs text-ink/50">{t("explore.distanceNeedsLocation")}</p>
+          <LocationBar location={location} onManual={() => setDialogOpen(true)} onGps={switchToGps} />
+        </div>
+      )}
+
+      {error ? (
+        <Alert>{t(error)}</Alert>
+      ) : loading && events.length === 0 ? (
         <p className="py-12 text-center text-sm text-ink/50">{t("explore.loading")}</p>
-      ) : events.length === 0 ? (
+      ) : visible.length === 0 ? (
         <p className="py-12 text-center text-sm text-ink/50">{t("explore.noResults")}</p>
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {events.map((e) => (
-            <ActivityCard key={e.id} event={e} />
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {visible.map((e) => (
+              <ActivityCard key={e.id} event={e} />
+            ))}
+          </div>
+          {hasMore && (
+            <div className="text-center">
+              <button
+                onClick={() => setPage((p) => p + 1)}
+                disabled={loading}
+                className="rounded-full border border-ink/10 bg-white px-6 py-2.5 text-sm font-medium hover:bg-cream-warm disabled:opacity-60"
+              >
+                {loading ? t("common.loading") : t("explore.loadMore")}
+              </button>
+            </div>
+          )}
+        </>
+      )}
+
+      {dialogOpen && (
+        <ManualLocationDialog
+          onClose={() => setDialogOpen(false)}
+          onSelect={(area) => {
+            setManual(area);
+            setDialogOpen(false);
+          }}
+        />
       )}
     </div>
   );
@@ -193,19 +248,21 @@ export default function ExplorePage() {
 function Chip({
   active,
   onClick,
+  disabled,
   children,
 }: {
   active: boolean;
   onClick: () => void;
+  disabled?: boolean;
   children: React.ReactNode;
 }) {
   return (
     <button
       onClick={onClick}
-      className={`shrink-0 rounded-full border px-3.5 py-1.5 text-sm font-medium transition ${
-        active
-          ? "border-orange bg-orange text-white"
-          : "border-ink/10 bg-white text-ink/60 hover:bg-cream-warm"
+      disabled={disabled}
+      aria-pressed={active}
+      className={`shrink-0 rounded-full border px-3.5 py-1.5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-40 ${
+        active ? "border-orange bg-orange text-white" : "border-ink/10 bg-white text-ink/60 hover:bg-cream-warm"
       }`}
     >
       {children}

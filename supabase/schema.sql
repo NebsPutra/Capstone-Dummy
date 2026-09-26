@@ -1,6 +1,9 @@
 -- =========================================================
 -- COMMUNITY SOCIAL ACTIVITY PLATFORM — Supabase schema
--- Run this in the Supabase SQL editor (or via `supabase db push`)
+-- Run this in the Supabase SQL editor (or via `supabase db push`),
+-- THEN run supabase/migrations/002_auth_location_events.sql, which replaces
+-- several functions/policies below (including the fix for the event_status
+-- cast bug in refresh_event_status).
 -- =========================================================
 
 create extension if not exists "uuid-ossp";

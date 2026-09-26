@@ -1,102 +1,48 @@
 import { createClient } from "@/lib/supabase/server";
-import { ActivityCard } from "@/components/ActivityCard";
-import { distanceKm } from "@/lib/utils";
-import type { EventRecord } from "@/types";
-import { DashboardGreeting, SectionTitle } from "@/components/DashboardGreeting";
+import { getServerT } from "@/lib/i18n/server";
+import { DashboardGreeting } from "@/components/DashboardGreeting";
+import { NearbyDashboard } from "@/components/NearbyDashboard";
+import type { ManualArea } from "@/lib/location";
 
-async function getSection(
-  supabase: Awaited<ReturnType<typeof createClient>>,
-  filter: (q: any) => any
-) {
-  let query = supabase
-    .from("events")
-    .select("*, category:categories(*), event_participants(count)")
-    .eq("privacy", "public")
-    .order("event_date", { ascending: true })
-    .limit(6);
-  query = filter(query);
-  const { data } = await query;
-  return (data ?? []).map((e: any) => ({
-    ...e,
-    participant_count: e.event_participants?.[0]?.count ?? 0,
-  })) as EventRecord[];
-}
+type KeyRow = { key: string } | { key: string }[] | null;
+const keyOf = (v: KeyRow) => (Array.isArray(v) ? v[0]?.key : v?.key) ?? null;
 
 export default async function DashboardPage() {
   const supabase = await createClient();
+  const { t } = await getServerT();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("*, primary_interest:interests(*)")
-    .eq("id", user!.id)
-    .single();
-
-  const today = new Date().toISOString().slice(0, 10);
-
-  const [nearby, upcoming, ongoing] = await Promise.all([
-    getSection(supabase, (q) => q.gte("event_date", today)),
-    getSection(supabase, (q) => q.eq("status", "open").gte("event_date", today)),
-    getSection(supabase, (q) => q.eq("status", "ongoing")),
+  const [{ data: profile }, { data: interestRows }] = await Promise.all([
+    supabase
+      .from("profiles")
+      .select("nickname, full_name, area_lat, area_lng, kelurahan, kecamatan, city, primary_interest:interests(key)")
+      .eq("id", user!.id)
+      .single(),
+    supabase.from("user_interests").select("interest:interests(key)").eq("user_id", user!.id),
   ]);
 
-  let recommended: EventRecord[] = [];
-  if (profile?.primary_interest_id) {
-    const { data: catMatch } = await supabase
-      .from("events")
-      .select("*, category:categories(*), event_participants(count)")
-      .eq("privacy", "public")
-      .gte("event_date", today)
-      .limit(6);
-    recommended = (catMatch ?? []).map((e: any) => ({
-      ...e,
-      participant_count: e.event_participants?.[0]?.count ?? 0,
-    }));
-  }
+  const interestKeys = (interestRows ?? [])
+    .map((r) => keyOf(r.interest as KeyRow))
+    .filter((k): k is string => Boolean(k));
+  const primaryKey = keyOf((profile?.primary_interest ?? null) as KeyRow);
 
-  // If the user has a stored last-known location, annotate distances
-  const withDistance = (list: EventRecord[]) =>
-    profile?.last_lat && profile?.last_lng
-      ? list.map((e) => ({
-          ...e,
-          distance_km: distanceKm(profile.last_lat, profile.last_lng, e.latitude, e.longitude),
-        }))
-      : list;
-
-  const greetName = profile?.nickname || profile?.full_name || "there";
+  // The registered kelurahan (approximate centroid) is offered as a
+  // one-tap fallback when live GPS isn't available.
+  const profileArea: ManualArea | null =
+    profile?.area_lat != null && profile?.area_lng != null
+      ? {
+          lat: profile.area_lat,
+          lng: profile.area_lng,
+          label: [profile.kelurahan, profile.kecamatan, profile.city].filter(Boolean).join(", "),
+        }
+      : null;
 
   return (
-    <div className="space-y-10">
-      <DashboardGreeting name={greetName} />
-
-      <Section translationKey="dashboard.nearby" events={withDistance(nearby)} />
-      <Section translationKey="dashboard.upcoming" events={upcoming} />
-      {ongoing.length > 0 && <Section translationKey="dashboard.ongoing" events={ongoing} />}
-      {recommended.length > 0 && (
-        <Section translationKey="dashboard.recommended" events={withDistance(recommended)} />
-      )}
+    <div className="space-y-6">
+      <DashboardGreeting name={profile?.nickname || profile?.full_name || t("dashboard.there")} />
+      <NearbyDashboard interestKeys={interestKeys} primaryInterestKey={primaryKey} profileArea={profileArea} />
     </div>
-  );
-}
-
-function Section({
-  translationKey,
-  events,
-}: {
-  translationKey: string;
-  events: EventRecord[];
-}) {
-  if (events.length === 0) return null;
-  return (
-    <section>
-      <SectionTitle translationKey={translationKey} />
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {events.map((e) => (
-          <ActivityCard key={e.id} event={e} />
-        ))}
-      </div>
-    </section>
   );
 }
