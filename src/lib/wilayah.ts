@@ -4,7 +4,9 @@
 // with its city id (e.g. 3273 -> 3273010 -> 3273010001). Profiles store
 // these ids (stable) alongside the display names.
 // https://github.com/emsifa/api-wilayah-indonesia
-const BASE = "https://emsifa.github.io/api-wilayah-indonesia/api";
+// The old emsifa.github.io host now 301-redirects here without CORS
+// headers, so browsers block it; use the final host directly.
+const BASE = "https://www.emsifa.com/api-wilayah-indonesia/api";
 
 export interface WilayahItem {
   id: string;
