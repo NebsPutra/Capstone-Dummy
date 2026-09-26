@@ -55,6 +55,8 @@ export default function ExplorePage() {
     supabase
       .from("categories")
       .select("*")
+      .neq("is_active", false)
+      .order("sort_order")
       .then(({ data }) => setCategories(data ?? []));
   }, [supabase]);
 
@@ -154,7 +156,7 @@ export default function ExplorePage() {
           onChange={(e) => setQuery(e.target.value)}
           placeholder={t("explore.searchPlaceholder")}
           aria-label={t("explore.searchPlaceholder")}
-          className="w-full rounded-full border border-ink/10 bg-white py-3 pl-11 pr-4 text-sm outline-none focus:border-orange"
+          className="w-full rounded-full border border-ink/10 bg-surface py-3 pl-11 pr-4 text-sm outline-none focus:border-orange"
         />
       </div>
 
@@ -223,7 +225,7 @@ export default function ExplorePage() {
               <button
                 onClick={() => setPage((p) => p + 1)}
                 disabled={loading}
-                className="rounded-full border border-ink/10 bg-white px-6 py-2.5 text-sm font-medium hover:bg-cream-warm disabled:opacity-60"
+                className="rounded-full border border-ink/10 bg-surface px-6 py-2.5 text-sm font-medium hover:bg-cream-warm disabled:opacity-60"
               >
                 {loading ? t("common.loading") : t("explore.loadMore")}
               </button>
@@ -262,7 +264,7 @@ function Chip({
       disabled={disabled}
       aria-pressed={active}
       className={`shrink-0 rounded-full border px-3.5 py-1.5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-40 ${
-        active ? "border-orange bg-orange text-white" : "border-ink/10 bg-white text-ink/60 hover:bg-cream-warm"
+        active ? "border-orange bg-orange text-white" : "border-ink/10 bg-surface text-ink/60 hover:bg-cream-warm"
       }`}
     >
       {children}

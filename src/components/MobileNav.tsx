@@ -19,7 +19,7 @@ export function MobileNav() {
   const pathname = usePathname();
   const { t } = useLanguage();
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-around border-t border-ink/5 bg-white/90 py-2 backdrop-blur-sm md:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-around border-t border-ink/5 bg-surface/90 py-2 backdrop-blur-sm md:hidden">
       {NAV.map(({ href, key, icon: Icon }) => {
         const active = pathname?.startsWith(href);
         return (

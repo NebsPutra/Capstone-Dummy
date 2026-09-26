@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getServerT } from "@/lib/i18n/server";
 import { DashboardGreeting } from "@/components/DashboardGreeting";
 import { NearbyDashboard } from "@/components/NearbyDashboard";
+import { HeroBanner } from "@/components/HeroBanner";
 import type { ManualArea } from "@/lib/location";
 
 type KeyRow = { key: string } | { key: string }[] | null;
@@ -41,7 +42,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <DashboardGreeting name={profile?.nickname || profile?.full_name || t("dashboard.there")} />
+      <HeroBanner greeting={<DashboardGreeting name={profile?.nickname || profile?.full_name || t("dashboard.there")} />} />
       <NearbyDashboard interestKeys={interestKeys} primaryInterestKey={primaryKey} profileArea={profileArea} />
     </div>
   );

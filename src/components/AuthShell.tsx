@@ -6,6 +6,8 @@ import { Eye, EyeOff } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { inputClass } from "./ui";
+import { Logo } from "./Logo";
+import { ThemeToggle } from "./ThemeToggle";
 
 export function AuthShell({
   title,
@@ -23,17 +25,18 @@ export function AuthShell({
   return (
     <main className="ambient-gradient flex min-h-screen items-center justify-center px-4 py-12">
       <div className={`w-full ${wide ? "max-w-xl" : "max-w-md"}`}>
-        <div className="mb-4 flex justify-end">
+        <div className="mb-4 flex justify-end gap-2">
+          <ThemeToggle compact />
           <LanguageSwitcher />
         </div>
         <div className="mb-8 text-center">
-          <Link href="/" className="text-xl font-extrabold text-orange-dark">
-            Komunitas
+          <Link href="/" className="inline-block">
+            <Logo size={36} />
           </Link>
           <h1 className="mt-4 text-2xl font-bold">{title}</h1>
           {subtitle && <p className="mt-1 text-sm text-ink/60">{subtitle}</p>}
         </div>
-        <div className="card p-6">{children}</div>
+        <div className="card animate-pop-in p-6">{children}</div>
         {footer && <div className="mt-6 text-center text-sm text-ink/60">{footer}</div>}
       </div>
     </main>

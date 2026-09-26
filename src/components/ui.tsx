@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 export function inputClass(hasError?: boolean) {
   return cn(
-    "w-full rounded-xl border bg-white px-4 py-2.5 text-sm outline-none transition focus:border-orange disabled:bg-cream-warm disabled:opacity-60",
+    "w-full rounded-xl border bg-surface px-4 py-2.5 text-sm outline-none transition focus:border-orange disabled:bg-cream-warm disabled:opacity-60",
     hasError ? "border-red-400 bg-red-50/40" : "border-ink/10"
   );
 }
@@ -68,7 +68,7 @@ export function PrimaryButton({
       disabled={props.disabled || loading}
       aria-busy={loading || undefined}
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-full bg-orange px-6 py-3 text-sm font-semibold text-white shadow-soft transition hover:bg-orange-dark disabled:cursor-not-allowed disabled:opacity-60",
+        "inline-flex items-center justify-center gap-2 rounded-full bg-orange px-6 py-3 text-sm font-semibold text-white shadow-soft transition duration-150 hover:-translate-y-0.5 hover:bg-orange-deep hover:shadow-lift active:translate-y-0 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0",
         className
       )}
     >

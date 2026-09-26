@@ -4,6 +4,8 @@ import Link from "next/link";
 import { MapPin, Users, PlusCircle, Repeat } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { Logo } from "@/components/Logo";
 
 export default function LandingPage() {
   const { t } = useLanguage();
@@ -18,18 +20,21 @@ export default function LandingPage() {
   return (
     <main className="ambient-gradient min-h-screen">
       <header className="flex items-center justify-between px-6 py-5 md:px-12">
-        <span className="text-xl font-extrabold text-orange-dark">Komunitas</span>
-        <div className="flex items-center gap-3">
+        <Logo size={34} />
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="hidden sm:block">
+            <ThemeToggle compact />
+          </div>
           <LanguageSwitcher />
           <Link
             href="/login"
-            className="rounded-full px-4 py-2 text-sm font-medium text-ink/70 hover:bg-white"
+            className="rounded-full px-4 py-2 text-sm font-medium text-ink/70 hover:bg-surface"
           >
             {t("landing.login")}
           </Link>
           <Link
             href="/register"
-            className="rounded-full bg-orange px-4 py-2 text-sm font-semibold text-white shadow-soft hover:bg-orange-dark"
+            className="rounded-full bg-orange px-4 py-2 text-sm font-semibold text-white shadow-soft hover:bg-orange-deep"
           >
             {t("landing.signup")}
           </Link>
@@ -48,13 +53,13 @@ export default function LandingPage() {
         <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
             href="/explore"
-            className="w-full rounded-full bg-orange px-7 py-3.5 text-center text-base font-semibold text-white shadow-soft hover:bg-orange-dark sm:w-auto"
+            className="w-full rounded-full bg-orange px-7 py-3.5 text-center text-base font-semibold text-white shadow-soft hover:bg-orange-deep sm:w-auto"
           >
             {t("landing.ctaExplore")}
           </Link>
           <Link
             href="/register"
-            className="w-full rounded-full border border-orange/30 bg-white px-7 py-3.5 text-center text-base font-semibold text-orange-dark hover:bg-cream-warm sm:w-auto"
+            className="w-full rounded-full border border-orange/30 bg-surface px-7 py-3.5 text-center text-base font-semibold text-orange-dark hover:bg-cream-warm sm:w-auto"
           >
             {t("landing.ctaCreate")}
           </Link>

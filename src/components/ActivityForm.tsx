@@ -12,6 +12,7 @@ import { FEE_MAX, MAX_PARTICIPANTS_LIMIT, normalizeWhatsapp } from "@/lib/valida
 import { formatFee, jakartaNowStamp, jakartaToday, toFee } from "@/lib/utils";
 import type { Category, EventPrivacy, EventRecord, JoinPermission } from "@/types";
 import { RupiahInput } from "./RupiahInput";
+import { BannerUpload } from "./BannerUpload";
 import { useToast } from "./Toast";
 import { Alert, FieldShell, PrimaryButton, focusFirstError, inputClass } from "./ui";
 
@@ -67,6 +68,7 @@ export function ActivityForm({ event }: { event?: EventRecord }) {
   const [endTime, setEndTime] = useState(event?.end_time.slice(0, 5) ?? "");
   const [maxParticipants, setMaxParticipants] = useState(String(event?.max_participants ?? 10));
   const [fee, setFee] = useState<number>(event ? toFee(event.fee) : 0);
+  const [bannerUrl, setBannerUrl] = useState<string | null>(event?.banner_url ?? null);
 
   const [locationName, setLocationName] = useState(event?.location_name ?? "");
   const [address, setAddress] = useState(event?.address ?? "");
@@ -93,7 +95,11 @@ export function ActivityForm({ event }: { event?: EventRecord }) {
     supabase
       .from("categories")
       .select("*")
-      .then(({ data }) => setCategories(data ?? []));
+      .order("sort_order")
+      // Inactive categories stay on existing events but can't be picked for new ones.
+      .then(({ data }) =>
+        setCategories((data ?? []).filter((c: Category & { is_active?: boolean }) => c.is_active !== false || c.id === event?.category_id))
+      );
 
     if (isEdit) return;
     // Pre-fill the PIC with the organizer's own details.
@@ -199,6 +205,7 @@ export function ActivityForm({ event }: { event?: EventRecord }) {
         category_id: categoryId,
         title: title.trim(),
         description: description.trim() || null,
+        banner_url: bannerUrl,
         event_date: date,
         start_time: startTime,
         end_time: endTime,
@@ -355,6 +362,16 @@ export function ActivityForm({ event }: { event?: EventRecord }) {
             />
           </FieldShell>
         </div>
+      </Card>
+
+      <Card title={t("banner.label")}>
+        <BannerUpload
+          value={bannerUrl}
+          onChange={setBannerUrl}
+          categoryKey={categories.find((c) => c.id === categoryId)?.key}
+          emoji={categories.find((c) => c.id === categoryId)?.emoji}
+          title={title || "…"}
+        />
       </Card>
 
       <Card title={t("create.location")}>
@@ -516,7 +533,7 @@ function Toggle({
         className={`h-6 w-11 shrink-0 rounded-full transition ${checked ? "bg-orange" : "bg-ink/15"}`}
       >
         <span
-          className={`block h-5 w-5 translate-x-0.5 rounded-full bg-white transition ${checked ? "translate-x-5" : ""}`}
+          className={`block h-5 w-5 translate-x-0.5 rounded-full bg-surface transition ${checked ? "translate-x-5" : ""}`}
         />
       </button>
     </div>

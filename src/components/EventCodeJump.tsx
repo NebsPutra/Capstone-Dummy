@@ -36,11 +36,11 @@ export function EventCodeJump() {
           value={code}
           onChange={(e) => setCode(e.target.value)}
           placeholder={t("code.placeholder")}
-          className="min-w-0 flex-1 rounded-full border border-ink/10 bg-white px-4 py-2 text-sm outline-none focus:border-orange"
+          className="min-w-0 flex-1 rounded-full border border-ink/10 bg-surface px-4 py-2 text-sm outline-none focus:border-orange"
         />
         <button
           type="submit"
-          className="shrink-0 rounded-full bg-orange px-5 py-2 text-sm font-semibold text-white hover:bg-orange-dark"
+          className="shrink-0 rounded-full bg-orange px-5 py-2 text-sm font-semibold text-white hover:bg-orange-deep"
         >
           {t("code.open")}
         </button>

@@ -16,6 +16,17 @@ const DOMAIN_CODES = [
   "INTERESTS_REQUIRED",
   "PRIMARY_NOT_SELECTED",
   "PARTICIPANT_NOT_FOUND",
+  "RATE_LIMITED",
+  "COMPLAINT_CLOSED",
+  "COMPLAINT_NOT_FOUND",
+  "INVALID_FILE",
+  "ACCOUNT_SUSPENDED",
+  "LAST_SUPER_ADMIN",
+  "CANNOT_CHANGE_SELF",
+  "INVALID_ASSIGNEE",
+  "USER_NOT_FOUND",
+  "EVENT_NOT_CANCELLED",
+  "UNKNOWN_SETTING",
 ] as const;
 
 type ErrorLike = { message?: string; code?: string; status?: number; name?: string } | null | undefined;

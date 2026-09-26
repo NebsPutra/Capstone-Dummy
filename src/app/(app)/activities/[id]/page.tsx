@@ -12,6 +12,8 @@ import { JoinPanel } from "@/components/JoinPanel";
 import { OwnerPanel, type ParticipantRow } from "@/components/OwnerPanel";
 import { ShareBox } from "@/components/ShareBox";
 import { EventMapClient as EventMap } from "@/components/EventMapClient";
+import { EventCover } from "@/components/EventCover";
+import { LifeBuoy } from "lucide-react";
 import type { EventParticipant } from "@/types";
 
 export default async function EventDetailsPage({
@@ -69,9 +71,13 @@ export default async function EventDetailsPage({
       )}
 
       <div className="card overflow-hidden">
-        <div className="flex h-40 items-center justify-center bg-cream-warm text-6xl">
-          {event.category?.emoji ?? "✨"}
-        </div>
+        <EventCover
+          bannerUrl={event.banner_url}
+          categoryKey={event.category?.key}
+          emoji={event.category?.emoji}
+          title={event.title}
+          className="aspect-video max-h-80"
+        />
         <div className="space-y-4 p-6">
           <div className="flex items-start justify-between gap-3">
             <div>
@@ -174,6 +180,13 @@ export default async function EventDetailsPage({
       )}
 
       <ShareBox shareToken={event.share_token} eventCode={event.event_code} title={event.title} />
+
+      <Link
+        href={`/help?event=${event.id}`}
+        className="flex items-center justify-center gap-1.5 text-sm font-medium text-ink/50 hover:text-orange-dark"
+      >
+        <LifeBuoy size={15} /> {t("help.reportEvent")}
+      </Link>
     </div>
   );
 }

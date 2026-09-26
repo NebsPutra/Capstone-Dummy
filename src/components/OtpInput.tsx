@@ -69,7 +69,7 @@ export function OtpInput({
           }}
           onFocus={(e) => e.target.select()}
           className={cn(
-            "h-12 w-11 rounded-xl border bg-white text-center text-lg font-semibold outline-none transition focus:border-orange sm:h-14 sm:w-12",
+            "h-12 w-11 rounded-xl border bg-surface text-center text-lg font-semibold outline-none transition focus:border-orange sm:h-14 sm:w-12",
             hasError ? "border-red-400 bg-red-50/40" : "border-ink/10"
           )}
         />

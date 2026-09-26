@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Star, Users } from "lucide-react";
 import { StatusBadge } from "./StatusBadge";
+import { EventCover } from "./EventCover";
 import { formatDate, formatDistance, formatFee, formatTimeRange } from "@/lib/utils";
 import { effectiveStatus } from "@/lib/events";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
@@ -22,12 +23,18 @@ export function ActivityCard({
   return (
     <Link
       href={`/activities/${event.id}`}
-      className={`card block overflow-hidden transition hover:-translate-y-0.5 hover:shadow-lg ${
+      className={`card group block overflow-hidden transition duration-200 hover:-translate-y-1 hover:shadow-lift active:scale-[0.99] ${
         highlight ? "ring-2 ring-orange/40" : ""
       }`}
     >
-      <div className="relative flex h-28 items-center justify-center bg-cream-warm text-4xl">
-        {event.category?.emoji ?? "✨"}
+      <div className="relative overflow-hidden">
+        <EventCover
+          bannerUrl={event.banner_url}
+          categoryKey={event.category?.key}
+          emoji={event.category?.emoji}
+          title={event.title}
+          className="aspect-[16/7] transition duration-300 group-hover:scale-[1.03]"
+        />
         {highlight && (
           <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-orange px-2.5 py-1 text-xs font-semibold text-white">
             <Star size={12} /> {highlight}

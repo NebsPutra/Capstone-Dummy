@@ -11,9 +11,12 @@ export default async function NotFound() {
         <p className="text-sm text-ink/60">{t("notFound.desc")}</p>
         <Link
           href="/dashboard"
-          className="inline-block rounded-full bg-orange px-6 py-2.5 text-sm font-semibold text-white hover:bg-orange-dark"
+          className="inline-block rounded-full bg-orange px-6 py-2.5 text-sm font-semibold text-white hover:bg-orange-deep"
         >
           {t("notFound.home")}
+        </Link>
+        <Link href="/help" className="block text-sm font-medium text-ink/50 hover:text-orange-dark">
+          {t("help.needHelp")}
         </Link>
       </div>
     </main>

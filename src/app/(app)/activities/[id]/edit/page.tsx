@@ -14,10 +14,14 @@ export default async function EditActivityPage({ params }: { params: Promise<{ i
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { data } = await supabase.from("events").select("*").eq("id", id).maybeSingle();
+  const [{ data }, { data: me }] = await Promise.all([
+    supabase.from("events").select("*").eq("id", id).maybeSingle(),
+    supabase.from("profiles").select("role").eq("id", user!.id).single(),
+  ]);
   const event = data as EventRecord | null;
-  // Only the creator may edit (also enforced by RLS on UPDATE).
-  if (!event || event.creator_id !== user?.id) notFound();
+  const isAdmin = me?.role === "admin" || me?.role === "super_admin";
+  // Creator or admin (enforced again by RLS on UPDATE; admin edits are audited).
+  if (!event || (event.creator_id !== user?.id && !isAdmin)) notFound();
 
   const status = effectiveStatus(event);
   const locked = status === "cancelled" || status === "completed" || status === "ongoing";

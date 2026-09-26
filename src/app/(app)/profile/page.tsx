@@ -81,7 +81,17 @@ export default async function ProfilePage() {
         </div>
       </div>
 
-      {p && <ProfileEditor profile={p} allInterests={interests} selectedInterestIds={selectedIds} />}
+      {p && (
+        <ProfileEditor
+          profile={p}
+          allInterests={interests.filter((i) => (i as Interest & { is_active?: boolean }).is_active !== false || selectedIds.includes(i.id))}
+          selectedInterestIds={selectedIds}
+        />
+      )}
+
+      <a href="/help" className="block text-center text-sm font-medium text-ink/50 hover:text-orange-dark">
+        {t("help.needHelp")} {t("help.report")} →
+      </a>
     </div>
   );
 }

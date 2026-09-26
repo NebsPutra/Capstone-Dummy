@@ -144,7 +144,14 @@ export function JoinPanel({
       {joinable && joinPermission === "approval_required" && (
         <p className="text-center text-xs text-ink/50">{t("join.approvalNote")}</p>
       )}
-      {error && <Alert>{t(error)}</Alert>}
+      {error && (
+        <Alert>
+          {t(error)}{" "}
+          <a href={`/help?event=${eventId}`} className="font-semibold underline">
+            {t("help.needHelp")}
+          </a>
+        </Alert>
+      )}
     </div>
   );
 }

@@ -59,6 +59,8 @@ export function ProfileEditor({
   const [whatsapp, setWhatsapp] = useState(profile.whatsapp_number ?? "");
   const [bio, setBio] = useState(profile.bio ?? "");
   const [location, setLocation] = useState<LocationValue>({
+    provinceId: profile.province_id ?? "",
+    province: profile.province ?? "",
     cityId: profile.city_id ?? "",
     city: profile.city ?? "",
     kecamatanId: profile.kecamatan_id ?? "",
@@ -122,6 +124,8 @@ export function ProfileEditor({
           bio: bio.trim(),
           ...(location.cityId
             ? {
+                province_id: location.provinceId || location.cityId.slice(0, 2),
+                province: location.province || null,
                 city_id: location.cityId,
                 city: location.city,
                 kecamatan_id: location.kecamatanId,
@@ -154,7 +158,7 @@ export function ProfileEditor({
     return (
       <button
         onClick={() => setEditing(true)}
-        className="w-full rounded-full border border-orange/30 bg-white py-3 text-sm font-semibold text-orange-dark hover:bg-cream-warm"
+        className="w-full rounded-full border border-orange/30 bg-surface py-3 text-sm font-semibold text-orange-dark hover:bg-cream-warm"
       >
         {t("profile.editProfile")}
       </button>

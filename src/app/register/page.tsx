@@ -519,6 +519,8 @@ function ProfileStep({
   const [location, setLocation] = useState<LocationValue>(
     initial?.city_id
       ? {
+          provinceId: initial.province_id ?? "",
+          province: initial.province ?? "",
           cityId: initial.city_id,
           city: initial.city ?? "",
           kecamatanId: initial.kecamatan_id ?? "",
@@ -586,6 +588,8 @@ function ProfileStep({
         nickname: nickname.trim(),
         gender: gender as Gender,
         whatsapp_number: normalizeWhatsapp(whatsapp)!,
+        province_id: location.provinceId || location.cityId.slice(0, 2),
+        province: location.province || null,
         city_id: location.cityId,
         city: location.city,
         kecamatan_id: location.kecamatanId,
@@ -745,7 +749,7 @@ function InterestsStep({
   useEffect(() => {
     (async () => {
       const [{ data: all, error: loadError }, { data: mine }] = await Promise.all([
-        supabase.from("interests").select("*"),
+        supabase.from("interests").select("*").neq("is_active", false).order("sort_order"),
         supabase.from("user_interests").select("interest_id"),
       ]);
       if (loadError) {

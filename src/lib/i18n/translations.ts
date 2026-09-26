@@ -1,3 +1,5 @@
+import { enExtra, idExtra } from "./translations.extra";
+
 export type Lang = "en" | "id";
 
 export const LANG_COOKIE = "komunitas-lang";
@@ -5,7 +7,7 @@ export const LANG_COOKIE = "komunitas-lang";
 // English is the reference dictionary; `id` is typed against its keys, so a
 // key missing from either language is a compile error rather than a silent
 // English fallback inside Indonesian mode.
-const en = {
+const enBase = {
   // Common
   "common.loading": "Loading...",
   "common.retry": "Try again",
@@ -138,7 +140,7 @@ const en = {
   "register.whatsappHint": "e.g. 0812 3456 7890",
   "register.city": "City / Regency",
   "register.kecamatan": "Kecamatan",
-  "register.kelurahan": "Kelurahan",
+  "register.kelurahan": "Kelurahan / Desa",
   "register.bio": "Short bio",
   "register.bioPlaceholder": "Tell the community a little about yourself...",
   "register.errFullName": "Please enter your full name.",
@@ -238,6 +240,25 @@ const en = {
   "location.allowGps": "Allow location access",
   "location.update": "Update Location",
   "location.pinnedAt": "Pinned at {coords}",
+  "location.province": "Province",
+  "location.searchProvince": "Search province...",
+  "location.searchCity": "Search city or regency...",
+  "location.searchKecamatan": "Search kecamatan...",
+  "location.searchKelurahan": "Search kelurahan or desa...",
+  "location.typeMin": "Type at least {n} characters to search.",
+  "location.noProvince": "No province found.",
+  "location.noCity": "No city or regency found.",
+  "location.noKecamatan": "No kecamatan found.",
+  "location.noKelurahan": "No kelurahan or desa found.",
+  "location.tryAnother": "Try another search term.",
+  "location.moreResults": "Keep typing to narrow the results.",
+  "location.selectCityFirst": "Select a city or regency first",
+  "location.selectKecamatanFirst": "Select a kecamatan first",
+  "location.clear": "Clear",
+  "location.useCurrent": "Use my current location",
+  "location.detecting": "Detecting your area...",
+  "location.detectPartial": "We filled in what we could. Please check it and complete the rest.",
+  "location.detectFailed": "We couldn't detect your area. Please search for it instead.",
 
   // Dashboard
   "dashboard.goodMorning": "Good morning",
@@ -500,10 +521,12 @@ const en = {
   "notFound.home": "Back to dashboard",
 } as const;
 
+const en = { ...enBase, ...enExtra };
+
 export type TranslationKey = keyof typeof en;
 type Dict = Record<TranslationKey, string>;
 
-const id: Dict = {
+const idBase: Record<keyof typeof enBase, string> = {
   // Common
   "common.loading": "Memuat...",
   "common.retry": "Coba lagi",
@@ -636,7 +659,7 @@ const id: Dict = {
   "register.whatsappHint": "contoh: 0812 3456 7890",
   "register.city": "Kota / Kabupaten",
   "register.kecamatan": "Kecamatan",
-  "register.kelurahan": "Kelurahan",
+  "register.kelurahan": "Kelurahan / Desa",
   "register.bio": "Bio singkat",
   "register.bioPlaceholder": "Ceritakan sedikit tentang dirimu kepada komunitas...",
   "register.errFullName": "Masukkan nama lengkap kamu.",
@@ -736,6 +759,25 @@ const id: Dict = {
   "location.allowGps": "Izinkan akses lokasi",
   "location.update": "Perbarui Lokasi",
   "location.pinnedAt": "Titik di {coords}",
+  "location.province": "Provinsi",
+  "location.searchProvince": "Cari provinsi...",
+  "location.searchCity": "Cari kota atau kabupaten...",
+  "location.searchKecamatan": "Cari kecamatan...",
+  "location.searchKelurahan": "Cari kelurahan atau desa...",
+  "location.typeMin": "Ketik minimal {n} karakter untuk mencari.",
+  "location.noProvince": "Provinsi tidak ditemukan.",
+  "location.noCity": "Kota atau kabupaten tidak ditemukan.",
+  "location.noKecamatan": "Kecamatan tidak ditemukan.",
+  "location.noKelurahan": "Kelurahan atau desa tidak ditemukan.",
+  "location.tryAnother": "Coba kata kunci lain.",
+  "location.moreResults": "Ketik lebih lanjut untuk mempersempit hasil.",
+  "location.selectCityFirst": "Pilih kota atau kabupaten terlebih dahulu",
+  "location.selectKecamatanFirst": "Pilih kecamatan terlebih dahulu",
+  "location.clear": "Hapus",
+  "location.useCurrent": "Gunakan lokasi saat ini",
+  "location.detecting": "Mendeteksi area kamu...",
+  "location.detectPartial": "Kami sudah mengisi yang bisa dideteksi. Silakan periksa dan lengkapi sisanya.",
+  "location.detectFailed": "Kami tidak dapat mendeteksi area kamu. Silakan cari secara manual.",
 
   // Dashboard
   "dashboard.goodMorning": "Selamat pagi",
@@ -997,6 +1039,8 @@ const id: Dict = {
   "notFound.desc": "Halaman atau aktivitas yang kamu cari tidak ada atau tidak tersedia untukmu.",
   "notFound.home": "Kembali ke dasbor",
 };
+
+const id: Dict = { ...idBase, ...idExtra };
 
 export const translations: Record<Lang, Dict> = { en, id };
 

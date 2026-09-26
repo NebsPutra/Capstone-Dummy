@@ -15,7 +15,9 @@ import {
   ChevronLeft,
   ChevronRight,
   ShieldCheck,
+  LifeBuoy,
 } from "lucide-react";
+import { Logo } from "./Logo";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import type { TranslationKey } from "@/lib/i18n/translations";
@@ -29,6 +31,7 @@ const NAV: { href: string; key: TranslationKey; icon: typeof Home }[] = [
   { href: "/notifications", key: "nav.notifications", icon: Bell },
   { href: "/profile", key: "nav.profile", icon: User },
   { href: "/settings", key: "nav.settings", icon: Settings },
+  { href: "/help", key: "help.title", icon: LifeBuoy },
 ];
 
 export function Sidebar({ isAdmin = false }: { isAdmin?: boolean }) {
@@ -39,14 +42,14 @@ export function Sidebar({ isAdmin = false }: { isAdmin?: boolean }) {
   return (
     <aside
       className={cn(
-        "hidden shrink-0 border-r border-ink/5 bg-white/60 backdrop-blur-sm transition-all duration-200 md:flex md:flex-col",
+        "hidden shrink-0 border-r border-ink/5 bg-surface/60 backdrop-blur-sm transition-all duration-200 md:flex md:flex-col",
         collapsed ? "w-[76px]" : "w-64"
       )}
     >
       <div className="flex items-center justify-between px-4 py-5">
         {!collapsed && (
-          <Link href="/dashboard" className="text-lg font-extrabold text-orange-dark">
-            Komunitas
+          <Link href="/dashboard">
+            <Logo size={30} />
           </Link>
         )}
         <button
@@ -67,7 +70,7 @@ export function Sidebar({ isAdmin = false }: { isAdmin?: boolean }) {
               key={href}
               href={href}
               className={cn(
-                "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition",
+                "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition active:scale-[0.98]",
                 active
                   ? "bg-orange text-white shadow-soft"
                   : "text-ink/70 hover:bg-cream-warm"

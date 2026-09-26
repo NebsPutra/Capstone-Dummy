@@ -48,7 +48,7 @@ export function ShareBox({
         <span className="rounded-full bg-cream-warm px-2.5 py-1 font-semibold">{shareToken}</span>
       </div>
       <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
-        <div className="rounded-xl border border-ink/10 bg-white p-3">
+        <div className="rounded-xl border border-ink/10 bg-surface p-3">
           <QRCodeSVG value={url} size={120} />
         </div>
         <div className="w-full flex-1 space-y-2">

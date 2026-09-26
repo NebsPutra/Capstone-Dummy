@@ -40,6 +40,8 @@ export interface Profile {
   age: number | null;
   gender: Gender | null;
   whatsapp_number: string | null;
+  province: string | null;
+  province_id: string | null;
   city: string | null;
   city_id: string | null;
   kecamatan: string | null;

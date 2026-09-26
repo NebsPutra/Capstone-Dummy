@@ -2,18 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Design tokens as RGB channels (see tailwind.config.ts). */
 :root {
-  --cream: #fff8ed;
-  --cream-warm: #f8e8d0;
-  --orange: #f97316;
-  --orange-dark: #c2410c;
-  --ink: #292524;
+  --cream: 255 248 237;
+  --cream-warm: 248 232 208;
+  --orange: 249 115 22;
+  --orange-dark: 194 65 12;
+  --ink: 41 37 36;
+  --surface: 255 255 255;
+  color-scheme: light;
+}
+
+.dark {
+  --cream: 23 19 16;
+  --cream-warm: 45 37 31;
+  --orange: 249 115 22;
+  --orange-dark: 253 164 95;
+  --ink: 244 236 226;
+  --surface: 33 28 24;
+  color-scheme: dark;
 }
 
 html,
 body {
-  background-color: var(--cream);
-  color: var(--ink);
+  background-color: rgb(var(--cream));
+  color: rgb(var(--ink));
 }
 
 body {
@@ -21,24 +34,60 @@ body {
 }
 
 .ambient-gradient {
-  background: radial-gradient(
-      circle at 15% 10%,
-      rgba(249, 115, 22, 0.10),
-      transparent 45%
-    ),
-    radial-gradient(
-      circle at 85% 30%,
-      rgba(194, 65, 12, 0.08),
-      transparent 40%
-    ),
-    var(--cream);
+  background: radial-gradient(circle at 15% 10%, rgba(249, 115, 22, 0.1), transparent 45%),
+    radial-gradient(circle at 85% 30%, rgba(194, 65, 12, 0.08), transparent 40%), rgb(var(--cream));
 }
 
 .card {
-  background: #fff;
+  background: rgb(var(--surface));
   border-radius: 1.25rem;
-  border: 1px solid rgba(41, 37, 36, 0.06);
-  box-shadow: 0 4px 20px -4px rgba(194, 65, 12, 0.10);
+  border: 1px solid rgb(var(--ink) / 0.06);
+  box-shadow: 0 4px 20px -4px rgba(194, 65, 12, 0.1);
+}
+.dark .card {
+  box-shadow: 0 4px 24px -6px rgba(0, 0, 0, 0.5);
+}
+
+/* Loading placeholders */
+.skeleton {
+  border-radius: 0.75rem;
+  background: linear-gradient(
+    90deg,
+    rgb(var(--cream-warm)) 25%,
+    rgb(var(--cream-warm) / 0.5) 50%,
+    rgb(var(--cream-warm)) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s linear infinite;
+}
+@keyframes shimmer {
+  from {
+    background-position: -200% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
+}
+
+/* Dark-mode equivalents for the few fixed status colors in use. */
+.dark .bg-green-50 { background-color: rgb(22 101 52 / 0.25); }
+.dark .bg-amber-50 { background-color: rgb(146 64 14 / 0.3); }
+.dark .bg-red-50 { background-color: rgb(153 27 27 / 0.28); }
+.dark .bg-blue-50 { background-color: rgb(30 64 175 / 0.3); }
+.dark .bg-stone-100 { background-color: rgb(68 64 60 / 0.6); }
+.dark .text-green-700, .dark .text-green-600 { color: rgb(134 239 172); }
+.dark .text-amber-700 { color: rgb(252 211 77); }
+.dark .text-red-700, .dark .text-red-600 { color: rgb(252 165 165); }
+.dark .text-blue-700 { color: rgb(147 197 253); }
+.dark .text-stone-500 { color: rgb(214 211 209); }
+.dark .border-red-200, .dark .border-red-400 { border-color: rgb(248 113 113 / 0.5); }
+
+/* Map tiles have no dark variant; invert them softly. */
+.dark .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(0.9) contrast(0.9);
+}
+.dark .leaflet-container {
+  background: rgb(var(--cream-warm));
 }
 
 ::-webkit-scrollbar {
@@ -48,4 +97,16 @@ body {
 ::-webkit-scrollbar-thumb {
   background: rgba(194, 65, 12, 0.25);
   border-radius: 999px;
+}
+
+/* Respect users who ask for less motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

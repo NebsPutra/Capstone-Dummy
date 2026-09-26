@@ -15,13 +15,19 @@ gatherings, and more). Built as an MVP prototype per the product spec.
 ## 1. Set up Supabase
 
 1. Create a project at [supabase.com](https://supabase.com).
-2. In the SQL Editor, run these files **in order**:
-   1. `supabase/schema.sql`: tables, enums, base RLS policies and helper functions.
-   2. `supabase/migrations/002_auth_location_events.sql`: auth/onboarding,
-      structured location, event status/capacity fixes, join/approval
-      functions, nearby search and tighter RLS.
-   For an **existing** project, run only step 2. It is idempotent and keeps
-   existing data (hobbies, categories, events, participants, profiles).
+2. In the SQL Editor, run these files **in order** (each is idempotent and keeps existing data):
+   1. `supabase/schema.sql`: tables, enums, base RLS policies and helper functions (new projects only).
+   2. `supabase/migrations/002_auth_location_events.sql`: auth/onboarding, structured location, event
+      status/capacity fixes, join/approval functions, nearby search.
+   3. `supabase/migrations/003_profile_province.sql`: province on profiles.
+   4. `supabase/migrations/004_admin_complaints_analytics.sql`: admin roles, complaints, notifications,
+      audit log, analytics, exports, storage buckets (event banners, complaint attachments).
+   For an existing project, skip `schema.sql` and run only the migrations you haven't run yet.
+   Then make your own account the super admin (run as a separate query):
+   ```sql
+   update public.profiles set role = 'super_admin'
+   where id = (select id from auth.users where email = 'you@example.com');
+   ```
 3. In **Project Settings → API**, copy the Project URL and anon public key.
 
 ## 2. Configure Supabase Auth (email verification codes)
@@ -45,12 +51,22 @@ Sign in and sign up use 6-digit codes sent by email, so Auth needs:
 cp .env.local.example .env.local
 ```
 
-Fill in:
+Fill in (also add them in Vercel → Project → Settings → Environment Variables):
 
 ```
 NEXT_PUBLIC_SUPABASE_URL=...
 NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+
+# Complaint emails to the admin inbox (server-only, never sent to browsers)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=465
+SMTP_USER=your-gmail@gmail.com
+SMTP_PASS=your-16-letter-app-password
+ADMIN_NOTIFY_EMAIL=bennedictusputra@gmail.com
 ```
+
+Without the SMTP variables complaints still work; the email is marked as failed and shows up
+as an alert in the admin dashboard.
 
 ## 4. Install and run
 
@@ -119,21 +135,30 @@ stored in a `komunitas-lang` cookie so server-rendered pages use it too.
 Database values (statuses, gender, categories, roles) stay as stable keys and
 are translated only in the UI.
 
+## Admin (God Mode)
+
+`/admin` is available to moderators, admins and super admins. Every admin query and action is
+authorized in the database (role checks inside `security definer` functions + RLS), not just in
+the UI. Moderators can view and handle complaints; admins can also manage users, events,
+settings and exports; only super admins can change roles or anonymize users. Every admin
+change is written to an append-only audit log.
+
 ## Known gaps / next steps
 
-- **Admin moderation**: admins can cancel events from the Admin Dashboard.
-  User management, a `reports` table and category management aren't built.
-- **Image uploads** (banner, avatar): no Supabase Storage bucket yet.
-- **Strength of the second factor**: the app enforces password → email code,
-  but Supabase's email-code endpoint can also be called directly with the
-  public anon key. Someone with access to a user's inbox could sign in without
-  the password. Closing that needs a server-side login endpoint or Supabase MFA.
-- **Email enumeration**: sign-in step 1 says whether an account exists (as the
-  spec requires). Supabase's auth rate limits still apply to later steps.
-- **PIC WhatsApp privacy**: the UI only shows it when public or to approved
-  participants, but the column is still readable through the API for public
-  events. Hiding it fully needs column-level grants or a view.
-- **Reminders**: there are no scheduled event reminders or push notifications.
+- **Scheduled reports** (weekly/monthly emails) aren't built: they need a scheduler plus a
+  server-side key with full database access.
+- **Exports** are generated in the browser from server-side aggregates (with progress), not as
+  background jobs; very large exports are capped at 10,000 rows per dataset.
+- **Deleting a user** anonymizes their profile and deactivates the account; removing the Supabase
+  login itself requires the service-role key.
+- **Strength of the second factor**: the app enforces password → email code, but Supabase's
+  email-code endpoint can also be called directly with the public anon key. Closing that needs a
+  server-side login endpoint or Supabase MFA.
+- **Email enumeration**: sign-in step 1 says whether an account exists (as the spec requires).
+- **PIC WhatsApp privacy**: the UI only shows it when public or to approved participants, but the
+  column is still readable through the API for public events.
+- **Location reference tables**: locations are stored as official BPS codes (hierarchy enforced by
+  constraints) rather than seeded province/city/kecamatan/kelurahan tables.
 
 ## Project structure
 

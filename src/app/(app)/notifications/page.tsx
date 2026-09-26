@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getServerT } from "@/lib/i18n/server";
 import { RequestActions } from "@/components/RequestActions";
+import { NotificationFeed, type NotificationRow } from "@/components/NotificationFeed";
 import type { ParticipationStatus } from "@/types";
 
 interface IncomingRow {
@@ -22,7 +23,8 @@ export default async function NotificationsPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const [{ data: incoming }, { data: mine }] = await Promise.all([
+  const [{ data: feed }, { data: incoming }, { data: mine }] = await Promise.all([
+    supabase.from("notifications").select("*").order("created_at", { ascending: false }).limit(50),
     // Pending join requests on activities I organize
     supabase
       .from("event_participants")
@@ -51,6 +53,8 @@ export default async function NotificationsPage() {
         <h1 className="text-2xl font-bold">{t("notif.title")}</h1>
         <p className="mt-1 text-ink/60">{t("notif.subtitle")}</p>
       </div>
+
+      <NotificationFeed items={(feed ?? []) as NotificationRow[]} />
 
       <section className="space-y-3">
         <h2 className="text-lg font-semibold">{t("notif.incoming")}</h2>

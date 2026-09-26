@@ -126,7 +126,7 @@ export function NearbyDashboard({
             <p className="text-ink/60">{t("dashboard.emptyNearby", { km: DASHBOARD_RADIUS_KM })}</p>
             <Link
               href="/create"
-              className="inline-block rounded-full bg-orange px-6 py-3 text-sm font-semibold text-white hover:bg-orange-dark"
+              className="inline-block rounded-full bg-orange px-6 py-3 text-sm font-semibold text-white hover:bg-orange-deep"
             >
               {t("dashboard.createCta")}
             </Link>
@@ -229,7 +229,7 @@ export function LocationBar({
           {location.reason !== "unsupported" && (
             <button
               onClick={onGps}
-              className="rounded-full border border-ink/10 bg-white px-5 py-2.5 text-sm font-medium hover:bg-cream-warm"
+              className="rounded-full border border-ink/10 bg-surface px-5 py-2.5 text-sm font-medium hover:bg-cream-warm"
             >
               {location.reason === "not-asked" ? t("location.allowGps") : t("location.useGps")}
             </button>
@@ -253,14 +253,14 @@ export function LocationBar({
       <div className="flex shrink-0 flex-wrap gap-2">
         <button
           onClick={onGps}
-          className="inline-flex items-center gap-1.5 rounded-full border border-ink/10 bg-white px-3.5 py-1.5 font-medium hover:bg-cream-warm"
+          className="inline-flex items-center gap-1.5 rounded-full border border-ink/10 bg-surface px-3.5 py-1.5 font-medium hover:bg-cream-warm"
         >
           {location.source === "gps" ? <RefreshCw size={14} /> : <LocateFixed size={14} />}
           {location.source === "gps" ? t("location.refresh") : t("location.useGps")}
         </button>
         <button
           onClick={onManual}
-          className="rounded-full border border-ink/10 bg-white px-3.5 py-1.5 font-medium hover:bg-cream-warm"
+          className="rounded-full border border-ink/10 bg-surface px-3.5 py-1.5 font-medium hover:bg-cream-warm"
         >
           {t("location.setManually")}
         </button>

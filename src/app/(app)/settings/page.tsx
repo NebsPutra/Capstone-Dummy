@@ -8,6 +8,9 @@ import { useUserLocation } from "@/lib/location";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { LocationBar } from "@/components/NearbyDashboard";
 import { ManualLocationDialog } from "@/components/ManualLocationDialog";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import Link from "next/link";
+import { LifeBuoy } from "lucide-react";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -43,6 +46,22 @@ export default function SettingsPage() {
         <LanguageSwitcher />
       </div>
 
+      <div className="card flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="font-semibold">{t("settings.theme")}</h2>
+          <p className="text-sm text-ink/60">{t("settings.themeDesc")}</p>
+        </div>
+        <ThemeToggle />
+      </div>
+
+      <Link href="/help" className="card flex items-center gap-3 p-5 transition hover:-translate-y-0.5 hover:shadow-lift">
+        <LifeBuoy size={20} className="shrink-0 text-orange-dark" />
+        <div>
+          <h2 className="font-semibold">{t("settings.help")}</h2>
+          <p className="text-sm text-ink/60">{t("settings.helpDesc")}</p>
+        </div>
+      </Link>
+
       <div className="space-y-3">
         <div className="card space-y-1 p-5 pb-4">
           <h2 className="font-semibold">{t("location.update")}</h2>
@@ -61,7 +80,7 @@ export default function SettingsPage() {
       <button
         onClick={handleSignOut}
         disabled={signingOut}
-        className="w-full rounded-full border border-red-200 bg-white py-3 text-sm font-semibold text-red-600 hover:bg-red-50 disabled:opacity-60"
+        className="w-full rounded-full border border-red-200 bg-surface py-3 text-sm font-semibold text-red-600 hover:bg-red-50 disabled:opacity-60"
       >
         {t("settings.logout")}
       </button>
