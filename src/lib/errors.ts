@@ -40,7 +40,16 @@ const DOMAIN_CODES = [
   "FRIEND_REQUEST_COOLDOWN",
   "FRIEND_REQUESTS_OFF",
   "REQUEST_NOT_FOUND",
+  "COMMENT_LENGTH",
+  "COMMENT_DUPLICATE",
+  "COMMENT_NOT_FOUND",
+  "COMMENTS_DISABLED",
+  "PIN_LIMIT",
+  "MESSAGES_NOT_ALLOWED",
+  "MESSAGE_LENGTH",
+  "CONVERSATION_NOT_FOUND",
 ] as const;
+const BY_LENGTH = [...DOMAIN_CODES].sort((a, b) => b.length - a.length);
 
 type ErrorLike = { message?: string; code?: string; status?: number; name?: string } | null | undefined;
 
@@ -53,7 +62,8 @@ export function friendlyErrorKey(err: ErrorLike, context?: string): TranslationK
   if (err) console.error(`[komunitas]${context ? ` ${context}:` : ""}`, err);
   const message = err?.message ?? "";
 
-  const domain = DOMAIN_CODES.find((c) => message.includes(c));
+  // Longest first, so MESSAGES_NOT_ALLOWED isn't read as NOT_ALLOWED.
+  const domain = BY_LENGTH.find((c) => message.includes(c));
   if (domain) return `err.${domain}` as TranslationKey;
 
   if (/failed to fetch|network|load failed/i.test(message) || err?.name === "AuthRetryableFetchError") {

@@ -30,6 +30,10 @@ gatherings, and more). Built as an MVP prototype per the product spec.
       private profile columns (full name, WhatsApp, age, exact area) through the API.
       **Run 007 only after the app version that uses `my_profile` is deployed**; older app
       versions read other users' full names directly and would break.
+   8. `supabase/migrations/008_event_comments.sql`: event comments and replies, reports, organizer/admin
+      moderation, notification preferences.
+   9. `supabase/migrations/009_messaging.sql`: private 1:1 messages with realtime delivery (adds
+      `messages` to the `supabase_realtime` publication), mute/archive, blocking and message reports.
    For an existing project, skip `schema.sql` and run only the migrations you haven't run yet.
    Then make your own account the super admin (run as a separate query):
    ```sql

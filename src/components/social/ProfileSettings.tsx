@@ -470,3 +470,56 @@ export function BlockedUsers() {
     </section>
   );
 }
+
+// ---------------------------------------------------------------------------
+// Notification preferences
+// ---------------------------------------------------------------------------
+
+// Mirrors public._mutable_notification_types() (migration 008); security,
+// account, support and join decisions can't be muted.
+const MUTABLE_TYPES = ["event_comment", "comment_reply", "join_request", "friend_request", "friend_accepted", "new_message"] as const;
+
+export function NotificationPrefs() {
+  const { t } = useLanguage();
+  const toast = useToast();
+  const [muted, setMuted] = useState<string[] | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const sb = createClient();
+    sb.auth.getUser().then(async ({ data: { user } }) => {
+      if (!user) return;
+      setUserId(user.id);
+      const { data } = await sb.from("notification_prefs").select("muted").eq("user_id", user.id).maybeSingle();
+      setMuted((data?.muted as string[] | undefined) ?? []);
+    });
+  }, []);
+
+  async function toggle(type: string, on: boolean) {
+    if (!muted || !userId) return;
+    const next = on ? muted.filter((m) => m !== type) : [...muted, type];
+    setMuted(next);
+    const { error } = await createClient().from("notification_prefs").upsert({ user_id: userId, muted: next, updated_at: new Date().toISOString() }, { onConflict: "user_id" });
+    if (error) {
+      setMuted(muted);
+      toast(t(friendlyErrorKey(error, "notification_prefs")), "error");
+    }
+  }
+
+  return (
+    <section className="card p-5">
+      <h2 className="font-semibold">{t("notifPrefs.title")}</h2>
+      <p className="text-sm text-ink/60">{t("notifPrefs.desc")}</p>
+      {!muted ? (
+        <div className="skeleton mt-3 h-40" />
+      ) : (
+        <div className="mt-1 divide-y divide-ink/5">
+          {MUTABLE_TYPES.map((type) => (
+            <Toggle key={type} id={`np-${type}`} label={t(`notifPrefs.${type}`)} checked={!muted.includes(type)} onChange={(v) => toggle(type, v)} />
+          ))}
+        </div>
+      )}
+      <p className="mt-2 text-xs text-ink/50">{t("notifPrefs.always")}</p>
+    </section>
+  );
+}

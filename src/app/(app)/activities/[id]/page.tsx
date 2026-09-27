@@ -11,6 +11,7 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { JoinPanel } from "@/components/JoinPanel";
 import { OwnerPanel, type ParticipantRow } from "@/components/OwnerPanel";
 import { ShareBox } from "@/components/ShareBox";
+import { EventComments } from "@/components/EventComments";
 import { EventMapClient as EventMap } from "@/components/EventMapClient";
 import { EventCover } from "@/components/EventCover";
 import { LifeBuoy } from "lucide-react";
@@ -186,6 +187,8 @@ export default async function EventDetailsPage({
           participants={participants}
         />
       )}
+
+      <EventComments eventId={event.id} isOwner={isOwner} />
 
       <ShareBox shareToken={event.share_token} eventCode={event.event_code} title={event.title} />
 

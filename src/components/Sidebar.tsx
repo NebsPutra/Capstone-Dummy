@@ -16,6 +16,7 @@ import {
   ChevronRight,
   ShieldCheck,
   LifeBuoy,
+  MessageCircle,
 } from "lucide-react";
 import { Logo } from "./Logo";
 import { cn } from "@/lib/utils";
@@ -28,13 +29,14 @@ const NAV: { href: string; key: TranslationKey; icon: typeof Home }[] = [
   { href: "/explore", key: "nav.explore", icon: Search },
   { href: "/my-activities", key: "nav.myActivities", icon: CalendarDays },
   { href: "/community", key: "nav.community", icon: Users },
+  { href: "/messages", key: "nav.messages", icon: MessageCircle },
   { href: "/notifications", key: "nav.notifications", icon: Bell },
   { href: "/profile", key: "nav.profile", icon: User },
   { href: "/settings", key: "nav.settings", icon: Settings },
   { href: "/help", key: "help.title", icon: LifeBuoy },
 ];
 
-export function Sidebar({ isAdmin = false }: { isAdmin?: boolean }) {
+export function Sidebar({ isAdmin = false, unreadMessages = 0 }: { isAdmin?: boolean; unreadMessages?: number }) {
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
   const { t } = useLanguage();
@@ -77,7 +79,14 @@ export function Sidebar({ isAdmin = false }: { isAdmin?: boolean }) {
               )}
               title={collapsed ? label : undefined}
             >
-              <Icon size={19} className="shrink-0" />
+              <span className="relative shrink-0">
+                <Icon size={19} />
+                {href === "/messages" && unreadMessages > 0 && (
+                  <span className="absolute -right-1.5 -top-1.5 min-w-4 rounded-full bg-orange px-1 text-center text-[10px] font-bold leading-4 text-white ring-2 ring-surface">
+                    {unreadMessages > 9 ? "9+" : unreadMessages}
+                  </span>
+                )}
+              </span>
               {!collapsed && <span>{label}</span>}
             </Link>
           );

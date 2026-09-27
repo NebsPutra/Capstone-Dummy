@@ -6,6 +6,7 @@ import { getServerT } from "@/lib/i18n/server";
 import { formatDate } from "@/lib/utils";
 import { socialLabel, socialUrl, type Relationship, type SocialLink } from "@/lib/social";
 import { Avatar, ProfileActions, UserFriendsList } from "@/components/social/People";
+import { MessageButton } from "@/components/messages/Messages";
 
 type Interest = { key: string; label: string; emoji: string | null };
 interface PublicProfile {
@@ -52,6 +53,12 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
   const { username } = await params;
   const p = await load(username);
   if (!p) notFound();
+  type Messaging = { conversation_id: string | null; reason: string | null };
+  const messaging: Messaging | null =
+    !p.is_self && p.relationship !== "blocked"
+      ? (((await (await createClient()).rpc("can_message_user", { p_user: p.user_id })).data as Messaging | null) ?? null)
+      : null;
+  const canMessage = Boolean(messaging && (messaging.conversation_id || messaging.reason === null));
   const { t, td, lang } = await getServerT();
   const d = p.details;
   const since = new Date(p.member_since).toLocaleDateString(lang === "id" ? "id-ID" : "en-GB", { month: "long", year: "numeric", timeZone: "Asia/Jakarta" });
@@ -76,7 +83,10 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
               <CalendarDays size={13} /> {t("social.memberSince", { date: since })}
             </p>
           </div>
-          <ProfileActions userId={p.user_id} relationship={p.relationship} acceptsRequests={p.accepts_requests} />
+          <div className="flex flex-wrap items-center gap-2">
+            {canMessage && <MessageButton userId={p.user_id} conversationId={messaging?.conversation_id ?? null} />}
+            <ProfileActions userId={p.user_id} relationship={p.relationship} acceptsRequests={p.accepts_requests} />
+          </div>
         </div>
 
         {(p.friends_count != null || p.mutual_friends > 0) && (

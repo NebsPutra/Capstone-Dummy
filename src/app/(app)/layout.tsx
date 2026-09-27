@@ -41,14 +41,14 @@ export default async function AppLayout({
     redirect("/account-suspended");
   }
 
-  const { count: unread } = await supabase
-    .from("notifications")
-    .select("id", { count: "exact", head: true })
-    .is("read_at", null);
+  const [{ count: unread }, { data: unreadMessages }] = await Promise.all([
+    supabase.from("notifications").select("id", { count: "exact", head: true }).is("read_at", null).neq("type", "new_message"),
+    supabase.rpc("unread_conversation_count"),
+  ]);
 
   return (
     <div className="ambient-gradient flex min-h-screen">
-      <Sidebar isAdmin={["moderator", "admin", "super_admin"].includes(profile?.role ?? "")} />
+      <Sidebar isAdmin={["moderator", "admin", "super_admin"].includes(profile?.role ?? "")} unreadMessages={(unreadMessages as number | null) ?? 0} />
       <div className="flex min-h-screen min-w-0 flex-1 flex-col">
         <Header
           name={profile?.nickname || profile?.full_name}
@@ -57,7 +57,7 @@ export default async function AppLayout({
         />
         <main className="flex-1 px-4 pb-24 pt-5 md:px-8 md:pb-8">{children}</main>
       </div>
-      <MobileNav />
+      <MobileNav unreadMessages={(unreadMessages as number | null) ?? 0} />
     </div>
   );
 }

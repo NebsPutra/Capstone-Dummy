@@ -246,6 +246,7 @@ export function AnalyticsPage() {
       {tab === "events" && <EventCharts d={events.data} loading={events.loading} />}
       {tab === "hobbies" && <HobbyCharts d={hobbies.data} loading={hobbies.loading} />}
       {tab === "social" && <SocialCharts d={social.data} loading={social.loading} />}
+      {tab === "social" && <EngagementCharts from={range.from} to={range.to} />}
     </div>
   );
 }
@@ -283,6 +284,41 @@ function SocialCharts({ d, loading }: { d: SocialAnalytics | null; loading: bool
         </ChartCard>
         <ChartCard title={t("asocial.topConnected")} loading={loading} total={sum(d?.top_connected)} minTotal={1} className="lg:col-span-2">
           <Bars data={(d?.top_connected ?? []).map((x) => ({ label: `@${x.username}`, v: x.v }))} bars={[{ key: "v", name: t("asocial.friendships") }]} horizontal />
+        </ChartCard>
+      </div>
+    </div>
+  );
+}
+
+interface CommentStats { total: number; in_range: number; hidden: number; open_reports: number; commenters: number; series: { t: string; v: number }[]; top_events: { title: string; v: number }[] }
+interface MessagingStats { messages_in_range: number; active_conversations: number; messaging_users: number; conversations: number; open_reports: number; series: { t: string; v: number }[] }
+
+/** Comment and messaging volumes (counts only; message content is never shown). */
+function EngagementCharts({ from, to }: { from: string; to: string }) {
+  const { t } = useLanguage();
+  const c = useRpc<CommentStats>("admin_comment_stats", { p_from: from, p_to: to }, [from, to]);
+  const m = useRpc<MessagingStats>("admin_messaging_stats", { p_from: from, p_to: to }, [from, to]);
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <KpiCard label={t("aeng.comments")} value={c.data?.in_range} />
+        <KpiCard label={t("aeng.commenters")} value={c.data?.commenters} />
+        <KpiCard label={t("aeng.hiddenComments")} value={c.data?.hidden} />
+        <KpiCard label={t("aeng.commentReports")} value={c.data?.open_reports} />
+        <KpiCard label={t("aeng.messages")} value={m.data?.messages_in_range} />
+        <KpiCard label={t("aeng.activeChats")} value={m.data?.active_conversations} />
+        <KpiCard label={t("aeng.messagingUsers")} value={m.data?.messaging_users} />
+        <KpiCard label={t("aeng.messageReports")} value={m.data?.open_reports} />
+      </div>
+      <div className="grid gap-4 lg:grid-cols-2">
+        <ChartCard title={t("aeng.commentsOverTime")} loading={c.loading} total={sum(c.data?.series)}>
+          <LineTrend data={(c.data?.series ?? []).map((x) => ({ t: x.t, v: x.v }))} lines={[{ key: "v", name: t("aeng.comments") }]} area />
+        </ChartCard>
+        <ChartCard title={t("aeng.messagesOverTime")} loading={m.loading} total={sum(m.data?.series)}>
+          <LineTrend data={(m.data?.series ?? []).map((x) => ({ t: x.t, v: x.v }))} lines={[{ key: "v", name: t("aeng.messages") }]} area />
+        </ChartCard>
+        <ChartCard title={t("aeng.topDiscussed")} loading={c.loading} total={sum(c.data?.top_events)} minTotal={1} className="lg:col-span-2">
+          <Bars data={(c.data?.top_events ?? []).map((x) => ({ label: x.title, v: x.v }))} bars={[{ key: "v", name: t("aeng.comments") }]} horizontal />
         </ChartCard>
       </div>
     </div>

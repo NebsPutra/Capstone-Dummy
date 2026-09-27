@@ -126,3 +126,15 @@ export function parseRupiahInput(raw: string): number {
 export function groupDigits(n: number, lang: Lang): string {
   return n.toLocaleString(locale(lang));
 }
+
+/** "5 minutes ago" / "5 menit yang lalu"; falls back to a date after a week. */
+export function timeAgo(iso: string, lang: Lang, now = Date.now()): string {
+  const diff = Math.round((new Date(iso).getTime() - now) / 1000);
+  const rtf = new Intl.RelativeTimeFormat(lang === "id" ? "id-ID" : "en-GB", { numeric: "auto" });
+  const abs = Math.abs(diff);
+  if (abs < 45) return rtf.format(0, "second");
+  if (abs < 3600) return rtf.format(Math.round(diff / 60), "minute");
+  if (abs < 86400) return rtf.format(Math.round(diff / 3600), "hour");
+  if (abs < 604800) return rtf.format(Math.round(diff / 86400), "day");
+  return new Date(iso).toLocaleDateString(lang === "id" ? "id-ID" : "en-GB", { timeZone: "Asia/Jakarta", day: "numeric", month: "short", year: "numeric" });
+}

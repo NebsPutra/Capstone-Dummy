@@ -9,6 +9,7 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { LocationBar } from "@/components/NearbyDashboard";
 import { ManualLocationDialog } from "@/components/ManualLocationDialog";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { NotificationPrefs } from "@/components/social/ProfileSettings";
 import Link from "next/link";
 import { LifeBuoy } from "lucide-react";
 
@@ -53,6 +54,8 @@ export default function SettingsPage() {
         </div>
         <ThemeToggle />
       </div>
+
+      <NotificationPrefs />
 
       <Link href="/help" className="card flex items-center gap-3 p-5 transition hover:-translate-y-0.5 hover:shadow-lift">
         <LifeBuoy size={20} className="shrink-0 text-orange-dark" />

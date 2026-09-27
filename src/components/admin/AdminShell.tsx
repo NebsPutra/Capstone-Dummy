@@ -16,6 +16,7 @@ import {
   LayoutDashboard,
   MapPinned,
   MessageSquareWarning,
+  ShieldAlert,
   Search,
   Settings,
   ShieldCheck,
@@ -55,7 +56,10 @@ const GROUPS: { key: TranslationKey; items: NavItem[] }[] = [
   },
   {
     key: "admin.nav.group.support",
-    items: [{ href: "/admin/complaints", key: "admin.nav.complaints", icon: MessageSquareWarning, minRank: 1 }],
+    items: [
+      { href: "/admin/complaints", key: "admin.nav.complaints", icon: MessageSquareWarning, minRank: 1 },
+      { href: "/admin/moderation", key: "admin.nav.moderation", icon: ShieldAlert, minRank: 1 },
+    ],
   },
   {
     key: "admin.nav.group.system",

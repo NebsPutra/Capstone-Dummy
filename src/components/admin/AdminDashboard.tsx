@@ -25,6 +25,7 @@ export function alertHref(a: AlertItem) {
   return "/admin/health";
 }
 export function feedHref(f: FeedItem) {
+  if (f.type === "message_reported" || f.type.startsWith("comment_")) return "/admin/moderation";
   if (f.entity === "event" && f.entity_id) return `/admin/events/${f.entity_id}`;
   if (f.entity === "complaint" && f.entity_id) return `/admin/complaints/${f.entity_id}`;
   if (f.entity === "user" && f.entity_id) return `/admin/users/${f.entity_id}`;

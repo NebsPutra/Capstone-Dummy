@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, PlusCircle, Search, CalendarDays, User } from "lucide-react";
+import { Home, PlusCircle, Search, CalendarDays, MessageCircle, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import type { TranslationKey } from "@/lib/i18n/translations";
@@ -12,10 +12,11 @@ const NAV: { href: string; key: TranslationKey; icon: typeof Home }[] = [
   { href: "/explore", key: "nav.explore", icon: Search },
   { href: "/create", key: "nav.create", icon: PlusCircle },
   { href: "/my-activities", key: "nav.myActivities", icon: CalendarDays },
+  { href: "/messages", key: "nav.messages", icon: MessageCircle },
   { href: "/profile", key: "nav.profile", icon: User },
 ];
 
-export function MobileNav() {
+export function MobileNav({ unreadMessages = 0 }: { unreadMessages?: number }) {
   const pathname = usePathname();
   const { t } = useLanguage();
   return (
@@ -27,12 +28,19 @@ export function MobileNav() {
             key={href}
             href={href}
             className={cn(
-              "flex flex-col items-center gap-0.5 px-3 py-1 text-[11px] font-medium",
+              "flex min-w-0 flex-1 flex-col items-center gap-0.5 px-1 py-1 text-[10px] font-medium",
               active ? "text-orange-dark" : "text-ink/50"
             )}
           >
-            <Icon size={20} />
-            {t(key)}
+            <span className="relative">
+              <Icon size={20} />
+              {href === "/messages" && unreadMessages > 0 && (
+                <span className="absolute -right-2 -top-1.5 min-w-4 rounded-full bg-orange px-1 text-center text-[10px] font-bold leading-4 text-white">
+                  {unreadMessages > 9 ? "9+" : unreadMessages}
+                </span>
+              )}
+            </span>
+            <span className="max-w-full truncate">{t(key)}</span>
           </Link>
         );
       })}
