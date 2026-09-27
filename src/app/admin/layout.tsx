@@ -17,7 +17,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   } = await supabase.auth.getUser();
   if (!user) redirect("/login?next=/admin");
 
-  const { data: profile } = await supabase.from("profiles").select("role, account_status").eq("id", user.id).maybeSingle();
+  const { data: profile } = await supabase.from("my_profile").select("role, account_status").eq("id", user.id).maybeSingle();
   const rank = profile?.account_status === "active" ? ROLE_RANK[profile?.role ?? ""] ?? 0 : 0;
   if (rank < 1) {
     return (

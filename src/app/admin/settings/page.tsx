@@ -9,6 +9,8 @@ import type { TranslationKey } from "@/lib/i18n/translations";
 import { useToast } from "@/components/Toast";
 import { Alert } from "@/components/ui";
 import { PageHeader } from "@/components/admin/ui";
+import { ReservedUsernames } from "@/components/admin/SocialAdmin";
+import { ROLE_RANK } from "@/lib/admin";
 
 interface Setting { key: string; value: unknown }
 interface View { id: string; page: string; name: string; filters: Record<string, unknown> }
@@ -20,6 +22,12 @@ export default function AdminSettingsPage() {
   const [settings, setSettings] = useState<Setting[]>([]);
   const [views, setViews] = useState<View[]>([]);
   const [tick, setTick] = useState(0);
+  const [rank, setRank] = useState(0);
+
+  useEffect(() => {
+    sb.from("my_profile").select("role").maybeSingle().then(({ data }) => setRank(ROLE_RANK[data?.role ?? ""] ?? 0));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     sb.from("platform_settings").select("key, value").order("key").then(({ data }) => setSettings(data ?? []));
@@ -61,6 +69,7 @@ export default function AdminSettingsPage() {
           </label>
         ))}
       </section>
+      <ReservedUsernames canEdit={rank >= 2} />
       <section className="card space-y-2 p-5">
         <h2 className="text-sm font-semibold">{t("savedViews.title")}</h2>
         {views.length === 0 ? <p className="text-sm text-ink/50">{t("savedViews.none")}</p> : views.map((v) => (

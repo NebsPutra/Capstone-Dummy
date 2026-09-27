@@ -106,7 +106,7 @@ export function ActivityForm({ event }: { event?: EventRecord }) {
     supabase.auth.getUser().then(async ({ data: { user } }) => {
       if (!user) return;
       const { data: profile } = await supabase
-        .from("profiles")
+        .from("my_profile")
         .select("full_name, nickname, whatsapp_number")
         .eq("id", user.id)
         .single();

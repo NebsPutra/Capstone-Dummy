@@ -6,19 +6,30 @@ import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export const OTP_LENGTH = 6;
 
-/** Six single-digit boxes; supports paste and SMS/email autofill. */
+/**
+ * Six single-digit boxes; supports paste and SMS/email autofill. `masked`
+ * hides the digits (used for the sign-in PIN, which is never autofilled).
+ */
 export function OtpInput({
   value,
   onChange,
   onComplete,
   hasError,
   disabled,
+  masked,
+  id = "otp",
+  label,
+  autoFocus,
 }: {
   value: string;
   onChange: (v: string) => void;
   onComplete?: (v: string) => void;
   hasError?: boolean;
   disabled?: boolean;
+  masked?: boolean;
+  id?: string;
+  label?: string;
+  autoFocus?: boolean;
 }) {
   const { t } = useLanguage();
   const refs = useRef<(HTMLInputElement | null)[]>([]);
@@ -32,18 +43,20 @@ export function OtpInput({
   }
 
   return (
-    <div className="flex justify-center gap-2" role="group" aria-label={t("auth.code")}>
+    <div className="flex justify-center gap-2" role="group" aria-label={label ?? t("auth.code")}>
       {digits.map((d, i) => (
         <input
           key={i}
           ref={(el) => {
             refs.current[i] = el;
           }}
-          id={i === 0 ? "otp" : undefined}
+          id={i === 0 ? id : undefined}
           value={d}
           disabled={disabled}
+          type={masked ? "password" : "text"}
+          autoFocus={autoFocus && i === 0}
           inputMode="numeric"
-          autoComplete={i === 0 ? "one-time-code" : "off"}
+          autoComplete={i === 0 && !masked ? "one-time-code" : "off"}
           aria-label={t("auth.codeDigit", { n: i + 1 })}
           maxLength={OTP_LENGTH}
           onChange={(e) => {

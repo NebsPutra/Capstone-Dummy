@@ -12,7 +12,7 @@ export default async function AccountSuspendedPage() {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
-  const { data: profile } = await supabase.from("profiles").select("account_status, status_reason").eq("id", user.id).maybeSingle();
+  const { data: profile } = await supabase.from("my_profile").select("account_status, status_reason").eq("id", user.id).maybeSingle();
   if (!profile || profile.account_status === "active") redirect("/dashboard");
 
   return (

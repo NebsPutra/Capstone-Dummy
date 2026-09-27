@@ -16,16 +16,18 @@ import {
   normalizeWhatsapp,
 } from "@/lib/validation";
 import { geocodeArea } from "@/lib/wilayah";
-import { onboardingStep } from "@/lib/onboarding";
+import { onboardingStep, personalInfoComplete } from "@/lib/onboarding";
 import { GENDERS, type Gender, type Interest, type Profile } from "@/types";
 import { AuthShell, PasswordInput, ResendButton, useCooldown } from "@/components/AuthShell";
 import { OtpInput, OTP_LENGTH } from "@/components/OtpInput";
 import { EMPTY_LOCATION, LocationSelect, type LocationValue } from "@/components/LocationSelect";
 import { Alert, FieldShell, PrimaryButton, focusFirstError, inputClass } from "@/components/ui";
 import { InterestPicker, PrimaryInterestSelect } from "@/components/InterestPicker";
+import { NewPinForm } from "@/components/PinFields";
+import { UsernameField, type UsernameCheck } from "@/components/social/ProfileSettings";
 
-type Step = "loading" | "account" | "verify" | "profile" | "interests" | "done";
-const STEP_ORDER: Step[] = ["account", "verify", "profile", "interests"];
+type Step = "loading" | "account" | "verify" | "pin" | "profile" | "interests" | "done";
+const STEP_ORDER: Step[] = ["account", "verify", "pin", "profile", "interests"];
 
 export default function RegisterPage() {
   return (
@@ -40,9 +42,10 @@ export default function RegisterPage() {
  *   1  Account   — email + password; Supabase creates the auth user and
  *                  emails a 6-digit code (a DB trigger creates the profile row)
  *   1B Verify    — verify the code; this signs the user in
+ *   1C PIN       — create the 6-digit sign-in PIN
  *   2  Profile   — personal information (saved to the existing profile row)
  *   3  Interests — hobbies + primary interest; marks onboarding complete
- * A signed-in user whose onboarding is incomplete resumes at step 2 or 3.
+ * A signed-in user whose onboarding is incomplete resumes where they left off.
  */
 function Register() {
   const router = useRouter();
@@ -69,7 +72,7 @@ function Register() {
         return;
       }
       const { data: profile } = await supabase
-        .from("profiles")
+        .from("my_profile")
         .select("*")
         .eq("id", user.id)
         .maybeSingle();
@@ -96,6 +99,7 @@ function Register() {
   const stepLabels = [
     t("register.stepAccount"),
     t("register.stepVerify"),
+    t("register.stepPin"),
     t("register.stepProfile"),
     t("register.stepInterests"),
   ];
@@ -103,6 +107,8 @@ function Register() {
   const title =
     step === "verify"
       ? t("auth.verifyEmailTitle")
+      : step === "pin"
+      ? t("pin.createTitle")
       : step === "profile"
       ? t("register.personalInfo")
       : step === "interests"
@@ -118,6 +124,8 @@ function Register() {
       subtitle={
         step === "account"
           ? t("auth.createAccountSubtitle")
+          : step === "pin"
+          ? t("pin.createHint")
           : step === "profile"
           ? t("register.personalInfoHint")
           : undefined
@@ -157,7 +165,7 @@ function Register() {
 
       {step === "loading" && <p className="py-8 text-center text-sm text-ink/50">{t("common.loading")}</p>}
 
-      {showResumeNotice && (step === "profile" || step === "interests") ? (
+      {showResumeNotice && (step === "pin" || step === "profile" || step === "interests") ? (
         <div className="space-y-4 text-center">
           <p className="font-semibold">{t("register.incompleteTitle")}</p>
           <p className="text-sm text-ink/60">{t("register.incompleteDesc")}</p>
@@ -176,7 +184,7 @@ function Register() {
                   // Email confirmation is disabled in this Supabase project,
                   // so the account is already active and signed in.
                   setUserId(sessionUserId);
-                  setStep("profile");
+                  setStep("pin");
                 } else {
                   setStep("verify");
                 }
@@ -188,9 +196,20 @@ function Register() {
               email={normalizeEmail(email)}
               onVerified={(id) => {
                 setUserId(id);
-                setStep("profile");
+                setStep("pin");
               }}
               onUseAnotherEmail={() => setStep("account")}
+            />
+          )}
+          {step === "pin" && (
+            <NewPinForm
+              submitLabel={t("pin.createSubmit")}
+              onSubmit={async (pin) => {
+                const { error } = await supabase.rpc("set_login_pin", { p_pin: pin });
+                if (error) return friendlyErrorKey(error, "set_login_pin");
+                setStep(personalInfoComplete(initialProfile) ? "interests" : "profile");
+                return null;
+              }}
             />
           )}
           {step === "profile" && userId && (
@@ -479,6 +498,7 @@ function VerifyStep({
 // ---------------------------------------------------------------------------
 
 type ProfileField =
+  | "username"
   | "fullName"
   | "nickname"
   | "gender"
@@ -489,6 +509,7 @@ type ProfileField =
   | "bio";
 // Form order == element ids, for scrolling to the first invalid field.
 const PROFILE_FIELD_ORDER: ProfileField[] = [
+  "username",
   "fullName",
   "nickname",
   "gender",
@@ -512,6 +533,8 @@ function ProfileStep({
   const { t } = useLanguage();
   const busy = useRef(false);
 
+  const [username, setUsername] = useState(initial?.username ?? "");
+  const [usernameStatus, setUsernameStatus] = useState<UsernameCheck>("current");
   const [fullName, setFullName] = useState(initial?.full_name ?? "");
   const [nickname, setNickname] = useState(initial?.nickname ?? "");
   const [gender, setGender] = useState<Gender | "">(initial?.gender ?? "");
@@ -538,6 +561,8 @@ function ProfileStep({
 
   function validate() {
     const e: typeof errors = {};
+    if (usernameStatus === "checking") e.username = "username.errChecking";
+    else if (usernameStatus !== "available" && usernameStatus !== "current") e.username = "username.errUnavailable";
     if (!fullName.trim()) e.fullName = "register.errFullName";
     if (!nickname.trim()) e.nickname = "register.errNickname";
     if (!gender) e.gender = "register.errGender";
@@ -600,6 +625,14 @@ function ProfileStep({
         area_lat: point?.lat ?? null,
         area_lng: point?.lng ?? null,
       };
+      if (usernameStatus === "available") {
+        const { error: nameError } = await supabase.rpc("set_username", { p_username: username });
+        if (nameError) {
+          setErrors({ username: friendlyErrorKey(nameError, "set_username") });
+          focusFirstError(PROFILE_FIELD_ORDER, { username: true });
+          return;
+        }
+      }
       const { error: updateError } = await supabase.from("profiles").update(saved).eq("id", userId);
       if (updateError) return setError(friendlyErrorKey(updateError, "save profile"));
       onSaved(saved);
@@ -614,6 +647,17 @@ function ProfileStep({
   return (
     <form onSubmit={submit} noValidate className="space-y-4">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <FieldShell id="username" label={t("username.label")} error={err("username")} className="sm:col-span-2">
+          <UsernameField
+            value={username}
+            onChange={(v) => {
+              setUsername(v);
+              clear("username");
+            }}
+            onStatus={setUsernameStatus}
+            hasError={Boolean(errors.username)}
+          />
+        </FieldShell>
         <FieldShell id="fullName" label={t("register.fullName")} error={err("fullName")} className="sm:col-span-2">
           <input
             id="fullName"

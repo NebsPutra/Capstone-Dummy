@@ -16,7 +16,7 @@ export default async function EditActivityPage({ params }: { params: Promise<{ i
 
   const [{ data }, { data: me }] = await Promise.all([
     supabase.from("events").select("*").eq("id", id).maybeSingle(),
-    supabase.from("profiles").select("role").eq("id", user!.id).single(),
+    supabase.from("my_profile").select("role").eq("id", user!.id).single(),
   ]);
   const event = data as EventRecord | null;
   const isAdmin = me?.role === "admin" || me?.role === "super_admin";

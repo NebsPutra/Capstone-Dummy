@@ -14,7 +14,7 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { EventCover } from "@/components/EventCover";
 import { PageHeader, fmtDateTime } from "@/components/admin/ui";
 
-interface Part { id: string; status: string; joined_at: string; user_id: string; participant: { username: string; full_name: string | null } | null }
+interface Part { id: string; status: string; joined_at: string; user_id: string; participant: { username: string; nickname: string | null } | null }
 interface Audit { id: number; action: string; created_at: string; old_value: Record<string, unknown> | null; new_value: Record<string, unknown> | null; actor_id: string | null }
 
 export default function AdminEventDetail({ params }: { params: Promise<{ id: string }> }) {
@@ -32,8 +32,8 @@ export default function AdminEventDetail({ params }: { params: Promise<{ id: str
   useEffect(() => {
     (async () => {
       const [{ data: e }, { data: p }, { data: a }] = await Promise.all([
-        sb.from("events").select("*, category:categories(*), organizer:profiles!events_creator_id_fkey(id, username, full_name, nickname)").eq("id", id).maybeSingle(),
-        sb.from("event_participants").select("id, status, joined_at, user_id, participant:profiles!event_participants_user_id_fkey(username, full_name)").eq("event_id", id).order("joined_at"),
+        sb.from("events").select("*, category:categories(*), organizer:profiles!events_creator_id_fkey(id, username, nickname)").eq("id", id).maybeSingle(),
+        sb.from("event_participants").select("id, status, joined_at, user_id, participant:profiles!event_participants_user_id_fkey(username, nickname)").eq("event_id", id).order("joined_at"),
         sb.from("audit_logs").select("*").eq("entity", "event").eq("entity_id", id).order("created_at", { ascending: false }).limit(50),
       ]);
       setEv(e as never);
@@ -118,7 +118,7 @@ export default function AdminEventDetail({ params }: { params: Promise<{ id: str
           <ul className="max-h-80 space-y-1 overflow-auto text-sm">
             {parts.map((p) => (
               <li key={p.id} className="flex items-center justify-between gap-2 rounded-lg bg-cream-warm/60 px-3 py-1.5">
-                <Link href={`/admin/users/${p.user_id}`} className="truncate hover:text-orange-dark">{p.participant?.full_name ?? p.participant?.username}</Link>
+                <Link href={`/admin/users/${p.user_id}`} className="truncate hover:text-orange-dark">{p.participant?.nickname ? `${p.participant.nickname} (@${p.participant.username})` : `@${p.participant?.username ?? ""}`}</Link>
                 <span className="flex shrink-0 items-center gap-2 text-xs">
                   {td(`participation.${p.status}`, p.status)}
                   {p.status === "pending" && (

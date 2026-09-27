@@ -19,7 +19,7 @@ export default async function AdminComplaintDetail({ params }: { params: Promise
     supabase.from("complaint_status_history").select("*").eq("complaint_id", id).order("created_at"),
     supabase.from("complaint_attachments").select("id, file_name, storage_path").eq("complaint_id", id),
     supabase.rpc("complaint_email_payload", { p_complaint: id }),
-    supabase.from("profiles").select("id, username, full_name").in("role", ["moderator", "admin", "super_admin"]),
+    supabase.from("staff_profiles").select("id, username, full_name").in("role", ["moderator", "admin", "super_admin"]),
   ]);
   const attachments = await Promise.all(
     (files ?? []).map(async (f: { id: string; file_name: string; storage_path: string }) => {

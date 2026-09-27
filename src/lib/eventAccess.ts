@@ -4,7 +4,7 @@ import type { EventRecord } from "@/types";
 type ServerClient = Awaited<ReturnType<typeof createClient>>;
 
 export const EVENT_DETAIL_SELECT =
-  "*, category:categories(*), organizer:profiles!events_creator_id_fkey(id, nickname, full_name, username)";
+  "*, category:categories(*), organizer:profiles!events_creator_id_fkey(id, nickname, username)";
 
 /**
  * Resolve an event for the current viewer.

@@ -14,7 +14,7 @@ export interface ParticipantRow {
   id: string;
   status: ParticipationStatus;
   joined_at: string;
-  participant: { nickname: string | null; full_name: string | null } | null;
+  participant: { nickname: string | null; username: string } | null;
 }
 
 type RpcResult = PromiseLike<{ error: { message?: string; code?: string } | null }>;
@@ -43,7 +43,7 @@ export function OwnerPanel({
   const pending = participants.filter((p) => p.status === "pending");
   const approved = participants.filter((p) => p.status === "approved");
   const locked = status === "cancelled" || status === "completed";
-  const nameOf = (p: ParticipantRow) => p.participant?.nickname || p.participant?.full_name || t("event.someone");
+  const nameOf = (p: ParticipantRow) => p.participant?.nickname || (p.participant?.username ? `@${p.participant.username}` : t("event.someone"));
 
   async function act(id: string, call: () => RpcResult, success: TranslationKey) {
     if (busyId) return; // one action at a time

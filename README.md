@@ -22,6 +22,14 @@ gatherings, and more). Built as an MVP prototype per the product spec.
    3. `supabase/migrations/003_profile_province.sql`: province on profiles.
    4. `supabase/migrations/004_admin_complaints_analytics.sql`: admin roles, complaints, notifications,
       audit log, analytics, exports, storage buckets (event banners, complaint attachments).
+   5. `supabase/migrations/005_pin_security.sql`: sign-in PIN (bcrypt-hashed, lockout, throttling),
+      security activity log, admin PIN unlock/remove.
+   6. `supabase/migrations/006_social_profiles.sql`: usernames, privacy settings, friends, blocks,
+      social links, public profiles, social analytics.
+   7. `supabase/migrations/007_profile_privacy_lockdown.sql`: stops members reading each other's
+      private profile columns (full name, WhatsApp, age, exact area) through the API.
+      **Run 007 only after the app version that uses `my_profile` is deployed**; older app
+      versions read other users' full names directly and would break.
    For an existing project, skip `schema.sql` and run only the migrations you haven't run yet.
    Then make your own account the super admin (run as a separate query):
    ```sql
@@ -63,6 +71,9 @@ SMTP_PORT=465
 SMTP_USER=your-gmail@gmail.com
 SMTP_PASS=your-16-letter-app-password
 ADMIN_NOTIFY_EMAIL=bennedictusputra@gmail.com
+
+# PIN sign-in (server-only, bypasses RLS: never expose or prefix with NEXT_PUBLIC_)
+SUPABASE_SERVICE_ROLE_KEY=...
 ```
 
 Without the SMTP variables complaints still work; the email is marked as failed and shows up

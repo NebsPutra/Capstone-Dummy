@@ -27,6 +27,7 @@ export function NotificationFeed({ items }: { items: NotificationRow[] }) {
     const p = { ...n.params };
     if (n.type === "complaint_status" && p.status) p.status = td(`complaint.status.${p.status}`, p.status);
     if (n.type === "account_status" && p.status) p.status = td(`account.status.${p.status}`, p.status);
+    if (n.type === "security_alert" && p.event) p.event = td(`security.event.${p.event}`, p.event);
     return td(`notifType.${n.type}`, n.type).replace(/\{(\w+)\}/g, (_, k) => p[k] ?? "");
   }
 

@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { getServerT } from "@/lib/i18n/server";
 import { ProfileEditor } from "@/components/ProfileEditor";
+import { SocialLinksEditor, UsernameCard } from "@/components/social/ProfileSettings";
 import type { Interest, Profile } from "@/types";
 
 export default async function ProfilePage() {
@@ -10,9 +11,9 @@ export default async function ProfilePage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const [{ data: profile }, { data: userInterests }, { count: createdCount }, { count: joinedCount }, { data: allInterests }] =
+  const [{ data: profile }, { data: userInterests }, { count: createdCount }, { count: joinedCount }, { data: allInterests }, { count: friendCount }] =
     await Promise.all([
-      supabase.from("profiles").select("*").eq("id", user!.id).single(),
+      supabase.from("my_profile").select("*").eq("id", user!.id).single(),
       supabase.from("user_interests").select("interest_id").eq("user_id", user!.id),
       supabase.from("events").select("id", { count: "exact", head: true }).eq("creator_id", user!.id),
       supabase
@@ -21,6 +22,7 @@ export default async function ProfilePage() {
         .eq("user_id", user!.id)
         .eq("status", "approved"),
       supabase.from("interests").select("*"),
+      supabase.from("friendships").select("id", { count: "exact", head: true }).eq("status", "accepted"),
     ]);
 
   const interests = (allInterests ?? []) as Interest[];
@@ -81,6 +83,35 @@ export default async function ProfilePage() {
         </div>
       </div>
 
+      <a href="/profile/security" className="card flex items-center justify-between gap-3 p-5 transition hover:border-orange/40">
+        <div className="min-w-0">
+          <p className="font-semibold">🔒 {t("security.title")}</p>
+          <p className={`text-sm ${p?.pin_set_at ? "text-ink/50" : "font-medium text-orange-dark"}`}>
+            {p?.pin_set_at ? t("security.cardDesc") : t("security.cardNoPin")}
+          </p>
+        </div>
+        <span className="text-ink/40">→</span>
+      </a>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <a href="/profile/privacy" className="card flex items-center justify-between gap-3 p-5 transition hover:border-orange/40">
+          <div className="min-w-0">
+            <p className="font-semibold">👁️ {t("privacy.title")}</p>
+            <p className="text-sm text-ink/50">{t("privacy.cardDesc")}</p>
+          </div>
+          <span className="text-ink/40">→</span>
+        </a>
+        <a href="/community?tab=friends" className="card flex items-center justify-between gap-3 p-5 transition hover:border-orange/40">
+          <div className="min-w-0">
+            <p className="font-semibold">🤝 {t("social.tab.friends")}</p>
+            <p className="text-sm text-ink/50">{t("social.friendsCount", { n: friendCount ?? 0 })}</p>
+          </div>
+          <span className="text-ink/40">→</span>
+        </a>
+      </div>
+
+      {p && <UsernameCard username={p.username} />}
+
       {p && (
         <ProfileEditor
           profile={p}
@@ -88,6 +119,8 @@ export default async function ProfilePage() {
           selectedInterestIds={selectedIds}
         />
       )}
+
+      {p && <SocialLinksEditor userId={p.id} />}
 
       <a href="/help" className="block text-center text-sm font-medium text-ink/50 hover:text-orange-dark">
         {t("help.needHelp")} {t("help.report")} →

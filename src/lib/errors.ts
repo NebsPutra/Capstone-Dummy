@@ -27,6 +27,19 @@ const DOMAIN_CODES = [
   "USER_NOT_FOUND",
   "EVENT_NOT_CANCELLED",
   "UNKNOWN_SETTING",
+  "PIN_FORMAT",
+  "PIN_WEAK",
+  "PIN_INCORRECT",
+  "PIN_SAME",
+  "PIN_LOCKED",
+  "REAUTH_REQUIRED",
+  "USERNAME_INVALID",
+  "USERNAME_RESERVED",
+  "USERNAME_TAKEN",
+  "USERNAME_COOLDOWN",
+  "FRIEND_REQUEST_COOLDOWN",
+  "FRIEND_REQUESTS_OFF",
+  "REQUEST_NOT_FOUND",
 ] as const;
 
 type ErrorLike = { message?: string; code?: string; status?: number; name?: string } | null | undefined;

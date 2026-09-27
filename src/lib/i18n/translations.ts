@@ -1,4 +1,6 @@
 import { enExtra, idExtra } from "./translations.extra";
+import { enSecurity, idSecurity } from "./translations.security";
+import { enSocial, idSocial } from "./translations.social";
 
 export type Lang = "en" | "id";
 
@@ -521,7 +523,7 @@ const enBase = {
   "notFound.home": "Back to dashboard",
 } as const;
 
-const en = { ...enBase, ...enExtra };
+const en = { ...enBase, ...enExtra, ...enSecurity, ...enSocial };
 
 export type TranslationKey = keyof typeof en;
 type Dict = Record<TranslationKey, string>;
@@ -1040,7 +1042,7 @@ const idBase: Record<keyof typeof enBase, string> = {
   "notFound.home": "Kembali ke dasbor",
 };
 
-const id: Dict = { ...idBase, ...idExtra };
+const id: Dict = { ...idBase, ...idExtra, ...idSecurity, ...idSocial };
 
 export const translations: Record<Lang, Dict> = { en, id };
 

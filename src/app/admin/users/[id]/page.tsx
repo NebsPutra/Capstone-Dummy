@@ -13,6 +13,8 @@ import { FieldShell, PrimaryButton, inputClass } from "@/components/ui";
 import { Badge, PageHeader, fmtDateTime, useRpc } from "@/components/admin/ui";
 import { InterestPicker, PrimaryInterestSelect } from "@/components/InterestPicker";
 import { LocationSelect, type LocationValue } from "@/components/LocationSelect";
+import { UserSecurityPanel } from "@/components/admin/UserSecurityPanel";
+import { UserSocialPanel } from "@/components/admin/SocialAdmin";
 
 interface Detail {
   profile: Profile & { account_status: string; status_reason: string | null; province_id: string | null; province: string | null };
@@ -39,7 +41,7 @@ export default function AdminUserDetail({ params }: { params: Promise<{ id: stri
   useEffect(() => {
     const sb = createClient();
     sb.auth.getUser().then(async ({ data: { user } }) => {
-      const { data } = await sb.from("profiles").select("role").eq("id", user!.id).single();
+      const { data } = await sb.from("my_profile").select("role").eq("id", user!.id).single();
       setMyRank(ROLE_RANK[data?.role ?? ""] ?? 0);
     });
     sb.from("interests").select("*").order("sort_order").then(({ data }) => setInterests(data ?? []));
@@ -199,6 +201,11 @@ export default function AdminUserDetail({ params }: { params: Promise<{ id: stri
             ))}
           </section>
         ))}
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-2">
+        <UserSecurityPanel userId={id} canManage={canEdit} />
+        <UserSocialPanel userId={id} username={p.username} canEdit={canEdit} />
       </div>
 
       <section className="card space-y-2 p-5">

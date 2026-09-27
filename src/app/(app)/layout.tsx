@@ -21,7 +21,7 @@ export default async function AppLayout({
   }
 
   const { data: profile } = await supabase
-    .from("profiles")
+    .from("my_profile")
     .select(
       "role, full_name, nickname, avatar_url, onboarding_completed_at, whatsapp_number, gender, city_id, kecamatan_id, kelurahan_id, bio, account_status"
     )

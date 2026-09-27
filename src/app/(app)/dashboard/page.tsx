@@ -17,7 +17,7 @@ export default async function DashboardPage() {
 
   const [{ data: profile }, { data: interestRows }] = await Promise.all([
     supabase
-      .from("profiles")
+      .from("my_profile")
       .select("nickname, full_name, area_lat, area_lng, kelurahan, kecamatan, city, primary_interest:interests(key)")
       .eq("id", user!.id)
       .single(),
@@ -42,7 +42,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <HeroBanner greeting={<DashboardGreeting name={profile?.nickname || profile?.full_name || t("dashboard.there")} />} />
+      <HeroBanner greeting={<DashboardGreeting nickname={profile?.nickname} />} />
       <NearbyDashboard interestKeys={interestKeys} primaryInterestKey={primaryKey} profileArea={profileArea} />
     </div>
   );

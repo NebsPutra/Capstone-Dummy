@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { Empty, PageHeader, Pagination, Select, Table, fmtDateTime } from "@/components/admin/ui";
 
-interface Row { id: string; status: string; joined_at: string; user_id: string; event: { id: string; ref: string; title: string } | null; participant: { username: string; full_name: string | null } | null }
+interface Row { id: string; status: string; joined_at: string; user_id: string; event: { id: string; ref: string; title: string } | null; participant: { username: string; nickname: string | null } | null }
 const PAGE = 30;
 
 export default function AdminParticipantsPage() {
@@ -19,7 +19,7 @@ export default function AdminParticipantsPage() {
   useEffect(() => {
     let q = createClient()
       .from("event_participants")
-      .select("id, status, joined_at, user_id, event:events(id, ref, title), participant:profiles!event_participants_user_id_fkey(username, full_name)", { count: "exact" })
+      .select("id, status, joined_at, user_id, event:events(id, ref, title), participant:profiles!event_participants_user_id_fkey(username, nickname)", { count: "exact" })
       .order("joined_at", { ascending: false })
       .range(page * PAGE, page * PAGE + PAGE - 1);
     if (status) q = q.eq("status", status);
@@ -41,7 +41,7 @@ export default function AdminParticipantsPage() {
             <tbody>
               {rows.map((r) => (
                 <tr key={r.id}>
-                  <td><Link href={`/admin/users/${r.user_id}`} className="hover:text-orange-dark">{r.participant?.full_name ?? r.participant?.username}</Link></td>
+                  <td><Link href={`/admin/users/${r.user_id}`} className="hover:text-orange-dark">{r.participant?.nickname ? `${r.participant.nickname} (@${r.participant.username})` : `@${r.participant?.username ?? ""}`}</Link></td>
                   <td>{r.event && <Link href={`/admin/events/${r.event.id}`} className="hover:text-orange-dark"><span className="font-mono text-xs">{r.event.ref}</span> {r.event.title}</Link>}</td>
                   <td>{td(`participation.${r.status}`, r.status)}</td>
                   <td className="text-xs text-ink/60">{fmtDateTime(r.joined_at, lang)}</td>

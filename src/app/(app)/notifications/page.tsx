@@ -8,7 +8,7 @@ import type { ParticipationStatus } from "@/types";
 interface IncomingRow {
   id: string;
   event: { id: string; title: string };
-  participant: { nickname: string | null; full_name: string | null } | null;
+  participant: { nickname: string | null; username: string } | null;
 }
 interface MineRow {
   id: string;
@@ -29,7 +29,7 @@ export default async function NotificationsPage() {
     supabase
       .from("event_participants")
       .select(
-        "id, event:events!inner(id, title, creator_id), participant:profiles!event_participants_user_id_fkey(nickname, full_name)"
+        "id, event:events!inner(id, title, creator_id), participant:profiles!event_participants_user_id_fkey(nickname, username)"
       )
       .eq("status", "pending")
       .eq("event.creator_id", user!.id)
@@ -66,7 +66,7 @@ export default async function NotificationsPage() {
               <div className="text-sm">
                 <p>
                   {t("notif.requested", {
-                    name: p.participant?.nickname || p.participant?.full_name || t("event.someone"),
+                    name: p.participant?.nickname || (p.participant?.username ? `@${p.participant.username}` : t("event.someone")),
                     title: p.event.title,
                   })}
                 </p>

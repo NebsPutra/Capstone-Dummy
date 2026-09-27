@@ -53,7 +53,7 @@ export default async function EventDetailsPage({
   if (isOwner) {
     const { data } = await supabase
       .from("event_participants")
-      .select("id, status, joined_at, participant:profiles!event_participants_user_id_fkey(nickname, full_name)")
+      .select("id, status, joined_at, participant:profiles!event_participants_user_id_fkey(nickname, username)")
       .eq("event_id", event.id)
       .in("status", ["approved", "pending"])
       .order("joined_at", { ascending: true });
@@ -98,7 +98,15 @@ export default async function EventDetailsPage({
             <Info label={t("event.code")} value={event.event_code} />
             <Info
               label={t("event.organizer")}
-              value={event.organizer?.nickname || event.organizer?.full_name || "—"}
+              value={
+                event.organizer ? (
+                  <Link href={`/u/${event.organizer.username}`} className="text-orange-dark hover:underline">
+                    {event.organizer.nickname || `@${event.organizer.username}`}
+                  </Link>
+                ) : (
+                  "—"
+                )
+              }
             />
           </div>
 
@@ -191,7 +199,7 @@ export default async function EventDetailsPage({
   );
 }
 
-function Info({ label, value }: { label: string; value: string }) {
+function Info({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div>
       <p className="text-xs uppercase tracking-wide text-ink/40">{label}</p>

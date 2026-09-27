@@ -54,6 +54,8 @@ export interface Profile {
   avatar_url: string | null;
   primary_interest_id: string | null;
   onboarding_completed_at: string | null;
+  /** When the sign-in PIN was last set (migration 005); null = no PIN. */
+  pin_set_at?: string | null;
   created_at: string;
 }
 
@@ -91,7 +93,7 @@ export interface EventRecord {
   // joined / computed fields (populated by queries, not raw columns)
   category?: Category | null;
   distance_km?: number;
-  organizer?: Pick<Profile, "id" | "nickname" | "full_name" | "username"> | null;
+  organizer?: Pick<Profile, "id" | "nickname" | "username"> | null;
 }
 
 export interface EventParticipant {

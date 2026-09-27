@@ -18,6 +18,7 @@ const PROTECTED_PREFIXES = [
   "/join",
   "/event",
   "/help",
+  "/u",
   "/account-suspended",
 ];
 

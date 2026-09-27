@@ -179,7 +179,7 @@ export function AnalyticsPage() {
   const { t, td } = useLanguage();
   const colors = useChartColors();
   const ref = useRef<HTMLDivElement>(null);
-  const [tab, setTab] = useState<"users" | "events" | "hobbies">("users");
+  const [tab, setTab] = useState<"users" | "events" | "hobbies" | "social">("users");
   const [range, setRange] = useState<DateRange>(rangeFor("90d"));
   const [category, setCategory] = useState("");
   const [status, setStatus] = useState("");
@@ -197,6 +197,7 @@ export function AnalyticsPage() {
     [tab, range.from, range.to, category, status]
   );
   const hobbies = useRpc<HobbyAnalytics>("admin_hobby_analytics", tab === "hobbies" ? base : null, [tab, range.from, range.to]);
+  const social = useRpc<SocialAnalytics>("admin_social_stats", tab === "social" ? base : null, [tab, range.from, range.to]);
 
   return (
     <div ref={ref} className="space-y-6">
@@ -215,7 +216,7 @@ export function AnalyticsPage() {
         }
       />
       <div className="flex flex-wrap items-center gap-2">
-        {(["users", "events", "hobbies"] as const).map((k) => (
+        {(["users", "events", "hobbies", "social"] as const).map((k) => (
           <button
             key={k}
             onClick={() => setTab(k)}
@@ -244,6 +245,46 @@ export function AnalyticsPage() {
       {tab === "users" && <UserCharts d={users.data} loading={users.loading} />}
       {tab === "events" && <EventCharts d={events.data} loading={events.loading} />}
       {tab === "hobbies" && <HobbyCharts d={hobbies.data} loading={hobbies.loading} />}
+      {tab === "social" && <SocialCharts d={social.data} loading={social.loading} />}
+    </div>
+  );
+}
+
+export interface SocialAnalytics {
+  friendships: number; pending: number; requests_in_range: number; accepted_in_range: number; acceptance_rate: number | null;
+  users_with_friends: number; avg_friends: number; blocks: number; username_changes_in_range: number; users_with_links: number;
+  links_by_platform: { key: string; v: number }[]; visibility: { key: string; v: number }[];
+  series: { t: string; v: number }[]; top_connected: { username: string; v: number }[];
+}
+
+function SocialCharts({ d, loading }: { d: SocialAnalytics | null; loading: boolean }) {
+  const { t } = useLanguage();
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <KpiCard label={t("asocial.friendships")} value={d?.friendships} />
+        <KpiCard label={t("asocial.requests")} value={d?.requests_in_range} />
+        <KpiCard label={t("asocial.acceptance")} value={d ? (d.acceptance_rate == null ? "—" : `${d.acceptance_rate}%`) : undefined} />
+        <KpiCard label={t("asocial.avgFriends")} value={d?.avg_friends} />
+        <KpiCard label={t("asocial.pending")} value={d?.pending} />
+        <KpiCard label={t("asocial.withLinks")} value={d?.users_with_links} />
+        <KpiCard label={t("asocial.blocks")} value={d?.blocks} />
+        <KpiCard label={t("asocial.usernameChanges")} value={d?.username_changes_in_range} />
+      </div>
+      <div className="grid gap-4 lg:grid-cols-2">
+        <ChartCard title={t("asocial.newFriendships")} loading={loading} total={sum(d?.series)} className="lg:col-span-2">
+          <LineTrend data={(d?.series ?? []).map((x) => ({ t: x.t, v: x.v }))} lines={[{ key: "v", name: t("asocial.requests") }]} area />
+        </ChartCard>
+        <ChartCard title={t("asocial.linksByPlatform")} loading={loading} total={sum(d?.links_by_platform)}>
+          <Bars data={(d?.links_by_platform ?? []).map((x) => ({ label: t(`links.platform.${x.key}` as TranslationKey), v: x.v }))} bars={[{ key: "v", name: t("asocial.users") }]} horizontal />
+        </ChartCard>
+        <ChartCard title={t("asocial.visibility")} loading={loading} total={sum(d?.visibility)}>
+          <Donut data={(d?.visibility ?? []).map((x) => ({ name: t(`visibility.${x.key}` as TranslationKey), value: x.v }))} />
+        </ChartCard>
+        <ChartCard title={t("asocial.topConnected")} loading={loading} total={sum(d?.top_connected)} minTotal={1} className="lg:col-span-2">
+          <Bars data={(d?.top_connected ?? []).map((x) => ({ label: `@${x.username}`, v: x.v }))} bars={[{ key: "v", name: t("asocial.friendships") }]} horizontal />
+        </ChartCard>
+      </div>
     </div>
   );
 }
