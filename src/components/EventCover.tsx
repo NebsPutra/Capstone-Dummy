@@ -16,8 +16,9 @@ function gradientFor(key: string) {
 }
 
 /**
- * Event banner (16:9 upload) or, if none, a category-based illustration.
- * Images are lazy-loaded.
+ * Event banner or, if none, a category-based illustration.
+ * The banner is shown whole (object-contain) whatever its ratio, over a
+ * blurred copy of itself that fills the rest of the frame. Images are lazy-loaded.
  */
 export function EventCover({
   bannerUrl,
@@ -34,14 +35,25 @@ export function EventCover({
 }) {
   if (bannerUrl) {
     return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
-        src={bannerUrl}
-        alt={title}
-        loading="lazy"
-        decoding="async"
-        className={cn("w-full bg-cream-warm object-cover", className)}
-      />
+      <div className={cn("relative w-full overflow-hidden bg-cream-warm", className)}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={bannerUrl}
+          alt=""
+          aria-hidden
+          loading="lazy"
+          decoding="async"
+          className="absolute inset-0 h-full w-full scale-110 object-cover opacity-70 blur-2xl"
+        />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={bannerUrl}
+          alt={title}
+          loading="lazy"
+          decoding="async"
+          className="relative h-full w-full object-contain"
+        />
+      </div>
     );
   }
   return (
