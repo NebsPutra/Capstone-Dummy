@@ -11,9 +11,10 @@ Next.js 16 (App Router) · React 19 · TypeScript · Tailwind 3 · Supabase (Pos
 - `npx tsc --noEmit` runs the type check
 - `npm run build` does a production build. Run it before any deploy.
 
-## Deploying (manual, NOT git-triggered)
-- Production deploys with `vercel deploy --prod` (Vercel project `alexios3/capstone-dummy`, already linked in `.vercel/`).
-- Pushing to GitHub does **not** deploy. Always run lint, tsc and build first, and only deploy when the user asks.
+## Deploying (git-triggered: pushing to `main` deploys to production)
+- The Vercel project `alexios3/capstone-dummy` is connected to GitHub. **Every push to `main` goes live** at https://komunitasa.vercel.app automatically.
+- So treat a push like a deploy: run lint, tsc and build first, and only push when the user asks.
+- `vercel deploy --prod` (project already linked in `.vercel/`) still works for a manual redeploy, but isn't needed after a push.
 
 ## Environment & data
 - `.env.local` holds **production** values pulled with `vercel env pull`. Local dev talks to the **live** Supabase database, so be careful with writes.
