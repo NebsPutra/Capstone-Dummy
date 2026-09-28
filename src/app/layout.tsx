@@ -7,6 +7,7 @@ import { getServerLang } from "@/lib/i18n/server";
 import { ThemeProvider } from "@/lib/theme";
 import { THEME_BOOT_SCRIPT, THEME_COOKIE, isThemePref } from "@/lib/theme-shared";
 import { ToastProvider } from "@/components/Toast";
+import { Analytics } from "@vercel/analytics/next";
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -44,6 +45,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <ToastProvider>{children}</ToastProvider>
           </LanguageProvider>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
