@@ -11,5 +11,12 @@ export default defineConfig([
       "react-hooks/set-state-in-effect": "warn",
     },
   },
-  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),
+  globalIgnores([
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+    // Standalone Node scripts for marketing assets, not part of the app.
+    "flyer/**",
+  ]),
 ]);
