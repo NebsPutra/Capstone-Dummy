@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getServerT } from "@/lib/i18n/server";
 import { ProfileEditor } from "@/components/ProfileEditor";
@@ -122,9 +123,9 @@ export default async function ProfilePage() {
 
       {p && <SocialLinksEditor userId={p.id} />}
 
-      <a href="/help" className="block text-center text-sm font-medium text-ink/50 hover:text-orange-dark">
+      <Link href="/help" className="block text-center text-sm font-medium text-ink/50 hover:text-orange-dark">
         {t("help.needHelp")} {t("help.report")} →
-      </a>
+      </Link>
     </div>
   );
 }

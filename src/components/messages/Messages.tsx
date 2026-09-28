@@ -281,7 +281,6 @@ export function ChatThread({ initial, initialMessages }: { initial: Conversation
     nobody: "messages.notAccepting",
   };
 
-  let lastDay = "";
   return (
     <div className="card flex h-full min-h-0 flex-col overflow-hidden">
       <header className="flex items-center gap-3 border-b border-ink/5 px-3 py-2.5">
@@ -354,10 +353,9 @@ export function ChatThread({ initial, initialMessages }: { initial: Conversation
           </div>
         )}
         {messages.length === 0 && <p className="py-10 text-center text-sm text-ink/50">{t("messages.startHint")}</p>}
-        {messages.map((m) => {
+        {messages.map((m, i) => {
           const day = dayLabel(m.created_at, lang, t);
-          const showDay = day !== lastDay;
-          lastDay = day;
+          const showDay = i === 0 || dayLabel(messages[i - 1].created_at, lang, t) !== day;
           const time = new Date(m.created_at).toLocaleTimeString(lang === "id" ? "id-ID" : "en-GB", {
             timeZone: "Asia/Jakarta",
             hour: "2-digit",
