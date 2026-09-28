@@ -2,7 +2,7 @@
 // results), 16:9 with speaker notes, Orange/Cream branding, in English or Indonesian.
 // Usage: cd flyer/scripts && npm install
 //   node build-project-deck.js      -> ../komunitas-project-deck.pptx     (English)
-//   node build-project-deck.js id   -> ../komunitas-project-deck-id.pptx  (Bahasa Indonesia)
+//   node build-project-deck.js id   -> "../PITCH DECK CAPSTONE.pptx"      (Bahasa Indonesia)
 const path = require("path");
 const pptxgen = require("pptxgenjs");
 const sharp = require("sharp");
@@ -15,7 +15,7 @@ const LANG = process.argv[2] === "id" ? "id" : "en";
 /** Pick the string for the deck's language. */
 const T = (en, id) => (LANG === "id" ? id : en);
 
-const OUT = path.join(__dirname, "..", LANG === "id" ? "komunitas-project-deck-id.pptx" : "komunitas-project-deck.pptx");
+const OUT = path.join(__dirname, "..", LANG === "id" ? "PITCH DECK CAPSTONE.pptx" : "komunitas-project-deck.pptx");
 const LOGO = path.join(__dirname, "..", "a-team-logo.png");
 const LANDING = path.join(__dirname, "..", "deck-assets", LANG === "id" ? "landing-id.png" : "landing.png");
 
