@@ -1,0 +1,48 @@
+// Keys for the event flyer generator. Merged into the main dictionaries in
+// translations.ts; `idFlyer` is typed against `enFlyer`.
+
+export const enFlyer = {
+  "flyer.open": "Generate flyer to share",
+  "flyer.title": "Event flyer",
+  "flyer.hint": "A ready-to-post flyer with your activity's details, banner and QR code.",
+  "flyer.size": "Size",
+  "flyer.vertical": "Vertical",
+  "flyer.verticalHint": "9:16 · Stories, WhatsApp status",
+  "flyer.square": "Square",
+  "flyer.squareHint": "1:1 · Instagram, feeds",
+  "flyer.landscape": "Landscape",
+  "flyer.landscapeHint": "16:9 · Screens, X, Facebook",
+  "flyer.preparing": "Preparing flyer…",
+  "flyer.downloadPng": "Download PNG",
+  "flyer.downloadJpg": "Download JPG",
+  "flyer.share": "Share",
+  "flyer.working": "Creating image…",
+  "flyer.error": "Couldn't create the flyer image. Please try again.",
+  "flyer.bannerSkipped": "Your banner couldn't be added to the image, so the flyer uses the category artwork instead.",
+  "flyer.scan": "Scan to join",
+  "flyer.or": "or enter code",
+  "flyer.spots": "{n} spots",
+};
+
+export const idFlyer: Record<keyof typeof enFlyer, string> = {
+  "flyer.open": "Buat flyer untuk dibagikan",
+  "flyer.title": "Flyer aktivitas",
+  "flyer.hint": "Flyer siap unggah berisi detail aktivitas, banner, dan kode QR.",
+  "flyer.size": "Ukuran",
+  "flyer.vertical": "Vertikal",
+  "flyer.verticalHint": "9:16 · Story, status WhatsApp",
+  "flyer.square": "Persegi",
+  "flyer.squareHint": "1:1 · Instagram, feed",
+  "flyer.landscape": "Lanskap",
+  "flyer.landscapeHint": "16:9 · Layar, X, Facebook",
+  "flyer.preparing": "Menyiapkan flyer…",
+  "flyer.downloadPng": "Unduh PNG",
+  "flyer.downloadJpg": "Unduh JPG",
+  "flyer.share": "Bagikan",
+  "flyer.working": "Membuat gambar…",
+  "flyer.error": "Gagal membuat gambar flyer. Silakan coba lagi.",
+  "flyer.bannerSkipped": "Banner tidak bisa dimasukkan ke gambar, jadi flyer memakai ilustrasi kategori.",
+  "flyer.scan": "Pindai untuk ikut",
+  "flyer.or": "atau masukkan kode",
+  "flyer.spots": "{n} tempat",
+};

@@ -2,6 +2,7 @@ import { enExtra, idExtra } from "./translations.extra";
 import { enSecurity, idSecurity } from "./translations.security";
 import { enSocial, idSocial } from "./translations.social";
 import { enEngage, idEngage } from "./translations.engage";
+import { enFlyer, idFlyer } from "./translations.flyer";
 
 export type Lang = "en" | "id";
 
@@ -525,7 +526,7 @@ const enBase = {
   "notFound.landing": "Back to home",
 } as const;
 
-const en = { ...enBase, ...enExtra, ...enSecurity, ...enSocial, ...enEngage };
+const en = { ...enBase, ...enExtra, ...enSecurity, ...enSocial, ...enEngage, ...enFlyer };
 
 export type TranslationKey = keyof typeof en;
 type Dict = Record<TranslationKey, string>;
@@ -1045,7 +1046,7 @@ const idBase: Record<keyof typeof enBase, string> = {
   "notFound.landing": "Kembali ke beranda",
 };
 
-const id: Dict = { ...idBase, ...idExtra, ...idSecurity, ...idSocial, ...idEngage };
+const id: Dict = { ...idBase, ...idExtra, ...idSecurity, ...idSocial, ...idEngage, ...idFlyer };
 
 export const translations: Record<Lang, Dict> = { en, id };
 

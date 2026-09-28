@@ -14,6 +14,8 @@ import { ShareBox } from "@/components/ShareBox";
 import { EventComments } from "@/components/EventComments";
 import { EventMapClient as EventMap } from "@/components/EventMapClient";
 import { EventCover } from "@/components/EventCover";
+import { FlyerGenerator } from "@/components/FlyerGenerator";
+import { ROLE_RANK } from "@/lib/admin";
 import { LifeBuoy } from "lucide-react";
 import type { EventParticipant } from "@/types";
 
@@ -38,6 +40,15 @@ export default async function EventDetailsPage({
 
   const isOwner = user?.id === event.creator_id;
   const status = effectiveStatus(event);
+
+  // Flyers are for the organizer and for admins (not moderators or attendees).
+  let isAdmin = false;
+  if (user && !isOwner) {
+    const { data: me } = await supabase.from("my_profile").select("role, account_status").eq("id", user.id).maybeSingle();
+    isAdmin = me?.account_status === "active" && (ROLE_RANK[me?.role ?? ""] ?? 0) >= ROLE_RANK.admin;
+  }
+  const canEdit = isOwner && status !== "cancelled" && status !== "completed" && status !== "ongoing";
+  const canMakeFlyer = (isOwner || isAdmin) && status !== "cancelled" && status !== "completed";
 
   let myParticipation: EventParticipant | null = null;
   if (user && !isOwner) {
@@ -158,13 +169,36 @@ export default async function EventDetailsPage({
             )}
           </div>
 
-          {isOwner && status !== "cancelled" && status !== "completed" && status !== "ongoing" && (
-            <Link
-              href={`/activities/${event.id}/edit`}
-              className="inline-flex items-center gap-1.5 text-sm font-semibold text-orange-dark"
-            >
-              <Pencil size={15} /> {t("event.edit")}
-            </Link>
+          {(canEdit || canMakeFlyer) && (
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
+              {canEdit && (
+                <Link
+                  href={`/activities/${event.id}/edit`}
+                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-orange-dark"
+                >
+                  <Pencil size={15} /> {t("event.edit")}
+                </Link>
+              )}
+              {canMakeFlyer && (
+                <FlyerGenerator
+                  event={{
+                    title: event.title,
+                    description: event.description,
+                    eventDate: event.event_date,
+                    startTime: event.start_time,
+                    endTime: event.end_time,
+                    locationName: event.location_name,
+                    fee: event.fee,
+                    maxParticipants: event.max_participants,
+                    eventCode: event.event_code,
+                    shareToken: event.share_token,
+                    bannerUrl: event.banner_url,
+                    categoryLabel: event.category ? td(`category.${event.category.key}`, event.category.label) : null,
+                    emoji: event.category?.emoji ?? null,
+                  }}
+                />
+              )}
+            </div>
           )}
         </div>
       </div>
