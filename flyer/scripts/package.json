@@ -1,0 +1,17 @@
+{
+  "name": "komunitas-marketing-scripts",
+  "private": true,
+  "description": "Builds the A Team slide deck and renders the flyer PNGs",
+  "scripts": {
+    "deck": "node build-deck.js",
+    "flyers": "sh render-flyers.sh"
+  },
+  "dependencies": {
+    "pptxgenjs": "^4.0.1",
+    "qrcode": "^1.5.4",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-icons": "^5.5.0",
+    "sharp": "^0.34.5"
+  }
+}

@@ -1,0 +1,63 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--cream:#FFF8ED;--warm:#F8E8D0;--orange:#F97316;--deep:#C2410C;--ink:#292524;--muted:#78716C}
+html,body{width:1080px;height:1350px}
+body{font-family:"Plus Jakarta Sans",system-ui,sans-serif;color:var(--ink);background:var(--cream);position:relative;overflow:hidden;-webkit-font-smoothing:antialiased}
+.glow{position:absolute;border-radius:50%;filter:blur(10px)}
+.g1{width:720px;height:720px;right:-260px;top:-300px;background:radial-gradient(circle,rgba(249,115,22,.22),transparent 65%)}
+.g2{width:620px;height:620px;left:-280px;bottom:120px;background:radial-gradient(circle,rgba(194,65,12,.10),transparent 65%)}
+.wrap{position:relative;padding:64px 80px 0}
+.top{display:flex;align-items:center;gap:20px}
+.top svg{width:76px;height:76px;filter:drop-shadow(0 10px 18px rgba(194,65,12,.25))}
+.eyebrow{font-size:22px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--deep)}
+.sub{font-size:19px;font-weight:500;color:var(--muted);margin-top:2px}
+h1{font-size:100px;line-height:.98;font-weight:800;letter-spacing:-.04em;margin-top:52px}
+h1 span{color:var(--orange)}
+.lead{font-size:29px;line-height:1.4;font-weight:500;margin-top:24px;max-width:860px;color:#44403C}
+.lead b{color:var(--deep);font-weight:700}
+.pill{display:inline-flex;align-items:center;gap:12px;margin-top:28px;background:#fff;border:1px solid rgba(41,37,36,.08);border-radius:999px;padding:12px 24px 12px 18px;font-size:21px;font-weight:600;box-shadow:0 4px 20px -4px rgba(194,65,12,.15)}
+.dot{width:14px;height:14px;border-radius:50%;background:#16A34A;box-shadow:0 0 0 5px rgba(22,163,74,.18)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:40px}
+.card{background:#fff;border:1px solid rgba(41,37,36,.06);border-radius:28px;padding:26px 28px 28px;box-shadow:0 4px 20px -4px rgba(194,65,12,.12)}
+.num{display:inline-grid;place-items:center;width:46px;height:46px;border-radius:16px;background:var(--warm);color:var(--deep);font-weight:800;font-size:21px}
+.card h3{font-size:28px;font-weight:800;letter-spacing:-.02em;margin-top:14px}
+.card p{font-size:19px;line-height:1.42;color:var(--muted);margin-top:6px;font-weight:500}
+.foot{position:absolute;left:0;right:0;bottom:0;height:200px;background:linear-gradient(120deg,#F97316,#C2410C);display:flex;align-items:center;justify-content:space-between;padding:0 80px;color:var(--cream)}
+.foot .k{font-size:21px;font-weight:600;opacity:.85;letter-spacing:.02em}
+.foot .url{font-size:58px;font-weight:800;letter-spacing:-.03em;margin-top:4px}
+.qr{background:var(--cream);border-radius:22px;padding:16px;width:154px;height:154px}
+.qr svg{width:100%;height:100%;display:block}
+</style></head><body>
+<div class="glow g1"></div><div class="glow g2"></div>
+<div class="wrap">
+  <div class="top">
+    <svg viewBox="0 0 48 48">  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FB923C"/>
+      <stop offset="1" stop-color="#C2410C"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="13" fill="url(#bg)"/>
+  <path d="M12.5 37.5 24 11.5l11.5 26" fill="none" stroke="#FFF8ED" stroke-width="5.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M17.6 28.4Q24 34 30.4 28.4" fill="none" stroke="#FFF8ED" stroke-width="3.4" stroke-linecap="round"/>
+</svg>
+    <div><div class="eyebrow">Komunitas</div><div class="sub">Community Activity Platform</div></div>
+  </div>
+  <h1>Capstone Project<br><span>A Team</span></h1>
+  <p class="lead">Find, create and join local activities near you: running, reading, cycling, badminton and more. <b>Fully set up, secured and live.</b></p>
+  <div class="pill"><span class="dot"></span>Live now · Updated 28 September 2026</div>
+  <div class="grid">
+    <div class="card"><span class="num">01</span><h3>Set up</h3><p>A fresh workspace, connected to GitHub and Vercel and ready to build.</p></div>
+    <div class="card"><span class="num">02</span><h3>Secured</h3><p>Upgraded to the latest Next.js with its security fixes, and secrets kept private.</p></div>
+    <div class="card"><span class="num">03</span><h3>Checked</h3><p>Code checks, type checks and a full production build, all passing.</p></div>
+    <div class="card"><span class="num">04</span><h3>Live</h3><p>Redeployed to production and ready for the next improvement.</p></div>
+  </div>
+</div>
+<div class="foot">
+  <div><div class="k">Try it now: scan or visit</div><div class="url">komunitasa.vercel.app</div></div>
+  <div class="qr"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 29 29" shape-rendering="crispEdges"><path stroke="#292524" d="M0 0.5h7m2 0h1m2 0h1m2 0h2m1 0h3m1 0h7M0 1.5h1m5 0h1m2 0h4m4 0h2m3 0h1m5 0h1M0 2.5h1m1 0h3m1 0h1m1 0h3m3 0h1m1 0h1m2 0h1m2 0h1m1 0h3m1 0h1M0 3.5h1m1 0h3m1 0h1m1 0h2m6 0h2m2 0h1m1 0h1m1 0h3m1 0h1M0 4.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h3m2 0h3m1 0h1m1 0h3m1 0h1M0 5.5h1m5 0h1m1 0h1m1 0h7m3 0h1m1 0h1m5 0h1M0 6.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M8 7.5h3m1 0h2m1 0h1m4 0h1M0 8.5h1m1 0h5m3 0h1m3 0h2m1 0h1m4 0h5M3 9.5h1m4 0h2m2 0h1m2 0h10m3 0h1M0 10.5h4m1 0h2m2 0h1m1 0h1m10 0h3M0 11.5h5m2 0h4m3 0h1m1 0h1m1 0h8m1 0h1M0 12.5h1m2 0h1m1 0h3m2 0h1m5 0h3m1 0h1m2 0h1m1 0h2M0 13.5h1m2 0h2m3 0h3m2 0h3m1 0h8m3 0h1M0 14.5h4m1 0h2m1 0h1m4 0h5m3 0h6M0 15.5h1m4 0h1m1 0h2m2 0h3m1 0h1m2 0h3m2 0h1m3 0h1M1 16.5h6m1 0h2m1 0h1m2 0h2m1 0h1m1 0h1m5 0h2M0 17.5h1m1 0h3m5 0h1m1 0h1m2 0h2m1 0h2m2 0h3m1 0h1m1 0h1M0 18.5h1m1 0h1m3 0h2m10 0h1m1 0h1m2 0h1m2 0h1M0 19.5h1m1 0h2m1 0h1m1 0h3m1 0h1m2 0h1m1 0h1m4 0h1m1 0h1m3 0h1M0 20.5h1m1 0h2m2 0h3m2 0h2m3 0h2m2 0h5m1 0h3M8 21.5h2m1 0h1m1 0h3m4 0h1m3 0h5M0 22.5h7m2 0h2m2 0h4m1 0h3m1 0h1m1 0h3M0 23.5h1m5 0h1m1 0h1m2 0h3m1 0h1m2 0h3m3 0h1M0 24.5h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h2m1 0h1m2 0h5m1 0h1m1 0h1M0 25.5h1m1 0h3m1 0h1m1 0h1m1 0h3m2 0h2m2 0h2m4 0h2M0 26.5h1m1 0h3m1 0h1m1 0h1m1 0h1m3 0h1m3 0h1m2 0h7M0 27.5h1m5 0h1m2 0h1m2 0h3m1 0h1m1 0h4m1 0h1m1 0h1m1 0h1M0 28.5h7m1 0h4m1 0h1m4 0h2m6 0h1"/></svg></div>
+</div>
+</body></html>
