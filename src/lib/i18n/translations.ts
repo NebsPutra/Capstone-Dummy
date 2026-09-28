@@ -522,6 +522,7 @@ const enBase = {
   "notFound.title": "Page not found",
   "notFound.desc": "The page or activity you're looking for doesn't exist or isn't available to you.",
   "notFound.home": "Back to dashboard",
+  "notFound.landing": "Back to home",
 } as const;
 
 const en = { ...enBase, ...enExtra, ...enSecurity, ...enSocial, ...enEngage };
@@ -1041,6 +1042,7 @@ const idBase: Record<keyof typeof enBase, string> = {
   "notFound.title": "Halaman tidak ditemukan",
   "notFound.desc": "Halaman atau aktivitas yang kamu cari tidak ada atau tidak tersedia untukmu.",
   "notFound.home": "Kembali ke dasbor",
+  "notFound.landing": "Kembali ke beranda",
 };
 
 const id: Dict = { ...idBase, ...idExtra, ...idSecurity, ...idSocial, ...idEngage };

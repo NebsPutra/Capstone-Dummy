@@ -19,8 +19,9 @@ export default function LandingPage() {
 
   return (
     <main className="ambient-gradient min-h-screen">
-      <header className="flex items-center justify-between px-6 py-5 md:px-12">
-        <Logo size={34} />
+      <header className="flex items-center justify-between gap-2 px-4 py-5 sm:px-6 md:px-12">
+        {/* The full wordmark doesn't fit beside the header actions on narrow phones. */}
+        <Logo size={34} wordmarkClassName="hidden min-[400px]:inline" />
         <div className="flex items-center gap-2 sm:gap-3">
           <div className="hidden sm:block">
             <ThemeToggle compact />
@@ -28,13 +29,13 @@ export default function LandingPage() {
           <LanguageSwitcher />
           <Link
             href="/login"
-            className="rounded-full px-4 py-2 text-sm font-medium text-ink/70 hover:bg-surface"
+            className="whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium text-ink/70 hover:bg-surface sm:px-4"
           >
             {t("landing.login")}
           </Link>
           <Link
             href="/register"
-            className="rounded-full bg-orange px-4 py-2 text-sm font-semibold text-white shadow-soft hover:bg-orange-deep"
+            className="whitespace-nowrap rounded-full bg-orange px-3 py-2 text-sm font-semibold text-white shadow-soft hover:bg-orange-deep sm:px-4"
           >
             {t("landing.signup")}
           </Link>

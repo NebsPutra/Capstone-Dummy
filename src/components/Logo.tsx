@@ -28,16 +28,18 @@ export function Logo({
   size = 30,
   className,
   wordmark = true,
+  wordmarkClassName,
 }: {
   size?: number;
   className?: string;
   wordmark?: boolean;
+  wordmarkClassName?: string;
 }) {
   return (
     <span className={cn("inline-flex items-center gap-2", className)}>
       <LogoMark size={size} />
       {wordmark && (
-        <span className="text-lg font-extrabold tracking-tight text-ink">
+        <span className={cn("text-lg font-extrabold tracking-tight text-ink", wordmarkClassName)}>
           Komunitas<span className="text-orange">.</span>
         </span>
       )}
