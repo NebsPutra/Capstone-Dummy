@@ -99,7 +99,7 @@ export function ComplaintThread({
       <section className="card space-y-4 p-5">
         <h2 className="font-semibold">{t("help.thread")}</h2>
         {messages.length === 0 ? (
-          <p className="text-sm text-ink/50">{t("help.noMessages")}</p>
+          <p className="text-sm text-ink/65">{t("help.noMessages")}</p>
         ) : (
           <ul className="space-y-3">
             {messages.map((m) => (
@@ -114,7 +114,7 @@ export function ComplaintThread({
                     : "bg-cream-warm"
                 )}
               >
-                <div className="mb-1 flex items-center justify-between gap-2 text-xs text-ink/50">
+                <div className="mb-1 flex items-center justify-between gap-2 text-xs text-ink/65">
                   <span className="flex items-center gap-1 font-semibold">
                     {m.is_internal && <Lock size={12} />}
                     {m.from_staff
@@ -147,7 +147,7 @@ export function ComplaintThread({
                     onClick={() => setInternal(isNote)}
                     className={cn(
                       "rounded-full border px-3 py-1.5 font-medium",
-                      internal === isNote ? "border-orange bg-orange text-white" : "border-ink/10"
+                      internal === isNote ? "border-orange bg-orange-deep text-white" : "border-ink/10"
                     )}
                   >
                     {isNote ? t("acomp.internalNote") : t("acomp.reply")}
@@ -193,7 +193,7 @@ export function ComplaintThread({
               <li key={h.id} className="relative text-sm">
                 <span className="absolute -left-[21px] top-1.5 h-2.5 w-2.5 rounded-full bg-orange" />
                 <p>{timelineText(h)}</p>
-                <time className="text-xs text-ink/50">{fmt(h.created_at, lang)}</time>
+                <time className="text-xs text-ink/65">{fmt(h.created_at, lang)}</time>
               </li>
             ))}
           </ol>
@@ -209,7 +209,7 @@ export function ComplaintThread({
                       {a.file_name}
                     </a>
                   ) : (
-                    <span className="text-ink/50">{a.file_name}</span>
+                    <span className="text-ink/65">{a.file_name}</span>
                   )}
                 </li>
               ))}

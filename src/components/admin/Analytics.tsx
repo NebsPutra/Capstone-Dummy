@@ -220,7 +220,7 @@ export function AnalyticsPage() {
           <button
             key={k}
             onClick={() => setTab(k)}
-            className={cn("rounded-full px-4 py-2 text-sm font-semibold transition", tab === k ? "bg-orange text-white shadow-soft" : "bg-surface text-ink/60 hover:bg-cream-warm")}
+            className={cn("rounded-full px-4 py-2 text-sm font-semibold transition", tab === k ? "bg-orange-deep text-white shadow-soft" : "bg-surface text-ink/70 hover:bg-cream-warm")}
           >
             {t(`analytics.${k}`)}
           </button>

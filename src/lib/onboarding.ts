@@ -5,14 +5,8 @@ export type OnboardingStep = "pin" | "profile" | "interests" | "done";
 /** Personal-information step (Sign Up session 2) is complete. */
 export function personalInfoComplete(p: Partial<Profile> | null | undefined): boolean {
   return Boolean(
-    p?.full_name?.trim() &&
-      p.nickname?.trim() &&
-      p.whatsapp_number?.trim() &&
-      p.gender &&
-      p.city_id &&
-      p.kecamatan_id &&
-      p.kelurahan_id &&
-      p.bio?.trim()
+    // WhatsApp, gender and bio are optional (migration 011).
+    p?.full_name?.trim() && p.nickname?.trim() && p.city_id && p.kecamatan_id && p.kelurahan_id
   );
 }
 

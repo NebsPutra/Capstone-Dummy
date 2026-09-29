@@ -46,19 +46,19 @@ export function ComplaintAdminPanel({ complaint: c, staff }: { complaint: Compla
   return (
     <section className="card flex flex-wrap items-end gap-4 p-5 text-sm">
       <label className="space-y-1">
-        <span className="block text-xs text-ink/50">{t("col.status")}</span>
+        <span className="block text-xs text-ink/65">{t("col.status")}</span>
         <select className={sel} value={c.status} disabled={busy} onChange={(e) => update({ p_status: e.target.value })}>
           {COMPLAINT_STATUSES.map((s) => <option key={s} value={s}>{t(`complaint.status.${s}`)}</option>)}
         </select>
       </label>
       <label className="space-y-1">
-        <span className="block text-xs text-ink/50">{t("col.severity")}</span>
+        <span className="block text-xs text-ink/65">{t("col.severity")}</span>
         <select className={sel} value={c.severity} disabled={busy} onChange={(e) => update({ p_severity: e.target.value })}>
           {COMPLAINT_SEVERITIES.map((s) => <option key={s} value={s}>{t(`complaint.severity.${s}`)}</option>)}
         </select>
       </label>
       <label className="space-y-1">
-        <span className="block text-xs text-ink/50">{t("acomp.assign")}</span>
+        <span className="block text-xs text-ink/65">{t("acomp.assign")}</span>
         <select className={sel} value={c.assigned_to ?? ""} disabled={busy}
           onChange={(e) => update(e.target.value ? { p_assigned_to: e.target.value } : { p_unassign: true })}>
           <option value="">{t("acomp.unassigned")}</option>
@@ -72,7 +72,7 @@ export function ComplaintAdminPanel({ complaint: c, staff }: { complaint: Compla
         <button disabled={busy} onClick={() => update({ p_status: "IN_REVIEW" })} className="rounded-full border border-ink/10 px-3 py-1.5 font-medium">{t("acomp.reopen")}</button>
       )}
       <div className="ml-auto flex items-center gap-2">
-        <span className="text-xs text-ink/50">{t("acomp.email")}</span>
+        <span className="text-xs text-ink/65">{t("acomp.email")}</span>
         <Badge value={c.email_status === "sent" ? "RESOLVED" : c.email_status === "failed" ? "CRITICAL" : "CLOSED"} kind={c.email_status === "failed" ? "severity" : "status"}
           label={t(`acomp.emailStatus.${c.email_status}`)} />
         <button disabled={busy} onClick={resend} className="text-xs font-semibold text-orange-dark">{t("acomp.resendEmail")}</button>

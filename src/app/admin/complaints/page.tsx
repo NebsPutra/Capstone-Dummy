@@ -59,17 +59,17 @@ export default function AdminComplaintsPage() {
               {rows.map((c) => (
                 <tr key={c.id}>
                   <td className="whitespace-nowrap font-mono text-xs"><Link href={`/admin/complaints/${c.id}`} className="hover:text-orange-dark">{c.ref}</Link></td>
-                  <td className="text-xs text-ink/60">{fmtDateTime(c.created_at, lang)}</td>
+                  <td className="text-xs text-ink/70">{fmtDateTime(c.created_at, lang)}</td>
                   <td className="text-xs">{c.is_anonymous ? t("acomp.anonymous") : c.reporter ? `@${c.reporter.username}` : "—"}</td>
                   <td>
                     <Link href={`/admin/complaints/${c.id}`} className="font-medium hover:text-orange-dark">{c.subject}</Link>
-                    <span className="block text-xs text-ink/40">{t(`complaint.category.${c.category}`)}</span>
+                    <span className="block text-xs text-ink/65">{t(`complaint.category.${c.category}`)}</span>
                   </td>
                   <td className="text-xs">{c.event ? c.event.ref : "—"}</td>
                   <td><Badge kind="severity" value={c.severity} label={t(`complaint.severity.${c.severity}`)} /></td>
                   <td><Badge value={c.status} label={t(`complaint.status.${c.status}`)} /></td>
                   <td className="text-xs">{c.assignee ? `@${c.assignee.username}` : t("acomp.unassigned")}</td>
-                  <td className="text-xs text-ink/60">{fmtDateTime(c.last_activity_at, lang)}</td>
+                  <td className="text-xs text-ink/70">{fmtDateTime(c.last_activity_at, lang)}</td>
                 </tr>
               ))}
             </tbody>

@@ -8,6 +8,7 @@ import { LanguageSwitcher } from "./LanguageSwitcher";
 import { inputClass } from "./ui";
 import { Logo } from "./Logo";
 import { ThemeToggle } from "./ThemeToggle";
+import { LegalFooter } from "./LegalFooter";
 
 export function AuthShell({
   title,
@@ -34,10 +35,11 @@ export function AuthShell({
             <Logo size={36} />
           </Link>
           <h1 className="mt-4 text-2xl font-bold">{title}</h1>
-          {subtitle && <p className="mt-1 text-sm text-ink/60">{subtitle}</p>}
+          {subtitle && <p className="mt-1 text-sm text-ink/70">{subtitle}</p>}
         </div>
         <div className="card animate-pop-in p-6">{children}</div>
-        {footer && <div className="mt-6 text-center text-sm text-ink/60">{footer}</div>}
+        {footer && <div className="mt-6 text-center text-sm text-ink/70">{footer}</div>}
+        <LegalFooter className="mt-8" />
       </div>
     </main>
   );
@@ -77,7 +79,7 @@ export function PasswordInput({
         type="button"
         onClick={() => setVisible((v) => !v)}
         aria-label={visible ? t("auth.hidePassword") : t("auth.showPassword")}
-        className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-ink/40 hover:text-ink/70"
+        className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-ink/65 hover:text-ink/70"
       >
         {visible ? <EyeOff size={17} /> : <Eye size={17} />}
       </button>
@@ -111,7 +113,7 @@ export function ResendButton({
       type="button"
       onClick={onResend}
       disabled={seconds > 0 || sending}
-      className="text-sm font-medium text-orange-dark disabled:text-ink/40"
+      className="text-sm font-medium text-orange-dark disabled:text-ink/65"
     >
       {sending
         ? t("auth.resending")

@@ -7,6 +7,7 @@ import { getServerLang } from "@/lib/i18n/server";
 import { ThemeProvider } from "@/lib/theme";
 import { THEME_BOOT_SCRIPT, THEME_COOKIE, isThemePref } from "@/lib/theme-shared";
 import { ToastProvider } from "@/components/Toast";
+import { CookieNotice } from "@/components/CookieNotice";
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -41,7 +42,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className="font-sans antialiased">
         <ThemeProvider initialPref={themePref}>
           <LanguageProvider initialLang={lang}>
-            <ToastProvider>{children}</ToastProvider>
+            <ToastProvider>
+              {children}
+              <CookieNotice />
+            </ToastProvider>
           </LanguageProvider>
         </ThemeProvider>
       </body>

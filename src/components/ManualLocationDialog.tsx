@@ -61,9 +61,9 @@ export function ManualLocationDialog({
             <h2 id="manual-location-title" className="text-lg font-semibold">
               {t("location.manualTitle")}
             </h2>
-            <p className="mt-1 text-sm text-ink/60">{t("location.manualHint")}</p>
+            <p className="mt-1 text-sm text-ink/70">{t("location.manualHint")}</p>
           </div>
-          <button onClick={onClose} aria-label={t("common.close")} className="text-ink/50">
+          <button onClick={onClose} aria-label={t("common.close")} className="text-ink/65">
             <X size={20} />
           </button>
         </div>

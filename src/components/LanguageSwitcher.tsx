@@ -10,7 +10,7 @@ export function LanguageSwitcher() {
       <button
         onClick={() => setLang("en")}
         className={`rounded-full px-2.5 py-1 transition ${
-          lang === "en" ? "bg-orange text-white" : "text-ink/50"
+          lang === "en" ? "bg-orange-deep text-white" : "text-ink/65"
         }`}
       >
         EN
@@ -18,7 +18,7 @@ export function LanguageSwitcher() {
       <button
         onClick={() => setLang("id")}
         className={`rounded-full px-2.5 py-1 transition ${
-          lang === "id" ? "bg-orange text-white" : "text-ink/50"
+          lang === "id" ? "bg-orange-deep text-white" : "text-ink/65"
         }`}
       >
         ID

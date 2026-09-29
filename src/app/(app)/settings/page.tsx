@@ -42,7 +42,7 @@ export default function SettingsPage() {
       <div className="card flex items-center justify-between gap-4 p-5">
         <div>
           <h2 className="font-semibold">{t("settings.language")}</h2>
-          <p className="text-sm text-ink/60">{t("settings.languageDesc")}</p>
+          <p className="text-sm text-ink/70">{t("settings.languageDesc")}</p>
         </div>
         <LanguageSwitcher />
       </div>
@@ -50,7 +50,7 @@ export default function SettingsPage() {
       <div className="card flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="font-semibold">{t("settings.theme")}</h2>
-          <p className="text-sm text-ink/60">{t("settings.themeDesc")}</p>
+          <p className="text-sm text-ink/70">{t("settings.themeDesc")}</p>
         </div>
         <ThemeToggle />
       </div>
@@ -61,24 +61,24 @@ export default function SettingsPage() {
         <LifeBuoy size={20} className="shrink-0 text-orange-dark" />
         <div>
           <h2 className="font-semibold">{t("settings.help")}</h2>
-          <p className="text-sm text-ink/60">{t("settings.helpDesc")}</p>
+          <p className="text-sm text-ink/70">{t("settings.helpDesc")}</p>
         </div>
       </Link>
 
       <div className="space-y-3">
         <div className="card space-y-1 p-5 pb-4">
           <h2 className="font-semibold">{t("location.update")}</h2>
-          <p className="text-sm text-ink/60">{t("settings.locationDesc")}</p>
+          <p className="text-sm text-ink/70">{t("settings.locationDesc")}</p>
         </div>
         <LocationBar location={location} onManual={() => setDialogOpen(true)} onGps={switchToGps} />
       </div>
 
       <div className="card space-y-2 p-5">
         <h2 className="font-semibold">{t("settings.locationPrivacyTitle")}</h2>
-        <p className="text-sm text-ink/60">{t("settings.locationPrivacyDesc")}</p>
+        <p className="text-sm text-ink/70">{t("settings.locationPrivacyDesc")}</p>
       </div>
 
-      {email && <p className="text-center text-sm text-ink/50">{t("settings.signedInAs", { email })}</p>}
+      {email && <p className="text-center text-sm text-ink/65">{t("settings.signedInAs", { email })}</p>}
 
       <button
         onClick={handleSignOut}

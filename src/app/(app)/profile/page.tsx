@@ -36,31 +36,31 @@ export default async function ProfilePage() {
     <div className="mx-auto max-w-2xl space-y-6">
       <div className="card p-6">
         <div className="flex items-center gap-4">
-          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-orange text-2xl font-bold text-white">
+          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-orange-deep text-2xl font-bold text-white">
             {(p?.nickname || p?.full_name || "U")[0].toUpperCase()}
           </div>
           <div className="min-w-0">
             <h1 className="truncate text-xl font-bold">{p?.nickname || p?.full_name}</h1>
-            <p className="text-sm text-ink/50">
+            <p className="text-sm text-ink/65">
               @{p?.username}
               {p?.gender && ` · ${t(`gender.${p.gender}`)}`}
             </p>
-            {area && <p className="text-sm text-ink/50">📍 {area}</p>}
+            {area && <p className="text-sm text-ink/65">📍 {area}</p>}
           </div>
         </div>
 
         <div className="mt-5 grid grid-cols-3 gap-3 border-y border-ink/5 py-4 text-center">
           <div>
             <p className="text-lg font-bold">{createdCount ?? 0}</p>
-            <p className="text-xs text-ink/50">{t("profile.created")}</p>
+            <p className="text-xs text-ink/65">{t("profile.created")}</p>
           </div>
           <div>
             <p className="text-lg font-bold">{joinedCount ?? 0}</p>
-            <p className="text-xs text-ink/50">{t("profile.joined")}</p>
+            <p className="text-xs text-ink/65">{t("profile.joined")}</p>
           </div>
           <div>
             <p className="text-lg font-bold">{primary?.emoji ?? "—"}</p>
-            <p className="text-xs text-ink/50">
+            <p className="text-xs text-ink/65">
               {primary ? td(`interest.${primary.key}`, primary.label) : t("profile.noPrimary")}
             </p>
           </div>
@@ -87,27 +87,27 @@ export default async function ProfilePage() {
       <a href="/profile/security" className="card flex items-center justify-between gap-3 p-5 transition hover:border-orange/40">
         <div className="min-w-0">
           <p className="font-semibold">🔒 {t("security.title")}</p>
-          <p className={`text-sm ${p?.pin_set_at ? "text-ink/50" : "font-medium text-orange-dark"}`}>
+          <p className={`text-sm ${p?.pin_set_at ? "text-ink/65" : "font-medium text-orange-dark"}`}>
             {p?.pin_set_at ? t("security.cardDesc") : t("security.cardNoPin")}
           </p>
         </div>
-        <span className="text-ink/40">→</span>
+        <span className="text-ink/65">→</span>
       </a>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <a href="/profile/privacy" className="card flex items-center justify-between gap-3 p-5 transition hover:border-orange/40">
           <div className="min-w-0">
             <p className="font-semibold">👁️ {t("privacy.title")}</p>
-            <p className="text-sm text-ink/50">{t("privacy.cardDesc")}</p>
+            <p className="text-sm text-ink/65">{t("privacy.cardDesc")}</p>
           </div>
-          <span className="text-ink/40">→</span>
+          <span className="text-ink/65">→</span>
         </a>
         <a href="/community?tab=friends" className="card flex items-center justify-between gap-3 p-5 transition hover:border-orange/40">
           <div className="min-w-0">
             <p className="font-semibold">🤝 {t("social.tab.friends")}</p>
-            <p className="text-sm text-ink/50">{t("social.friendsCount", { n: friendCount ?? 0 })}</p>
+            <p className="text-sm text-ink/65">{t("social.friendsCount", { n: friendCount ?? 0 })}</p>
           </div>
-          <span className="text-ink/40">→</span>
+          <span className="text-ink/65">→</span>
         </a>
       </div>
 
@@ -123,7 +123,7 @@ export default async function ProfilePage() {
 
       {p && <SocialLinksEditor userId={p.id} />}
 
-      <Link href="/help" className="block text-center text-sm font-medium text-ink/50 hover:text-orange-dark">
+      <Link href="/help" className="block text-center text-sm font-medium text-ink/65 hover:text-orange-dark">
         {t("help.needHelp")} {t("help.report")} →
       </Link>
     </div>

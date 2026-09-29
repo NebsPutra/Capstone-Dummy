@@ -88,7 +88,7 @@ export function ChartCard({
               await exportNodePng(ref.current, title.replace(/[^\w-]+/g, "_"), colors.bg).catch(console.error);
               setBusy(false);
             }}
-            className="rounded-full p-1.5 text-ink/40 hover:bg-cream-warm hover:text-ink/70"
+            className="rounded-full p-1.5 text-ink/65 hover:bg-cream-warm hover:text-ink/70"
           >
             <Download size={15} />
           </button>
@@ -98,7 +98,7 @@ export function ChartCard({
         {loading ? (
           <div className="skeleton h-full w-full" />
         ) : notEnough ? (
-          <div className="flex h-full items-center justify-center rounded-xl bg-cream-warm/60 px-6 text-center text-sm text-ink/50">
+          <div className="flex h-full items-center justify-center rounded-xl bg-cream-warm/60 px-6 text-center text-sm text-ink/65">
             {t("chart.notEnough")}
           </div>
         ) : (
@@ -201,7 +201,7 @@ export function Heatmap({ rows, cols, value }: { rows: string[]; cols: string[];
           <tr>
             <th />
             {cols.map((c) => (
-              <th key={c} className="px-0.5 font-medium text-ink/40">
+              <th key={c} className="px-0.5 font-medium text-ink/65">
                 {c}
               </th>
             ))}
@@ -210,7 +210,7 @@ export function Heatmap({ rows, cols, value }: { rows: string[]; cols: string[];
         <tbody>
           {rows.map((r, ri) => (
             <tr key={r}>
-              <th className="whitespace-nowrap pr-2 text-left font-medium text-ink/50">{r}</th>
+              <th className="whitespace-nowrap pr-2 text-left font-medium text-ink/65">{r}</th>
               {cols.map((c, ci) => {
                 const v = value(ri, ci);
                 return (

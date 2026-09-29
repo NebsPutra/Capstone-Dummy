@@ -43,16 +43,16 @@ export default function AdminHealthPage() {
           <div key={x.label} className="card space-y-1 p-4">
             <p className="flex items-center gap-2 text-sm font-semibold"><span className={`h-2.5 w-2.5 rounded-full ${tone[x.level]}`} />{x.label}</p>
             <p className="text-xs font-medium">{t(`health.${x.level}`)}</p>
-            <p className="text-xs text-ink/50">{x.detail}</p>
+            <p className="text-xs text-ink/65">{x.detail}</p>
           </div>
         ))}
       </div>
       <section className="card space-y-2 p-5">
         <h2 className="text-sm font-semibold">{t("health.recentErrors")}</h2>
-        {!h?.recent_errors.length ? <p className="text-sm text-ink/50">{t("health.noErrors")}</p> : (
+        {!h?.recent_errors.length ? <p className="text-sm text-ink/65">{t("health.noErrors")}</p> : (
           <ul className="space-y-1 text-sm">
             {h.recent_errors.map((e, i) => (
-              <li key={i}><time className="text-xs text-ink/40">{fmtDateTime(e.created_at, lang)}</time> <b>{e.context}</b>: {e.message}</li>
+              <li key={i}><time className="text-xs text-ink/65">{fmtDateTime(e.created_at, lang)}</time> <b>{e.context}</b>: {e.message}</li>
             ))}
           </ul>
         )}

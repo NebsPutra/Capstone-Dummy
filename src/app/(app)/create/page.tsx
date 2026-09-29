@@ -7,7 +7,7 @@ export default async function CreateActivityPage() {
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
         <h1 className="text-2xl font-bold">{t("create.title")}</h1>
-        <p className="mt-1 text-ink/60">{t("create.subtitle")}</p>
+        <p className="mt-1 text-ink/70">{t("create.subtitle")}</p>
       </div>
       <ActivityForm />
     </div>

@@ -90,7 +90,7 @@ export function MessagesInbox({ activeId, compact }: { activeId?: string; compac
           <button
             key={String(a)}
             onClick={() => setArchived(a)}
-            className={cn("flex-1 rounded-full px-3 py-1.5 font-semibold", archived === a ? "bg-orange text-white" : "text-ink/60 hover:bg-cream-warm")}
+            className={cn("flex-1 rounded-full px-3 py-1.5 font-semibold", archived === a ? "bg-orange-deep text-white" : "text-ink/70 hover:bg-cream-warm")}
           >
             {a ? t("messages.archived") : t("messages.inbox")}
           </button>
@@ -99,7 +99,7 @@ export function MessagesInbox({ activeId, compact }: { activeId?: string; compac
       {!list ? (
         <div className="skeleton m-3 h-40" />
       ) : list.length === 0 ? (
-        <div className="flex flex-col items-center gap-2 p-8 text-center text-sm text-ink/50">
+        <div className="flex flex-col items-center gap-2 p-8 text-center text-sm text-ink/65">
           <MessageCircle size={28} className="text-ink/30" />
           {archived ? t("messages.noArchived") : t("messages.empty")}
           {!archived && (
@@ -120,15 +120,15 @@ export function MessagesInbox({ activeId, compact }: { activeId?: string; compac
                 <span className="min-w-0 flex-1">
                   <span className="flex items-baseline justify-between gap-2">
                     <span className={cn("truncate", c.unread > 0 ? "font-bold" : "font-semibold")}>{c.other?.display_name ?? t("messages.unknownUser")}</span>
-                    {c.last && <span className="shrink-0 text-[11px] text-ink/40">{timeAgo(c.last.created_at, lang)}</span>}
+                    {c.last && <span className="shrink-0 text-[11px] text-ink/65">{timeAgo(c.last.created_at, lang)}</span>}
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <span className={cn("truncate text-sm", c.unread > 0 ? "font-medium text-ink" : "text-ink/50")}>
+                    <span className={cn("truncate text-sm", c.unread > 0 ? "font-medium text-ink" : "text-ink/65")}>
                       {c.last ? `${c.last.is_mine ? `${t("messages.you")}: ` : ""}${c.last.body ?? t("messages.deleted")}` : t("messages.noMessagesYet")}
                     </span>
                     {c.muted && <BellOff size={12} className="shrink-0 text-ink/30" aria-label={t("messages.muted")} />}
                     {c.unread > 0 && (
-                      <span className="ml-auto shrink-0 rounded-full bg-orange px-1.5 text-[11px] font-bold leading-5 text-white">{c.unread > 99 ? "99+" : c.unread}</span>
+                      <span className="ml-auto shrink-0 rounded-full bg-orange-deep px-1.5 text-[11px] font-bold leading-5 text-white">{c.unread > 99 ? "99+" : c.unread}</span>
                     )}
                   </span>
                 </span>
@@ -284,7 +284,7 @@ export function ChatThread({ initial, initialMessages }: { initial: Conversation
   return (
     <div className="card flex h-full min-h-0 flex-col overflow-hidden">
       <header className="flex items-center gap-3 border-b border-ink/5 px-3 py-2.5">
-        <Link href="/messages" className="rounded-full p-1.5 text-ink/60 hover:bg-cream-warm lg:hidden" aria-label={t("messages.back")}>
+        <Link href="/messages" className="rounded-full p-1.5 text-ink/70 hover:bg-cream-warm lg:hidden" aria-label={t("messages.back")}>
           <ArrowLeft size={20} />
         </Link>
         {card.other ? (
@@ -292,15 +292,15 @@ export function ChatThread({ initial, initialMessages }: { initial: Conversation
             <Avatar name={card.other.display_name} url={card.other.avatar_url} size={38} />
             <span className="min-w-0">
               <span className="block truncate font-semibold">{card.other.display_name}</span>
-              <span className="block truncate text-xs text-ink/50">@{card.other.username}</span>
+              <span className="block truncate text-xs text-ink/65">@{card.other.username}</span>
             </span>
           </Link>
         ) : (
           <span className="flex-1 font-semibold">{t("messages.unknownUser")}</span>
         )}
-        {card.muted && <BellOff size={16} className="text-ink/40" aria-label={t("messages.muted")} />}
+        {card.muted && <BellOff size={16} className="text-ink/65" aria-label={t("messages.muted")} />}
         <div className="relative">
-          <button onClick={() => setMenu((m) => !m)} className="rounded-full p-2 text-ink/60 hover:bg-cream-warm" aria-label={t("social.more")} aria-expanded={menu}>
+          <button onClick={() => setMenu((m) => !m)} className="rounded-full p-2 text-ink/70 hover:bg-cream-warm" aria-label={t("social.more")} aria-expanded={menu}>
             <MoreVertical size={18} />
           </button>
           {menu && (
@@ -347,12 +347,12 @@ export function ChatThread({ initial, initialMessages }: { initial: Conversation
       >
         {hasMore && (
           <div className="pb-2 text-center">
-            <button onClick={loadOlder} className="rounded-full border border-ink/10 px-3 py-1 text-xs font-semibold text-ink/60 hover:bg-cream-warm">
+            <button onClick={loadOlder} className="rounded-full border border-ink/10 px-3 py-1 text-xs font-semibold text-ink/70 hover:bg-cream-warm">
               {t("messages.loadOlder")}
             </button>
           </div>
         )}
-        {messages.length === 0 && <p className="py-10 text-center text-sm text-ink/50">{t("messages.startHint")}</p>}
+        {messages.length === 0 && <p className="py-10 text-center text-sm text-ink/65">{t("messages.startHint")}</p>}
         {messages.map((m, i) => {
           const day = dayLabel(m.created_at, lang, t);
           const showDay = i === 0 || dayLabel(messages[i - 1].created_at, lang, t) !== day;
@@ -363,7 +363,7 @@ export function ChatThread({ initial, initialMessages }: { initial: Conversation
           });
           return (
             <div key={m.id}>
-              {showDay && <p className="py-2 text-center text-[11px] font-medium text-ink/40">{day}</p>}
+              {showDay && <p className="py-2 text-center text-[11px] font-medium text-ink/65">{day}</p>}
               <div className={cn("flex", m.is_mine ? "justify-end" : "justify-start")}>
                 <button
                   type="button"
@@ -371,14 +371,14 @@ export function ChatThread({ initial, initialMessages }: { initial: Conversation
                   className={cn(
                     "max-w-[80%] rounded-2xl px-3.5 py-2 text-left text-sm sm:max-w-[70%]",
                     m.deleted
-                      ? "border border-dashed border-ink/15 italic text-ink/40"
+                      ? "border border-dashed border-ink/15 italic text-ink/65"
                       : m.is_mine
-                      ? "rounded-br-md bg-orange text-white"
+                      ? "rounded-br-md bg-orange-deep text-white"
                       : "rounded-bl-md bg-cream-warm text-ink"
                   )}
                 >
                   <span className="whitespace-pre-line break-words">{m.deleted ? t("messages.deleted") : m.body}</span>
-                  <span className={cn("mt-0.5 block text-right text-[10px]", m.is_mine && !m.deleted ? "text-white/70" : "text-ink/40")}>{time}</span>
+                  <span className={cn("mt-0.5 block text-right text-[10px]", m.is_mine && !m.deleted ? "text-white/70" : "text-ink/65")}>{time}</span>
                 </button>
               </div>
               {selected === m.id && !m.deleted && (
@@ -420,15 +420,15 @@ export function ChatThread({ initial, initialMessages }: { initial: Conversation
                           </option>
                         ))}
                       </select>
-                      <button type="submit" className="rounded-full bg-orange px-2.5 py-1 font-semibold text-white">
+                      <button type="submit" className="rounded-full bg-orange-deep px-2.5 py-1 font-semibold text-white">
                         {t("comments.sendReport")}
                       </button>
-                      <button type="button" onClick={() => setReporting(null)} className="text-ink/60">
+                      <button type="button" onClick={() => setReporting(null)} className="text-ink/70">
                         {t("common.cancel")}
                       </button>
                     </form>
                   ) : (
-                    <button onClick={() => setReporting(m.id)} className="inline-flex items-center gap-1 rounded-full border border-ink/10 px-2.5 py-1 font-semibold text-ink/60">
+                    <button onClick={() => setReporting(m.id)} className="inline-flex items-center gap-1 rounded-full border border-ink/10 px-2.5 py-1 font-semibold text-ink/70">
                       <Flag size={12} /> {t("messages.report")}
                     </button>
                   )}
@@ -440,7 +440,7 @@ export function ChatThread({ initial, initialMessages }: { initial: Conversation
       </div>
 
       {card.send_block ? (
-        <div className="flex flex-wrap items-center justify-center gap-2 border-t border-ink/5 px-4 py-3 text-center text-sm text-ink/60">
+        <div className="flex flex-wrap items-center justify-center gap-2 border-t border-ink/5 px-4 py-3 text-center text-sm text-ink/70">
           {t(blockText[card.send_block])}
           {card.send_block === "blocked" && (
             <button onClick={toggleBlock} className="font-semibold text-orange-dark">
@@ -469,7 +469,7 @@ export function ChatThread({ initial, initialMessages }: { initial: Conversation
             type="submit"
             disabled={!body.trim() || sending}
             aria-label={t("messages.send")}
-            className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full bg-orange text-white disabled:opacity-50"
+            className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full bg-orange-deep text-white disabled:opacity-50"
           >
             <Send size={18} />
           </button>

@@ -33,11 +33,12 @@ export async function POST(req: NextRequest) {
   const when = new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta", dateStyle: "medium", timeStyle: "short" });
   const heading = t(`email.security.${event}` as TranslationKey);
   const paras = [t("email.security.body", { what: heading, when: `${when} WIB` }), t("email.security.notYou")];
+  const footer = t("email.footer", { url: `${req.nextUrl.origin}/legal/privacy` });
   const sent = await sendMail({
     to: user.email,
     subject: heading,
-    text: paras.join("\n\n"),
-    html: simpleEmailHtml(heading, paras, { label: t("email.security.action"), href: `${req.nextUrl.origin}/profile/security` }),
+    text: [...paras, footer].join("\n\n"),
+    html: simpleEmailHtml(heading, paras, { label: t("email.security.action"), href: `${req.nextUrl.origin}/profile/security` }, footer),
   });
   return NextResponse.json({ sent });
 }

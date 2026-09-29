@@ -68,11 +68,11 @@ export function UsernameField({
   }, [value]);
 
   const bad = status === "invalid" || status === "reserved" || status === "taken";
-  const tone = status === "available" || status === "current" ? "text-green-600" : bad ? "text-red-600" : "text-ink/50";
+  const tone = status === "available" || status === "current" ? "text-green-600" : bad ? "text-red-600" : "text-ink/65";
   return (
     <div>
       <div className="relative">
-        <AtSign size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink/40" />
+        <AtSign size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink/65" />
         <input
           id={id}
           value={value}
@@ -91,7 +91,7 @@ export function UsernameField({
         {bad && <XCircle size={13} />}
         {t(`username.status.${status}`)}
       </p>
-      <p className="mt-0.5 text-xs text-ink/40">{t("username.rules")}</p>
+      <p className="mt-0.5 text-xs text-ink/65">{t("username.rules")}</p>
     </div>
   );
 }
@@ -134,7 +134,7 @@ export function UsernameCard({ username }: { username: string }) {
         </Link>
       </div>
       {locked ? (
-        <p className="text-sm text-ink/60">
+        <p className="text-sm text-ink/70">
           @{username} ·{" "}
           {t("username.cooldown", {
             date: new Date(nextChange!).toLocaleDateString(lang === "id" ? "id-ID" : "en-GB", { timeZone: "Asia/Jakarta", dateStyle: "medium" }),
@@ -143,7 +143,7 @@ export function UsernameCard({ username }: { username: string }) {
       ) : (
         <>
           <UsernameField id="profile-username" value={value} onChange={setValue} onStatus={setStatus} />
-          <p className="text-xs text-ink/50">{t("username.changeNote")}</p>
+          <p className="text-xs text-ink/65">{t("username.changeNote")}</p>
           {error && <Alert>{t(error)}</Alert>}
           <PrimaryButton onClick={save} disabled={status !== "available"} loading={saving} loadingText={t("pin.saving")}>
             {t("username.save")}
@@ -229,13 +229,13 @@ export function SocialLinksEditor({ userId }: { userId: string }) {
         <h2 className="flex items-center gap-2 font-semibold">
           <Link2 size={18} className="text-orange-dark" /> {t("links.title")}
         </h2>
-        <p className="mt-1 text-sm text-ink/60">{t("links.desc")}</p>
+        <p className="mt-1 text-sm text-ink/70">{t("links.desc")}</p>
       </div>
       {!rows ? (
         <div className="skeleton h-24" />
       ) : (
         <>
-          {rows.length === 0 && <p className="text-sm text-ink/50">{t("links.empty")}</p>}
+          {rows.length === 0 && <p className="text-sm text-ink/65">{t("links.empty")}</p>}
           <ul className="space-y-3">
             {rows.map((r, i) => (
               <li key={r.platform} className="grid grid-cols-[1fr_auto] gap-2 sm:grid-cols-[8rem_1fr_auto_auto] sm:items-center">
@@ -252,7 +252,7 @@ export function SocialLinksEditor({ userId }: { userId: string }) {
                   className={cn(inputClass(invalid.includes(r.platform)), "col-span-2 sm:col-span-1")}
                 />
                 <VisibilitySelect value={r.visibility} onChange={(v) => update(i, { visibility: v })} className="w-full sm:w-auto" />
-                <button onClick={() => setRows(rows.filter((_, j) => j !== i))} className="rounded-full p-2 text-ink/40 hover:bg-red-50 hover:text-red-600" aria-label={t("links.remove")}>
+                <button onClick={() => setRows(rows.filter((_, j) => j !== i))} className="rounded-full p-2 text-ink/65 hover:bg-red-50 hover:text-red-600" aria-label={t("links.remove")}>
                   <Trash2 size={16} />
                 </button>
                 {invalid.includes(r.platform) && (
@@ -322,12 +322,12 @@ function Toggle({ id, label, hint, checked, onChange }: { id: string; label: str
     <label htmlFor={id} className="flex cursor-pointer items-start justify-between gap-4 py-3">
       <span>
         <span className="block text-sm font-medium">{label}</span>
-        {hint && <span className="block text-xs text-ink/50">{hint}</span>}
+        {hint && <span className="block text-xs text-ink/65">{hint}</span>}
       </span>
       <input id={id} type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} className="peer sr-only" />
       <span
         aria-hidden
-        className="relative mt-0.5 h-6 w-11 shrink-0 rounded-full bg-ink/15 transition after:absolute after:left-0.5 after:top-0.5 after:h-5 after:w-5 after:rounded-full after:bg-white after:transition peer-checked:bg-orange peer-checked:after:translate-x-5 peer-focus-visible:ring-2 peer-focus-visible:ring-orange/50"
+        className="relative mt-0.5 h-6 w-11 shrink-0 rounded-full bg-ink/15 transition after:absolute after:left-0.5 after:top-0.5 after:h-5 after:w-5 after:rounded-full after:bg-white after:transition peer-checked:bg-orange-deep peer-checked:after:translate-x-5 peer-focus-visible:ring-2 peer-focus-visible:ring-orange/50"
       />
     </label>
   );
@@ -352,7 +352,7 @@ function Choice<T extends string>({
     <div className="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between">
       <label htmlFor={id}>
         <span className="block text-sm font-medium">{label}</span>
-        {hint && <span className="block text-xs text-ink/50">{hint}</span>}
+        {hint && <span className="block text-xs text-ink/65">{hint}</span>}
       </label>
       <select id={id} value={value} onChange={(e) => onChange(e.target.value as T)} className="rounded-xl border border-ink/10 bg-surface px-3 py-2 text-sm">
         {options.map((o) => (
@@ -418,7 +418,7 @@ export function PrivacyForm({ userId }: { userId: string }) {
         <Toggle id="sact" label={t("privacy.showActivities")} hint={t("privacy.showActivitiesHint")} checked={s.show_activities}
           onChange={(v) => set("show_activities", v)} />
       </section>
-      <p className="text-xs text-ink/50">{t("privacy.neverShown")}</p>
+      <p className="text-xs text-ink/65">{t("privacy.neverShown")}</p>
       <PrimaryButton onClick={save} loading={saving} loadingText={t("pin.saving")} className="w-full sm:w-auto">
         {t("privacy.save")}
       </PrimaryButton>
@@ -447,18 +447,18 @@ export function BlockedUsers() {
   return (
     <section className="card p-5">
       <h2 className="font-semibold">{t("privacy.blocked")}</h2>
-      <p className="mt-1 text-sm text-ink/60">{t("privacy.blockedHint")}</p>
+      <p className="mt-1 text-sm text-ink/70">{t("privacy.blockedHint")}</p>
       {!list ? (
         <div className="skeleton mt-3 h-16" />
       ) : list.length === 0 ? (
-        <p className="mt-3 text-sm text-ink/50">{t("privacy.noBlocked")}</p>
+        <p className="mt-3 text-sm text-ink/65">{t("privacy.noBlocked")}</p>
       ) : (
         <ul className="mt-2 divide-y divide-ink/5">
           {list.map((b) => (
             <li key={b.user_id} className="flex items-center gap-3 py-2.5">
               <Avatar name={b.display_name} size={36} />
               <span className="min-w-0 flex-1 truncate text-sm">
-                <span className="font-medium">{b.display_name}</span> <span className="text-ink/50">@{b.username}</span>
+                <span className="font-medium">{b.display_name}</span> <span className="text-ink/65">@{b.username}</span>
               </span>
               <button onClick={() => unblock(b.user_id)} className="rounded-full border border-ink/10 px-3 py-1.5 text-xs font-semibold">
                 {t("social.unblock")}
@@ -509,7 +509,7 @@ export function NotificationPrefs() {
   return (
     <section className="card p-5">
       <h2 className="font-semibold">{t("notifPrefs.title")}</h2>
-      <p className="text-sm text-ink/60">{t("notifPrefs.desc")}</p>
+      <p className="text-sm text-ink/70">{t("notifPrefs.desc")}</p>
       {!muted ? (
         <div className="skeleton mt-3 h-40" />
       ) : (
@@ -519,7 +519,7 @@ export function NotificationPrefs() {
           ))}
         </div>
       )}
-      <p className="mt-2 text-xs text-ink/50">{t("notifPrefs.always")}</p>
+      <p className="mt-2 text-xs text-ink/65">{t("notifPrefs.always")}</p>
     </section>
   );
 }

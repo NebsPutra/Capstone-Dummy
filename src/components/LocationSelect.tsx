@@ -197,7 +197,7 @@ export function LocationSelect({
       />
 
       {legacyText && (
-        <p className="text-xs text-ink/50">{t("location.currentlySaved", { value: legacyText })}</p>
+        <p className="text-xs text-ink/65">{t("location.currentlySaved", { value: legacyText })}</p>
       )}
 
       {loadFailed && (
@@ -335,7 +335,7 @@ function GpsAssist({ onDetected }: { onDetected: (area: Awaited<ReturnType<typeo
         {busy ? t("location.detecting") : t("location.useCurrent")}
       </button>
       {message && (
-        <p className={`text-xs ${message.tone === "error" ? "text-red-600" : "text-ink/60"}`}>{t(message.key)}</p>
+        <p className={`text-xs ${message.tone === "error" ? "text-red-600" : "text-ink/70"}`}>{t(message.key)}</p>
       )}
     </div>
   );

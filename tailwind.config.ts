@@ -17,7 +17,8 @@ const config: Config = {
         orange: {
           DEFAULT: token("orange"),
           dark: token("orange-dark"), // text/links: readable on the page background
-          deep: "#C2410C", // fixed deep orange for filled hover states
+          deep: "#C2410C", // filled buttons: white text on it passes WCAG AA (5.2:1)
+          deeper: "#9A3412", // hover state for filled buttons
         },
         ink: token("ink"),
         surface: token("surface"), // cards, inputs, panels

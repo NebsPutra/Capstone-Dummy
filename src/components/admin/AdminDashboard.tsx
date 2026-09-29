@@ -41,7 +41,7 @@ export function useFeedText() {
 export function AlertsList({ alerts }: { alerts: AlertItem[] | null }) {
   const { t, td } = useLanguage();
   if (!alerts) return <div className="skeleton h-24" />;
-  if (alerts.length === 0) return <p className="text-sm text-ink/50">✅ {t("admin.noAlerts")}</p>;
+  if (alerts.length === 0) return <p className="text-sm text-ink/65">✅ {t("admin.noAlerts")}</p>;
   return (
     <ul className="space-y-2">
       {alerts.map((a, i) => (
@@ -137,7 +137,7 @@ export function AdminDashboard() {
           {!feed.data ? (
             <div className="skeleton h-24" />
           ) : feed.data.length === 0 ? (
-            <p className="text-sm text-ink/50">{t("admin.noActivity")}</p>
+            <p className="text-sm text-ink/65">{t("admin.noActivity")}</p>
           ) : (
             <ul className="divide-y divide-ink/5">
               {feed.data.map((f) => (
@@ -147,7 +147,7 @@ export function AdminDashboard() {
                       className={`h-2 w-2 shrink-0 rounded-full ${f.severity === "critical" ? "bg-red-500" : f.severity === "warning" ? "bg-amber-500" : "bg-blue-400"}`}
                     />
                     <span className="min-w-0 flex-1 truncate">{feedText(f)}</span>
-                    <time className="shrink-0 text-xs text-ink/40">{fmtDateTime(f.created_at, lang)}</time>
+                    <time className="shrink-0 text-xs text-ink/65">{fmtDateTime(f.created_at, lang)}</time>
                   </Link>
                 </li>
               ))}

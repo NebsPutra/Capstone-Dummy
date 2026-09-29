@@ -62,18 +62,18 @@ export function UserSecurityPanel({ userId, canManage }: { userId: string; canMa
           </button>
         </div>
       )}
-      <h3 className="pt-2 text-xs font-semibold uppercase text-ink/50">{t("asec.events")}</h3>
+      <h3 className="pt-2 text-xs font-semibold uppercase text-ink/65">{t("asec.events")}</h3>
       {data.events.length === 0 ? (
-        <p className="text-ink/50">—</p>
+        <p className="text-ink/65">—</p>
       ) : (
         <ul className="max-h-64 space-y-1 overflow-y-auto">
           {data.events.map((e, i) => (
             <li key={i} className="flex flex-wrap gap-2">
-              <time className="text-xs text-ink/40">{fmtDateTime(e.created_at, lang)}</time>
+              <time className="text-xs text-ink/65">{fmtDateTime(e.created_at, lang)}</time>
               <span className={e.type === "pin_failed" || e.type === "pin_locked" ? "font-medium text-red-600" : "font-medium"}>
                 {td(`security.event.${e.type}`, e.type)}
               </span>
-              {e.device && <span className="text-ink/50">{e.device}</span>}
+              {e.device && <span className="text-ink/65">{e.device}</span>}
             </li>
           ))}
         </ul>

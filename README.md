@@ -36,6 +36,8 @@ gatherings, and more). Built as an MVP prototype per the product spec.
       `messages` to the `supabase_realtime` publication), mute/archive, blocking and message reports.
    10. `supabase/migrations/010_fix_event_code_uuid.sql`: fixes creating activities (the event-code and
       share-token helpers now use the built-in `gen_random_uuid()`).
+   11. `supabase/migrations/011_optional_profile_fields.sql`: WhatsApp number, gender and bio become optional
+      at sign-up (data minimization).
    For an existing project, skip `schema.sql` and run only the migrations you haven't run yet.
    Then make your own account the super admin (run as a separate query):
    ```sql

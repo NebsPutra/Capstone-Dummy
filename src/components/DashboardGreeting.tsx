@@ -45,7 +45,7 @@ export function DashboardGreeting({ nickname }: { nickname: string | null | unde
           ? name ? t("greet.hi", { name }) : t("greet.hiNoName")
           : name ? t("greet.named", { greeting, name }) : t("greet.plain", { greeting })}
       </h1>
-      <p className="mt-1 text-ink/60">{t("dashboard.subtitle")}</p>
+      <p className="mt-1 text-ink/70">{t("dashboard.subtitle")}</p>
     </div>
   );
 }

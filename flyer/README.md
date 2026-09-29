@@ -24,3 +24,6 @@ node build-project-deck.js id   # PITCH DECK CAPSTONE.pptx (Bahasa Indonesia)
 sh render-flyers.sh  # flyer PNGs and logo PNG (needs Google Chrome)
 ```
 The QR codes point to https://komunitasa.vercel.app. Scan one with a phone before publishing.
+
+## Credits
+Deck icons are from [Font Awesome Free](https://fontawesome.com) via `react-icons`, licensed [CC BY 4.0](https://fontawesome.com/license/free). Fonts: Arial (decks), Plus Jakarta Sans (flyers, SIL OFL 1.1). The landing page screenshots are of our own app.

@@ -416,7 +416,7 @@ export function ActivityForm({ event }: { event?: EventRecord }) {
             {errors.map}
           </p>
         ) : (
-          <p className="text-xs text-ink/40">
+          <p className="text-xs text-ink/65">
             {t("create.mapHint")}
             {coords && ` ${t("location.pinnedAt", { coords: `${coords.lat.toFixed(5)}, ${coords.lng.toFixed(5)}` })}`}
           </p>
@@ -530,7 +530,7 @@ function Toggle({
         aria-checked={checked}
         aria-label={label}
         onClick={() => onChange(!checked)}
-        className={`h-6 w-11 shrink-0 rounded-full transition ${checked ? "bg-orange" : "bg-ink/15"}`}
+        className={`h-6 w-11 shrink-0 rounded-full transition ${checked ? "bg-orange-deep" : "bg-ink/15"}`}
       >
         <span
           className={`block h-5 w-5 translate-x-0.5 rounded-full bg-surface transition ${checked ? "translate-x-5" : ""}`}

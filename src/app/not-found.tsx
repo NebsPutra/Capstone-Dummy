@@ -14,15 +14,15 @@ export default async function NotFound() {
       <div className="card max-w-md space-y-3 p-8 text-center">
         <p className="text-4xl">🔍</p>
         <h1 className="text-xl font-bold">{t("notFound.title")}</h1>
-        <p className="text-sm text-ink/60">{t("notFound.desc")}</p>
+        <p className="text-sm text-ink/70">{t("notFound.desc")}</p>
         <Link
           href={user ? "/dashboard" : "/"}
-          className="inline-block rounded-full bg-orange px-6 py-2.5 text-sm font-semibold text-white hover:bg-orange-deep"
+          className="inline-block rounded-full bg-orange-deep px-6 py-2.5 text-sm font-semibold text-white hover:bg-orange-deeper"
         >
           {user ? t("notFound.home") : t("notFound.landing")}
         </Link>
         {user && (
-          <Link href="/help" className="block text-sm font-medium text-ink/50 hover:text-orange-dark">
+          <Link href="/help" className="block text-sm font-medium text-ink/65 hover:text-orange-dark">
             {t("help.needHelp")}
           </Link>
         )}

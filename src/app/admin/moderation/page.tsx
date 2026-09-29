@@ -46,7 +46,7 @@ export default function ModerationPage() {
           <button
             key={k}
             onClick={() => setTab(k)}
-            className={cn("rounded-full px-4 py-2 text-sm font-semibold", tab === k ? "bg-orange text-white shadow-soft" : "bg-surface text-ink/60 hover:bg-cream-warm")}
+            className={cn("rounded-full px-4 py-2 text-sm font-semibold", tab === k ? "bg-orange-deep text-white shadow-soft" : "bg-surface text-ink/70 hover:bg-cream-warm")}
           >
             {t(`amod.tab.${k}`)}
           </button>
@@ -83,7 +83,7 @@ function CommentQueue() {
           <button
             key={f}
             onClick={() => setFilter(f)}
-            className={cn("rounded-full border px-3 py-1.5 text-xs font-semibold", filter === f ? "border-orange bg-orange/10 text-orange-dark" : "border-ink/10 text-ink/60")}
+            className={cn("rounded-full border px-3 py-1.5 text-xs font-semibold", filter === f ? "border-orange bg-orange/10 text-orange-dark" : "border-ink/10 text-ink/70")}
           >
             {t(`amod.filter.${f}`)}
           </button>
@@ -107,12 +107,12 @@ function CommentQueue() {
       {!data ? (
         <div className="skeleton h-40" />
       ) : data.rows.length === 0 ? (
-        <p className="card p-6 text-center text-sm text-ink/50">{t("amod.emptyComments")}</p>
+        <p className="card p-6 text-center text-sm text-ink/65">{t("amod.emptyComments")}</p>
       ) : (
         <ul className="space-y-3">
           {data.rows.map((c) => (
             <li key={c.id} className="card space-y-2 p-4 text-sm">
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-ink/50">
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-ink/65">
                 {c.author && (
                   <Link href={`/admin/users/${c.author.id}`} className="font-semibold text-orange-dark">
                     @{c.author.username}
@@ -193,7 +193,7 @@ function MessageReports() {
           <button
             key={f}
             onClick={() => setFilter(f)}
-            className={cn("rounded-full border px-3 py-1.5 text-xs font-semibold", filter === f ? "border-orange bg-orange/10 text-orange-dark" : "border-ink/10 text-ink/60")}
+            className={cn("rounded-full border px-3 py-1.5 text-xs font-semibold", filter === f ? "border-orange bg-orange/10 text-orange-dark" : "border-ink/10 text-ink/70")}
           >
             {t(`amod.filter.${f}`)}
           </button>
@@ -202,12 +202,12 @@ function MessageReports() {
       {!data ? (
         <div className="skeleton h-40" />
       ) : data.rows.length === 0 ? (
-        <p className="card p-6 text-center text-sm text-ink/50">{t("amod.emptyMessages")}</p>
+        <p className="card p-6 text-center text-sm text-ink/65">{t("amod.emptyMessages")}</p>
       ) : (
         <ul className="space-y-3">
           {data.rows.map((r) => (
             <li key={`${r.message_id}-${r.reporter?.id}`} className="card space-y-2 p-4 text-sm">
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-ink/50">
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-ink/65">
                 <span>
                   {t("amod.sender")}:{" "}
                   {r.sender && (
@@ -226,7 +226,7 @@ function MessageReports() {
                 {r.resolved_at && <span className="font-semibold">{t(r.resolution === "remove" ? "amod.resolution.remove" : "amod.resolution.dismiss")}</span>}
               </div>
               <p className="whitespace-pre-line break-words rounded-xl bg-cream-warm px-3 py-2">{r.snapshot}</p>
-              {r.details && <p className="text-xs text-ink/60">“{r.details}”</p>}
+              {r.details && <p className="text-xs text-ink/70">“{r.details}”</p>}
               {!r.resolved_at && (
                 <div className="flex flex-wrap gap-2">
                   <button onClick={() => act(r.message_id, "dismiss")} className="rounded-full border border-ink/10 px-3 py-1.5 text-xs font-semibold">

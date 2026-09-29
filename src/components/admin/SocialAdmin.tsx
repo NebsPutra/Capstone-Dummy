@@ -58,7 +58,7 @@ export function UserSocialPanel({ userId, username, canEdit }: { userId: string;
           {t("asocial.blockedByOthers")}: <b>{data.blocked_by_others}</b>
         </p>
       </div>
-      <p className="text-ink/60">
+      <p className="text-ink/70">
         {t("privacy.profileVisibility")}: <b>{t(`visibility.${privacy.profile_visibility ?? "everyone"}` as TranslationKey)}</b> · {t("privacy.searchable")}:{" "}
         <b>{privacy.searchable === false ? "—" : "✓"}</b>
       </p>
@@ -66,22 +66,22 @@ export function UserSocialPanel({ userId, username, canEdit }: { userId: string;
         <ul className="flex flex-wrap gap-2">
           {data.links.map((l) => (
             <li key={l.platform} className="rounded-full bg-cream-warm px-3 py-1 text-xs">
-              {t(`links.platform.${l.platform}`)}: {l.value} <span className="text-ink/40">({t(`visibility.${l.visibility}`)})</span>
+              {t(`links.platform.${l.platform}`)}: {l.value} <span className="text-ink/65">({t(`visibility.${l.visibility}`)})</span>
             </li>
           ))}
         </ul>
       )}
       <div>
-        <h3 className="pt-1 text-xs font-semibold uppercase text-ink/50">{t("asocial.usernameHistory")}</h3>
+        <h3 className="pt-1 text-xs font-semibold uppercase text-ink/65">{t("asocial.usernameHistory")}</h3>
         {data.username_history.length === 0 ? (
-          <p className="text-ink/50">—</p>
+          <p className="text-ink/65">—</p>
         ) : (
           <ul className="space-y-1">
             {data.username_history.map((h, i) => (
               <li key={i} className="flex flex-wrap gap-2">
-                <time className="text-xs text-ink/40">{fmtDateTime(h.at, lang)}</time>
+                <time className="text-xs text-ink/65">{fmtDateTime(h.at, lang)}</time>
                 <span>@{h.old} → @{h.new}</span>
-                {h.by && <span className="text-ink/50">({t("asocial.by", { user: `@${h.by}` })})</span>}
+                {h.by && <span className="text-ink/65">({t("asocial.by", { user: `@${h.by}` })})</span>}
               </li>
             ))}
           </ul>
@@ -109,7 +109,7 @@ export function ReservedUsernames({ canEdit }: { canEdit: boolean }) {
     <section className="card space-y-3 p-5">
       <div>
         <h2 className="text-sm font-semibold">{t("asocial.reservedTitle")}</h2>
-        <p className="text-xs text-ink/50">{t("asocial.reservedHint")}</p>
+        <p className="text-xs text-ink/65">{t("asocial.reservedHint")}</p>
       </div>
       {canEdit && (
         <form
@@ -126,7 +126,7 @@ export function ReservedUsernames({ canEdit }: { canEdit: boolean }) {
             aria-label={t("asocial.reservedPlaceholder")}
             className="min-w-0 flex-1 rounded-lg border border-ink/10 bg-surface px-3 py-1.5 text-sm"
           />
-          <button className="rounded-full bg-orange px-3 py-1.5 text-sm font-semibold text-white">{t("asocial.reserve")}</button>
+          <button className="rounded-full bg-orange-deep px-3 py-1.5 text-sm font-semibold text-white">{t("asocial.reserve")}</button>
         </form>
       )}
       {!data ? (
@@ -137,7 +137,7 @@ export function ReservedUsernames({ canEdit }: { canEdit: boolean }) {
             <span key={n} className="inline-flex items-center gap-1 rounded-full bg-cream-warm px-2.5 py-1 text-xs">
               {n}
               {canEdit && (
-                <button onClick={() => set(n, false)} className="text-ink/40 hover:text-red-600" aria-label={t("asocial.unreserve", { name: n })}>
+                <button onClick={() => set(n, false)} className="text-ink/65 hover:text-red-600" aria-label={t("asocial.unreserve", { name: n })}>
                   ✕
                 </button>
               )}

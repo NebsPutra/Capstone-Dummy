@@ -24,16 +24,16 @@ export function Header({
           <ThemeToggle compact />
         </div>
         <LanguageSwitcher />
-        <Link href="/notifications" className="relative rounded-full p-2 text-ink/60 transition hover:bg-cream-warm active:scale-95" aria-label="notifications">
+        <Link href="/notifications" className="relative rounded-full p-2 text-ink/70 transition hover:bg-cream-warm active:scale-95" aria-label="notifications">
           <Bell size={19} />
           {unread > 0 && (
-            <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-orange px-1 text-[10px] font-bold text-white">
+            <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-orange-deep px-1 text-[10px] font-bold text-white">
               {unread > 9 ? "9+" : unread}
             </span>
           )}
         </Link>
         <Link href="/profile" className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-orange text-sm font-semibold text-white ring-2 ring-orange/20">
+          <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-orange-deep text-sm font-semibold text-white ring-2 ring-orange/20">
             {avatarUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={avatarUrl} alt={name ?? "avatar"} className="h-full w-full object-cover" />

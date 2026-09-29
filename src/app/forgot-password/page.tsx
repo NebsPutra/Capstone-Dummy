@@ -167,7 +167,7 @@ function ForgotPassword() {
         <form onSubmit={submitReset} noValidate className="space-y-4">
           <div className="text-center">
             <p className="font-semibold">{t("auth.codeSent")}</p>
-            <p className="mt-1 text-sm text-ink/60">{t("auth.codeSentTo", { email: clean })}</p>
+            <p className="mt-1 text-sm text-ink/70">{t("auth.codeSentTo", { email: clean })}</p>
           </div>
           <OtpInput value={code} onChange={setCode} hasError={error === "auth.codeIncorrect"} disabled={loading} />
           <FieldShell id="new-password" label={t("auth.newPassword")} hint={t("auth.passwordRules")}>
@@ -205,7 +205,7 @@ function ForgotPassword() {
                 setError(null);
                 setInfo(null);
               }}
-              className="text-sm font-medium text-ink/60"
+              className="text-sm font-medium text-ink/70"
             >
               {t("auth.changeEmail")}
             </button>

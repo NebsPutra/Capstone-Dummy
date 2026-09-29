@@ -35,7 +35,7 @@ export default async function AdminComplaintDetail({ params }: { params: Promise
     <div className="space-y-6">
       <Link href="/admin/complaints" className="text-sm font-medium text-orange-dark">← {t("acomp.title")}</Link>
       <div className="card space-y-3 p-6">
-        <p className="text-xs font-semibold text-ink/50">{c.ref} · {t(`complaint.category.${c.category}`)}</p>
+        <p className="text-xs font-semibold text-ink/65">{c.ref} · {t(`complaint.category.${c.category}`)}</p>
         <h1 className="text-xl font-bold">{c.subject}</h1>
         <p className="whitespace-pre-line text-sm text-ink/70">{c.description}</p>
         <div className="grid gap-2 text-sm sm:grid-cols-2">

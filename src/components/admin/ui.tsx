@@ -44,7 +44,7 @@ export function PageHeader({ title, subtitle, actions }: { title: string; subtit
     <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
       <div>
         <h1 className="text-2xl font-bold">{title}</h1>
-        {subtitle && <p className="mt-1 text-sm text-ink/60">{subtitle}</p>}
+        {subtitle && <p className="mt-1 text-sm text-ink/70">{subtitle}</p>}
       </div>
       {actions && <div className="flex flex-wrap gap-2">{actions}</div>}
     </div>
@@ -65,7 +65,7 @@ export function KpiCard({
   const { t, lang } = useLanguage();
   return (
     <div className="card p-4 transition hover:-translate-y-0.5 hover:shadow-lift">
-      <div className="flex items-center justify-between gap-2 text-xs font-medium text-ink/50">
+      <div className="flex items-center justify-between gap-2 text-xs font-medium text-ink/65">
         <span>{label}</span>
         {icon}
       </div>
@@ -102,7 +102,7 @@ export function RangePicker({ value, onChange }: { value: DateRange; onChange: (
             key={k}
             type="button"
             onClick={() => (k === "custom" ? onChange({ ...value, key: "custom" }) : onChange(rangeFor(k)))}
-            className={cn("rounded-full px-3 py-1.5 transition", value.key === k ? "bg-orange text-white shadow-soft" : "text-ink/60 hover:text-ink")}
+            className={cn("rounded-full px-3 py-1.5 transition", value.key === k ? "bg-orange-deep text-white shadow-soft" : "text-ink/70 hover:text-ink")}
           >
             {t(`range.${k}` as TranslationKey)}
           </button>
@@ -117,7 +117,7 @@ export function RangePicker({ value, onChange }: { value: DateRange; onChange: (
             type="button"
             disabled={!custom.from || !custom.to}
             onClick={() => onChange(rangeFor("custom" as RangeKey, custom))}
-            className="rounded-full bg-orange px-3 py-1 font-semibold text-white disabled:opacity-50"
+            className="rounded-full bg-orange-deep px-3 py-1 font-semibold text-white disabled:opacity-50"
           >
             ✓
           </button>
@@ -132,7 +132,7 @@ export function SearchBox({ value, onChange, placeholder }: { value: string; onC
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
   return (
     <div className="relative w-full sm:max-w-xs">
-      <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink/40" />
+      <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink/65" />
       <input
         value={local}
         placeholder={placeholder}
@@ -179,7 +179,7 @@ export function Select({
 export function Table({ children }: { children: React.ReactNode }) {
   return (
     <div className="card overflow-x-auto">
-      <table className="w-full min-w-[720px] text-left text-sm [&_td]:px-4 [&_td]:py-2.5 [&_th]:px-4 [&_th]:py-3 [&_th]:text-xs [&_th]:font-semibold [&_th]:uppercase [&_th]:tracking-wide [&_th]:text-ink/40 [&_tbody_tr]:border-t [&_tbody_tr]:border-ink/5 [&_tbody_tr:hover]:bg-cream-warm/40">
+      <table className="w-full min-w-[720px] text-left text-sm [&_td]:px-4 [&_td]:py-2.5 [&_th]:px-4 [&_th]:py-3 [&_th]:text-xs [&_th]:font-semibold [&_th]:uppercase [&_th]:tracking-wide [&_th]:text-ink/65 [&_tbody_tr]:border-t [&_tbody_tr]:border-ink/5 [&_tbody_tr:hover]:bg-cream-warm/40">
         {children}
       </table>
     </div>
@@ -192,7 +192,7 @@ export function Pagination({ page, pageSize, total, onPage }: { page: number; pa
   const to = Math.min(total, (page + 1) * pageSize);
   return (
     <div className="flex items-center justify-between gap-2 text-sm">
-      <span className="text-ink/50">{t("page.showing", { from, to, total })}</span>
+      <span className="text-ink/65">{t("page.showing", { from, to, total })}</span>
       <div className="flex gap-2">
         <button disabled={page === 0} onClick={() => onPage(page - 1)} className="rounded-full border border-ink/10 px-3 py-1.5 disabled:opacity-40">
           {t("page.prev")}
@@ -207,7 +207,7 @@ export function Pagination({ page, pageSize, total, onPage }: { page: number; pa
 
 export function Empty({ text }: { text: string }) {
   return (
-    <div className="card flex flex-col items-center gap-2 p-10 text-center text-sm text-ink/50">
+    <div className="card flex flex-col items-center gap-2 p-10 text-center text-sm text-ink/65">
       <span className="text-3xl">🍃</span>
       {text}
     </div>

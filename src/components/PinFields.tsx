@@ -75,7 +75,7 @@ export function NewPinForm({
         <OtpInput id="pin-confirm" masked label={t("pin.confirm")} value={confirm} onChange={setConfirm}
           hasError={error === "pin.errMismatch"} disabled={loading} />
       </div>
-      <p className="text-center text-xs text-ink/50">{t("pin.rules")}</p>
+      <p className="text-center text-xs text-ink/65">{t("pin.rules")}</p>
       {error && <Alert>{t(error)}</Alert>}
       <PrimaryButton type="submit" className="w-full" loading={loading} loadingText={t("pin.saving")}>
         {submitLabel}

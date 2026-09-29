@@ -23,12 +23,20 @@ export async function sendMail(msg: { to: string; subject: string; text: string;
   }
 }
 
-/** Simple branded email body: a heading, paragraphs and an optional button. */
-export function simpleEmailHtml(heading: string, paragraphs: string[], action?: { label: string; href: string }) {
+/**
+ * Simple branded email body: a heading, paragraphs, an optional button and an
+ * optional footer (why the email was sent). Colors meet WCAG AA contrast.
+ */
+export function simpleEmailHtml(
+  heading: string,
+  paragraphs: string[],
+  action?: { label: string; href: string },
+  footer?: string
+) {
   return `<div style="font-family:Arial,sans-serif;max-width:520px;margin:auto;color:#2b2118">
-  <h2 style="color:#e8772e">${escapeHtml(heading)}</h2>
+  <h2 style="color:#c2410c">${escapeHtml(heading)}</h2>
   ${paragraphs.map((p) => `<p style="line-height:1.5">${escapeHtml(p)}</p>`).join("\n  ")}
-  ${action ? `<p><a href="${escapeHtml(action.href)}" style="display:inline-block;background:#e8772e;color:#fff;padding:10px 18px;border-radius:999px;text-decoration:none;font-weight:bold">${escapeHtml(action.label)}</a></p>` : ""}
-  <p style="color:#8a7f76;font-size:12px">Komunitas</p>
+  ${action ? `<p><a href="${escapeHtml(action.href)}" style="display:inline-block;background:#c2410c;color:#fff;padding:10px 18px;border-radius:999px;text-decoration:none;font-weight:bold">${escapeHtml(action.label)}</a></p>` : ""}
+  <p style="color:#6b625b;font-size:12px;line-height:1.5">${footer ? `${escapeHtml(footer)}<br>` : ""}Komunitas</p>
 </div>`;
 }

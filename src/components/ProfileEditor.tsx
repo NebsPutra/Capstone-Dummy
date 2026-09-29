@@ -78,8 +78,8 @@ export function ProfileEditor({
     const e: typeof errors = {};
     if (!fullName.trim()) e.fullName = "register.errFullName";
     if (!nickname.trim()) e.nickname = "register.errNickname";
-    if (!gender) e.gender = "register.errGender";
-    if (!normalizeWhatsapp(whatsapp)) e.whatsapp = "register.errWhatsapp";
+    // Optional, but must be valid when given.
+    if (whatsapp.trim() && !normalizeWhatsapp(whatsapp)) e.whatsapp = "register.errWhatsapp";
     // Legacy profiles saved area names only; keep them until the user
     // picks a structured location, then require all three levels.
     const legacyOnly = !location.cityId && Boolean(location.city);
@@ -89,7 +89,6 @@ export function ProfileEditor({
       else if (!location.kelurahanId) e.kelurahan = "register.errKelurahan";
     }
     if (bio.length > BIO_MAX) e.bio = "register.errBioLong";
-    else if (!bio.trim()) e.bio = "register.errBio";
     if (selected.length === 0) e.primary = "register.errInterests";
     else if (!primary || !selected.includes(primary)) e.primary = "register.errPrimary";
     return e;
@@ -119,9 +118,9 @@ export function ProfileEditor({
         .update({
           full_name: fullName.trim(),
           nickname: nickname.trim(),
-          gender: gender as Gender,
-          whatsapp_number: normalizeWhatsapp(whatsapp)!,
-          bio: bio.trim(),
+          gender: (gender || null) as Gender | null,
+          whatsapp_number: normalizeWhatsapp(whatsapp),
+          bio: bio.trim() || null,
           ...(location.cityId
             ? {
                 province_id: location.provinceId || location.cityId.slice(0, 2),

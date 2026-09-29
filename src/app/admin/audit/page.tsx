@@ -39,12 +39,12 @@ export default function AdminAuditPage() {
             <tbody>
               {rows.map((r) => (
                 <tr key={r.id}>
-                  <td className="whitespace-nowrap text-xs text-ink/60">{fmtDateTime(r.created_at, lang)}</td>
-                  <td className="text-xs">{r.actor ? `@${r.actor.username}` : "system"}<span className="block text-ink/40">{r.actor_role}</span></td>
+                  <td className="whitespace-nowrap text-xs text-ink/70">{fmtDateTime(r.created_at, lang)}</td>
+                  <td className="text-xs">{r.actor ? `@${r.actor.username}` : "system"}<span className="block text-ink/65">{r.actor_role}</span></td>
                   <td className="font-medium">{r.action}</td>
-                  <td className="text-xs">{r.entity}<span className="block font-mono text-ink/40">{r.entity_id?.slice(0, 8)}</span></td>
+                  <td className="text-xs">{r.entity}<span className="block font-mono text-ink/65">{r.entity_id?.slice(0, 8)}</span></td>
                   <td className="max-w-md">
-                    <code className="block break-all text-xs text-ink/60">
+                    <code className="block break-all text-xs text-ink/70">
                       {r.old_value ? `${JSON.stringify(r.old_value)} → ` : ""}{r.new_value ? JSON.stringify(r.new_value) : r.metadata ? JSON.stringify(r.metadata) : ""}
                     </code>
                   </td>

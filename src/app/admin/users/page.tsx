@@ -66,7 +66,7 @@ export default function AdminUsersPage() {
                     <Link href={`/admin/users/${u.id}`} className="font-medium hover:text-orange-dark">
                       {u.display_name}
                     </Link>
-                    <span className="block text-xs text-ink/40">@{u.username}</span>
+                    <span className="block text-xs text-ink/65">@{u.username}</span>
                   </td>
                   <td className="text-ink/70">{u.email}</td>
                   <td>{t(`role.${u.role}` as TranslationKey)}</td>
@@ -77,8 +77,8 @@ export default function AdminUsersPage() {
                   <td className="tabular-nums">
                     {u.events_created} / {u.events_joined}
                   </td>
-                  <td className="text-xs text-ink/60">{fmtDateTime(u.created_at, lang)}</td>
-                  <td className="text-xs text-ink/60">{u.last_sign_in_at ? fmtDateTime(u.last_sign_in_at, lang) : t("ausers.never")}</td>
+                  <td className="text-xs text-ink/70">{fmtDateTime(u.created_at, lang)}</td>
+                  <td className="text-xs text-ink/70">{u.last_sign_in_at ? fmtDateTime(u.last_sign_in_at, lang) : t("ausers.never")}</td>
                 </tr>
               ))}
             </tbody>

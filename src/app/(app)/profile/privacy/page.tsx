@@ -14,11 +14,11 @@ export default async function PrivacyPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-5">
       <div>
-        <Link href="/profile" className="inline-flex items-center gap-1 text-sm font-medium text-ink/60 hover:text-orange-dark">
+        <Link href="/profile" className="inline-flex items-center gap-1 text-sm font-medium text-ink/70 hover:text-orange-dark">
           <ArrowLeft size={16} /> {t("security.backToProfile")}
         </Link>
         <h1 className="mt-2 text-2xl font-bold">{t("privacy.title")}</h1>
-        <p className="mt-1 text-sm text-ink/60">{t("privacy.subtitle")}</p>
+        <p className="mt-1 text-sm text-ink/70">{t("privacy.subtitle")}</p>
       </div>
       <PrivacyForm userId={user!.id} />
       <BlockedUsers />

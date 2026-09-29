@@ -15,6 +15,7 @@ import { NewPinForm } from "./PinFields";
 import { PasswordInput, ResendButton, useCooldown } from "./AuthShell";
 import { Alert, FieldShell, PrimaryButton, inputClass } from "./ui";
 import { useToast } from "./Toast";
+import { DeleteAccount } from "./DeleteAccount";
 
 export interface SecurityEventRow {
   id: number;
@@ -42,11 +43,11 @@ export function SecurityCenter({ email, pinSetAt, events }: { email: string; pin
   return (
     <div className="mx-auto max-w-2xl space-y-5">
       <div>
-        <Link href="/profile" className="inline-flex items-center gap-1 text-sm font-medium text-ink/60 hover:text-orange-dark">
+        <Link href="/profile" className="inline-flex items-center gap-1 text-sm font-medium text-ink/70 hover:text-orange-dark">
           <ArrowLeft size={16} /> {t("security.backToProfile")}
         </Link>
         <h1 className="mt-2 text-2xl font-bold">{t("security.title")}</h1>
-        <p className="mt-1 text-sm text-ink/60">{t("security.subtitle")}</p>
+        <p className="mt-1 text-sm text-ink/70">{t("security.subtitle")}</p>
       </div>
 
       <PinSection email={email} pinSetAt={pinSetAt} fmt={fmt} />
@@ -59,7 +60,7 @@ export function SecurityCenter({ email, pinSetAt, events }: { email: string; pin
           <ShieldCheck size={18} className="text-orange-dark" /> {t("security.activity")}
         </h2>
         {events.length === 0 ? (
-          <p className="mt-3 text-sm text-ink/50">{t("security.noActivity")}</p>
+          <p className="mt-3 text-sm text-ink/65">{t("security.noActivity")}</p>
         ) : (
           <ul className="mt-3 divide-y divide-ink/5">
             {events.map((e) => (
@@ -67,7 +68,7 @@ export function SecurityCenter({ email, pinSetAt, events }: { email: string; pin
                 <span className={e.type === "pin_failed" || e.type === "pin_locked" ? "font-medium text-red-600" : "font-medium"}>
                   {td(`security.event.${e.type}`, e.type)}
                 </span>
-                <span className="text-xs text-ink/50">
+                <span className="text-xs text-ink/65">
                   {e.device ? `${e.device} · ` : ""}
                   {fmt(e.created_at)}
                 </span>
@@ -76,6 +77,8 @@ export function SecurityCenter({ email, pinSetAt, events }: { email: string; pin
           </ul>
         )}
       </section>
+
+      <DeleteAccount />
     </div>
   );
 }
@@ -86,7 +89,7 @@ function SectionHeader({ icon, title, desc }: { icon: React.ReactNode; title: st
       <h2 className="flex items-center gap-2 font-semibold">
         {icon} {title}
       </h2>
-      {desc && <p className="mt-1 text-sm text-ink/60">{desc}</p>}
+      {desc && <p className="mt-1 text-sm text-ink/70">{desc}</p>}
     </div>
   );
 }
@@ -130,7 +133,7 @@ function PinSection({ email, pinSetAt, fmt }: { email: string; pinSetAt: string 
             }}
           />
           {pinSetAt && (
-            <button onClick={() => setOpen(false)} className="mt-3 w-full text-center text-sm font-medium text-ink/50">
+            <button onClick={() => setOpen(false)} className="mt-3 w-full text-center text-sm font-medium text-ink/65">
               {t("common.cancel")}
             </button>
           )}
@@ -219,7 +222,7 @@ function PasswordSection() {
         </>
       ) : (
         <form onSubmit={submit} noValidate className="mx-auto max-w-sm space-y-4">
-          <p className="text-center text-sm text-ink/60">{t("security.codeSentCurrent")}</p>
+          <p className="text-center text-sm text-ink/70">{t("security.codeSentCurrent")}</p>
           <OtpInput id="pw-code" value={code} onChange={setCode} hasError={error === "auth.codeIncorrect" || error === "auth.codeExpired"} disabled={loading} />
           <div className="flex justify-center">
             <ResendButton seconds={cooldown.seconds} sending={false} onResend={sendCode} />
@@ -234,7 +237,7 @@ function PasswordSection() {
           <PrimaryButton type="submit" className="w-full" loading={loading} loadingText={t("pin.saving")}>
             {t("security.pwSave")}
           </PrimaryButton>
-          <button type="button" onClick={() => setStage("idle")} className="w-full text-center text-sm font-medium text-ink/50">
+          <button type="button" onClick={() => setStage("idle")} className="w-full text-center text-sm font-medium text-ink/65">
             {t("common.cancel")}
           </button>
         </form>
@@ -336,12 +339,12 @@ function EmailSection({ email }: { email: string }) {
             <input id="new-email" type="email" autoComplete="email" autoFocus value={newEmail} onChange={(e) => setNewEmail(e.target.value)}
               placeholder={t("auth.emailPlaceholder")} className={inputClass(Boolean(error))} />
           </FieldShell>
-          <p className="text-xs text-ink/50">{t("security.emailKeepNote")}</p>
+          <p className="text-xs text-ink/65">{t("security.emailKeepNote")}</p>
           {error && error !== "auth.emailInvalid" && <Alert>{t(error)}</Alert>}
           <PrimaryButton type="submit" className="w-full" loading={loading} loadingText={t("auth.sending")}>
             {t("security.emailSend")}
           </PrimaryButton>
-          <button type="button" onClick={() => setStage("idle")} className="w-full text-center text-sm font-medium text-ink/50">
+          <button type="button" onClick={() => setStage("idle")} className="w-full text-center text-sm font-medium text-ink/65">
             {t("common.cancel")}
           </button>
         </form>
@@ -355,7 +358,7 @@ function EmailSection({ email }: { email: string }) {
           <div className="space-y-2">
             <p className="text-center text-sm font-medium">{t("security.codeForCurrent", { email })}</p>
             <OtpInput id="code-current" value={codeCurrent} onChange={setCodeCurrent} disabled={loading} />
-            <p className="text-center text-xs text-ink/50">{t("security.codeForCurrentHint")}</p>
+            <p className="text-center text-xs text-ink/65">{t("security.codeForCurrentHint")}</p>
           </div>
           {info && !error && <Alert tone="info">{t(info)}</Alert>}
           {error && <Alert>{t(error)}</Alert>}
@@ -364,7 +367,7 @@ function EmailSection({ email }: { email: string }) {
           </PrimaryButton>
           <div className="flex items-center justify-between">
             <ResendButton seconds={cooldown.seconds} sending={false} onResend={() => request()} />
-            <button type="button" onClick={() => setStage("idle")} className="text-sm font-medium text-ink/50">
+            <button type="button" onClick={() => setStage("idle")} className="text-sm font-medium text-ink/65">
               {t("common.cancel")}
             </button>
           </div>

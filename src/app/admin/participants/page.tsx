@@ -44,7 +44,7 @@ export default function AdminParticipantsPage() {
                   <td><Link href={`/admin/users/${r.user_id}`} className="hover:text-orange-dark">{r.participant?.nickname ? `${r.participant.nickname} (@${r.participant.username})` : `@${r.participant?.username ?? ""}`}</Link></td>
                   <td>{r.event && <Link href={`/admin/events/${r.event.id}`} className="hover:text-orange-dark"><span className="font-mono text-xs">{r.event.ref}</span> {r.event.title}</Link>}</td>
                   <td>{td(`participation.${r.status}`, r.status)}</td>
-                  <td className="text-xs text-ink/60">{fmtDateTime(r.joined_at, lang)}</td>
+                  <td className="text-xs text-ink/70">{fmtDateTime(r.joined_at, lang)}</td>
                 </tr>
               ))}
             </tbody>

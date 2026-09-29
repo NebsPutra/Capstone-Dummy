@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { CheckCircle2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import { LEGAL_UPDATED } from "@/lib/legal/documents";
 import type { TranslationKey } from "@/lib/i18n/translations";
 import { friendlyErrorKey, otpErrorKey } from "@/lib/errors";
 import {
@@ -149,12 +150,12 @@ function Register() {
                 title={label}
                 aria-current={i === stepIndex ? "step" : undefined}
                 className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold ${
-                  i <= stepIndex ? "bg-orange text-white" : "bg-cream-warm text-ink/40"
+                  i <= stepIndex ? "bg-orange-deep text-white" : "bg-cream-warm text-ink/65"
                 }`}
               >
                 {i < stepIndex ? "✓" : i + 1}
               </span>
-              <span className={`hidden text-xs sm:inline ${i === stepIndex ? "font-semibold" : "text-ink/50"}`}>
+              <span className={`hidden text-xs sm:inline ${i === stepIndex ? "font-semibold" : "text-ink/65"}`}>
                 {label}
               </span>
               {i < stepLabels.length - 1 && <span className="h-px w-5 bg-ink/10" />}
@@ -163,12 +164,12 @@ function Register() {
         </ol>
       )}
 
-      {step === "loading" && <p className="py-8 text-center text-sm text-ink/50">{t("common.loading")}</p>}
+      {step === "loading" && <p className="py-8 text-center text-sm text-ink/65">{t("common.loading")}</p>}
 
       {showResumeNotice && (step === "pin" || step === "profile" || step === "interests") ? (
         <div className="space-y-4 text-center">
           <p className="font-semibold">{t("register.incompleteTitle")}</p>
-          <p className="text-sm text-ink/60">{t("register.incompleteDesc")}</p>
+          <p className="text-sm text-ink/70">{t("register.incompleteDesc")}</p>
           <PrimaryButton className="w-full" onClick={() => setShowResumeNotice(false)}>
             {t("register.continueRegistration")}
           </PrimaryButton>
@@ -238,7 +239,7 @@ function Register() {
           {step === "done" && (
             <div className="space-y-4 py-4 text-center">
               <CheckCircle2 size={48} className="mx-auto text-green-600" />
-              <p className="text-sm text-ink/60">{t("register.readySubtitle")}</p>
+              <p className="text-sm text-ink/70">{t("register.readySubtitle")}</p>
               <PrimaryButton
                 onClick={() => {
                   router.replace("/dashboard");
@@ -280,6 +281,8 @@ function AccountStep({
   >({});
   const [error, setError] = useState<TranslationKey | null>(null);
   const [emailTaken, setEmailTaken] = useState(false);
+  const [agreed, setAgreed] = useState(false);
+  const [consentError, setConsentError] = useState(false);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -293,8 +296,9 @@ function AccountStep({
     if (!isStrongPassword(password)) errs.password = "auth.passwordWeak";
     if (password !== confirm) errs.confirm = "auth.passwordMismatch";
     setFieldErrors(errs);
-    if (Object.keys(errs).length) {
-      focusFirstError(["email", "password", "confirm"], errs);
+    setConsentError(!agreed);
+    if (Object.keys(errs).length || !agreed) {
+      focusFirstError(["email", "password", "confirm", "consent"], { ...errs, consent: !agreed });
       return;
     }
 
@@ -309,7 +313,12 @@ function AccountStep({
 
       // For an existing *unverified* account Supabase re-sends the code
       // instead of creating a duplicate user.
-      const { data, error: signUpError } = await supabase.auth.signUp({ email: clean, password });
+      // Record what was agreed to, and when, on the account itself.
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email: clean,
+        password,
+        options: { data: { terms_accepted_at: new Date().toISOString(), terms_version: LEGAL_UPDATED } },
+      });
       if (signUpError) {
         if (signUpError.code === "weak_password") {
           setFieldErrors({ password: "auth.passwordWeak" });
@@ -371,6 +380,39 @@ function AccountStep({
           hasError={Boolean(fieldErrors.confirm)}
         />
       </FieldShell>
+
+      <div>
+        <label htmlFor="consent" className="flex items-start gap-2.5 text-sm text-ink/80">
+          <input
+            id="consent"
+            type="checkbox"
+            checked={agreed}
+            onChange={(e) => {
+              setAgreed(e.target.checked);
+              if (e.target.checked) setConsentError(false);
+            }}
+            aria-invalid={consentError || undefined}
+            aria-describedby={consentError ? "consent-error" : undefined}
+            className="mt-0.5 h-4 w-4 shrink-0 accent-orange-deep"
+          />
+          <span>
+            {t("consent.agreePrefix")}{" "}
+            <Link href="/legal/terms" target="_blank" className="font-semibold text-orange-dark underline">
+              {t("consent.terms")}
+            </Link>{" "}
+            {t("consent.and")}{" "}
+            <Link href="/legal/privacy" target="_blank" className="font-semibold text-orange-dark underline">
+              {t("consent.privacy")}
+            </Link>
+            {t("consent.agreeSuffix")}
+          </span>
+        </label>
+        {consentError && (
+          <p id="consent-error" role="alert" className="mt-1 text-xs text-red-600">
+            {t("consent.required")}
+          </p>
+        )}
+      </div>
 
       {emailTaken && (
         <Alert>
@@ -461,7 +503,7 @@ function VerifyStep({
     >
       <div className="text-center">
         <p className="font-semibold">{t("auth.codeSent")}</p>
-        <p className="mt-1 text-sm text-ink/60">{t("auth.codeSentTo", { email })}</p>
+        <p className="mt-1 text-sm text-ink/70">{t("auth.codeSentTo", { email })}</p>
       </div>
 
       <OtpInput
@@ -484,11 +526,11 @@ function VerifyStep({
 
       <div className="flex items-center justify-between">
         <ResendButton seconds={cooldown.seconds} sending={resending} onResend={resend} />
-        <button type="button" onClick={onUseAnotherEmail} className="text-sm font-medium text-ink/60">
+        <button type="button" onClick={onUseAnotherEmail} className="text-sm font-medium text-ink/70">
           {t("auth.useAnotherEmail")}
         </button>
       </div>
-      <p className="text-center text-xs text-ink/40">{t("auth.checkSpam")}</p>
+      <p className="text-center text-xs text-ink/65">{t("auth.checkSpam")}</p>
     </form>
   );
 }
@@ -565,13 +607,12 @@ function ProfileStep({
     else if (usernameStatus !== "available" && usernameStatus !== "current") e.username = "username.errUnavailable";
     if (!fullName.trim()) e.fullName = "register.errFullName";
     if (!nickname.trim()) e.nickname = "register.errNickname";
-    if (!gender) e.gender = "register.errGender";
-    if (!normalizeWhatsapp(whatsapp)) e.whatsapp = "register.errWhatsapp";
+    // Optional, but must be valid when given.
+    if (whatsapp.trim() && !normalizeWhatsapp(whatsapp)) e.whatsapp = "register.errWhatsapp";
     if (!location.cityId) e.city = "register.errCity";
     if (!location.kecamatanId) e.kecamatan = "register.errKecamatan";
     if (!location.kelurahanId) e.kelurahan = "register.errKelurahan";
-    if (!bio.trim()) e.bio = "register.errBio";
-    else if (bio.length > BIO_MAX) e.bio = "register.errBioLong";
+    if (bio.length > BIO_MAX) e.bio = "register.errBioLong";
     return e;
   }
 
@@ -611,8 +652,8 @@ function ProfileStep({
       const saved = {
         full_name: fullName.trim(),
         nickname: nickname.trim(),
-        gender: gender as Gender,
-        whatsapp_number: normalizeWhatsapp(whatsapp)!,
+        gender: (gender || null) as Gender | null,
+        whatsapp_number: normalizeWhatsapp(whatsapp),
         province_id: location.provinceId || location.cityId.slice(0, 2),
         province: location.province || null,
         city_id: location.cityId,
@@ -621,7 +662,7 @@ function ProfileStep({
         kecamatan: location.kecamatan,
         kelurahan_id: location.kelurahanId,
         kelurahan: location.kelurahan,
-        bio: bio.trim(),
+        bio: bio.trim() || null,
         area_lat: point?.lat ?? null,
         area_lng: point?.lng ?? null,
       };
@@ -837,7 +878,7 @@ function InterestsStep({
 
   return (
     <form onSubmit={submit} className="space-y-5">
-      <p className="text-sm text-ink/60">{t("register.selectInterestsHint")}</p>
+      <p className="text-sm text-ink/70">{t("register.selectInterestsHint")}</p>
 
       {loadFailed ? (
         <Alert>{t("err.generic")}</Alert>
@@ -859,7 +900,7 @@ function InterestsStep({
       {error && <Alert>{t(error)}</Alert>}
 
       <div className="flex items-center justify-between gap-3">
-        <button type="button" onClick={onBack} className="text-sm font-medium text-ink/50">
+        <button type="button" onClick={onBack} className="text-sm font-medium text-ink/65">
           {t("common.back")}
         </button>
         <PrimaryButton type="submit" loading={saving} loadingText={t("register.finishing")}>

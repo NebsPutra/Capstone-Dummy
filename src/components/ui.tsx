@@ -36,7 +36,7 @@ export function FieldShell({
           {error}
         </p>
       ) : hint ? (
-        <p className="mt-1 text-xs text-ink/50">{hint}</p>
+        <p className="mt-1 text-xs text-ink/65">{hint}</p>
       ) : null}
     </div>
   );
@@ -68,7 +68,7 @@ export function PrimaryButton({
       disabled={props.disabled || loading}
       aria-busy={loading || undefined}
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-full bg-orange px-6 py-3 text-sm font-semibold text-white shadow-soft transition duration-150 hover:-translate-y-0.5 hover:bg-orange-deep hover:shadow-lift active:translate-y-0 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0",
+        "inline-flex items-center justify-center gap-2 rounded-full bg-orange-deep px-6 py-3 text-sm font-semibold text-white shadow-soft transition duration-150 hover:-translate-y-0.5 hover:bg-orange-deeper hover:shadow-lift active:translate-y-0 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0",
         className
       )}
     >

@@ -132,7 +132,7 @@ export default async function EventDetailsPage({
           <div>
             <h2 className="mb-1 text-sm font-semibold">📍 {t("event.location")}</h2>
             <p className="text-sm text-ink/70">{event.location_name}</p>
-            {event.address && <p className="text-sm text-ink/50">{event.address}</p>}
+            {event.address && <p className="text-sm text-ink/65">{event.address}</p>}
             <div className="mt-3">
               <EventMap lat={event.latitude} lng={event.longitude} label={event.location_name} />
             </div>
@@ -165,7 +165,7 @@ export default async function EventDetailsPage({
               </p>
             )}
             {event.pic_contact_instructions && (
-              <p className="mt-1 text-sm text-ink/60">{event.pic_contact_instructions}</p>
+              <p className="mt-1 text-sm text-ink/70">{event.pic_contact_instructions}</p>
             )}
           </div>
 
@@ -228,7 +228,7 @@ export default async function EventDetailsPage({
 
       <Link
         href={`/help?event=${event.id}`}
-        className="flex items-center justify-center gap-1.5 text-sm font-medium text-ink/50 hover:text-orange-dark"
+        className="flex items-center justify-center gap-1.5 text-sm font-medium text-ink/65 hover:text-orange-dark"
       >
         <LifeBuoy size={15} /> {t("help.reportEvent")}
       </Link>
@@ -239,7 +239,7 @@ export default async function EventDetailsPage({
 function Info({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div>
-      <p className="text-xs uppercase tracking-wide text-ink/40">{label}</p>
+      <p className="text-xs uppercase tracking-wide text-ink/65">{label}</p>
       <p className="font-medium">{value}</p>
     </div>
   );

@@ -3,6 +3,7 @@ import { enSecurity, idSecurity } from "./translations.security";
 import { enSocial, idSocial } from "./translations.social";
 import { enEngage, idEngage } from "./translations.engage";
 import { enFlyer, idFlyer } from "./translations.flyer";
+import { enLegal, idLegal } from "./translations.legal";
 
 export type Lang = "en" | "id";
 
@@ -51,7 +52,7 @@ const enBase = {
   "landing.feature3Desc":
     "Organize your own running group, book club, cycling session, or gathering.",
   "landing.feature4Title": "Build Local Communities",
-  "landing.feature4Desc": "Turn individual activities into recurring communities.",
+  "landing.feature4Desc": "Share your activities, invite friends and keep meeting the people you click with.",
 
   // Auth — shared
   "auth.email": "Email",
@@ -138,14 +139,14 @@ const enBase = {
   "register.personalInfoHint": "Tell the community a bit about who you are.",
   "register.fullName": "Full name",
   "register.nickname": "Nickname",
-  "register.gender": "Gender",
+  "register.gender": "Gender (optional)",
   "register.genderSelect": "Select gender...",
-  "register.whatsapp": "WhatsApp number",
+  "register.whatsapp": "WhatsApp number (optional)",
   "register.whatsappHint": "e.g. 0812 3456 7890",
   "register.city": "City / Regency",
   "register.kecamatan": "Kecamatan",
   "register.kelurahan": "Kelurahan / Desa",
-  "register.bio": "Short bio",
+  "register.bio": "Short bio (optional)",
   "register.bioPlaceholder": "Tell the community a little about yourself...",
   "register.errFullName": "Please enter your full name.",
   "register.errNickname": "Please enter a nickname.",
@@ -526,7 +527,7 @@ const enBase = {
   "notFound.landing": "Back to home",
 } as const;
 
-const en = { ...enBase, ...enExtra, ...enSecurity, ...enSocial, ...enEngage, ...enFlyer };
+const en = { ...enBase, ...enExtra, ...enSecurity, ...enSocial, ...enEngage, ...enFlyer, ...enLegal };
 
 export type TranslationKey = keyof typeof en;
 type Dict = Record<TranslationKey, string>;
@@ -571,7 +572,7 @@ const idBase: Record<keyof typeof enBase, string> = {
   "landing.feature3Desc":
     "Atur kelompok lari, klub buku, sesi bersepeda, atau kumpul-kumpulmu sendiri.",
   "landing.feature4Title": "Bangun Komunitas Lokal",
-  "landing.feature4Desc": "Ubah aktivitas individu menjadi komunitas yang rutin berjalan.",
+  "landing.feature4Desc": "Bagikan aktivitasmu, ajak teman, dan terus bertemu orang-orang yang cocok denganmu.",
 
   // Auth — shared
   "auth.email": "Email",
@@ -658,14 +659,14 @@ const idBase: Record<keyof typeof enBase, string> = {
   "register.personalInfoHint": "Ceritakan sedikit tentang dirimu kepada komunitas.",
   "register.fullName": "Nama lengkap",
   "register.nickname": "Nama panggilan",
-  "register.gender": "Jenis kelamin",
+  "register.gender": "Jenis kelamin (opsional)",
   "register.genderSelect": "Pilih jenis kelamin...",
-  "register.whatsapp": "Nomor WhatsApp",
+  "register.whatsapp": "Nomor WhatsApp (opsional)",
   "register.whatsappHint": "contoh: 0812 3456 7890",
   "register.city": "Kota / Kabupaten",
   "register.kecamatan": "Kecamatan",
   "register.kelurahan": "Kelurahan / Desa",
-  "register.bio": "Bio singkat",
+  "register.bio": "Bio singkat (opsional)",
   "register.bioPlaceholder": "Ceritakan sedikit tentang dirimu kepada komunitas...",
   "register.errFullName": "Masukkan nama lengkap kamu.",
   "register.errNickname": "Masukkan nama panggilan.",
@@ -1046,7 +1047,7 @@ const idBase: Record<keyof typeof enBase, string> = {
   "notFound.landing": "Kembali ke beranda",
 };
 
-const id: Dict = { ...idBase, ...idExtra, ...idSecurity, ...idSocial, ...idEngage, ...idFlyer };
+const id: Dict = { ...idBase, ...idExtra, ...idSecurity, ...idSocial, ...idEngage, ...idFlyer, ...idLegal };
 
 export const translations: Record<Lang, Dict> = { en, id };
 

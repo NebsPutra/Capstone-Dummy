@@ -41,7 +41,7 @@ export function ShareBox({
   return (
     <div className="card space-y-4 p-5">
       <h2 className="text-sm font-semibold">{t("share.title")}</h2>
-      <div className="flex flex-wrap items-center gap-2 text-xs text-ink/60">
+      <div className="flex flex-wrap items-center gap-2 text-xs text-ink/70">
         <span className="rounded-full bg-cream-warm px-2.5 py-1">
           {t("share.code")}: <span className="font-semibold">{eventCode}</span>
         </span>
@@ -67,7 +67,7 @@ export function ShareBox({
           >
             {t("share.whatsapp")}
           </a>
-          <p className="text-xs text-ink/50">{t("share.hint")}</p>
+          <p className="text-xs text-ink/65">{t("share.hint")}</p>
         </div>
       </div>
     </div>

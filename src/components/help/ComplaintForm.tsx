@@ -54,7 +54,7 @@ export function FilePicker({ files, onChange }: { files: File[]; onChange: (f: F
       >
         <Paperclip size={15} /> {t("help.attachments")}
       </button>
-      <p className="text-xs text-ink/50">{t("help.attachHint")}</p>
+      <p className="text-xs text-ink/65">{t("help.attachHint")}</p>
       {files.length > 0 && (
         <ul className="space-y-1">
           {files.map((f, i) => (
@@ -224,7 +224,7 @@ export function ComplaintForm({
           <input type="checkbox" checked={anonymous} onChange={(e) => setAnonymous(e.target.checked)} className="mt-1 accent-orange" />
           <span>
             {t("help.anonymous")}
-            <span className="block text-xs text-ink/50">{t("help.anonymousHint")}</span>
+            <span className="block text-xs text-ink/65">{t("help.anonymousHint")}</span>
           </span>
         </label>
       )}

@@ -29,13 +29,13 @@ export function MobileNav({ unreadMessages = 0 }: { unreadMessages?: number }) {
             href={href}
             className={cn(
               "flex min-w-0 flex-1 flex-col items-center gap-0.5 px-1 py-1 text-[10px] font-medium",
-              active ? "text-orange-dark" : "text-ink/50"
+              active ? "text-orange-dark" : "text-ink/65"
             )}
           >
             <span className="relative">
               <Icon size={20} />
               {href === "/messages" && unreadMessages > 0 && (
-                <span className="absolute -right-2 -top-1.5 min-w-4 rounded-full bg-orange px-1 text-center text-[10px] font-bold leading-4 text-white">
+                <span className="absolute -right-2 -top-1.5 min-w-4 rounded-full bg-orange-deep px-1 text-center text-[10px] font-bold leading-4 text-white">
                   {unreadMessages > 9 ? "9+" : unreadMessages}
                 </span>
               )}

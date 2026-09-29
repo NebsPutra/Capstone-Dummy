@@ -98,7 +98,7 @@ export function NearbyDashboard({
       <LocationBar location={location} onManual={() => setDialogOpen(true)} onGps={switchToGps} />
 
       {location.status === "ready" && (
-        <div className="space-y-1 text-sm text-ink/60">
+        <div className="space-y-1 text-sm text-ink/70">
           <p className="font-medium text-ink/80">{t("dashboard.radiusNote", { km: DASHBOARD_RADIUS_KM })}</p>
           <p>
             {t("dashboard.fartherNote")}{" "}
@@ -120,13 +120,13 @@ export function NearbyDashboard({
             </button>
           </div>
         ) : !sections || !events ? (
-          <p className="py-10 text-center text-sm text-ink/50">{t("dashboard.loading")}</p>
+          <p className="py-10 text-center text-sm text-ink/65">{t("dashboard.loading")}</p>
         ) : events.length === 0 ? (
           <div className="card space-y-4 p-8 text-center">
-            <p className="text-ink/60">{t("dashboard.emptyNearby", { km: DASHBOARD_RADIUS_KM })}</p>
+            <p className="text-ink/70">{t("dashboard.emptyNearby", { km: DASHBOARD_RADIUS_KM })}</p>
             <Link
               href="/create"
-              className="inline-block rounded-full bg-orange px-6 py-3 text-sm font-semibold text-white hover:bg-orange-deep"
+              className="inline-block rounded-full bg-orange-deep px-6 py-3 text-sm font-semibold text-white hover:bg-orange-deeper"
             >
               {t("dashboard.createCta")}
             </Link>
@@ -203,7 +203,7 @@ export function LocationBar({
 
   if (location.status === "checking" || location.status === "locating") {
     return (
-      <div className="card flex items-center gap-3 p-4 text-sm text-ink/60">
+      <div className="card flex items-center gap-3 p-4 text-sm text-ink/70">
         <LocateFixed size={18} className="animate-pulse text-orange-dark" />
         {t("location.locating")}
       </div>
@@ -219,7 +219,7 @@ export function LocationBar({
             <p className="font-semibold">
               {location.reason === "not-asked" ? t("location.needLocation") : t("location.gpsUnavailable")}
             </p>
-            {location.reason === "denied" && <p className="text-ink/60">{t("location.permissionDenied")}</p>}
+            {location.reason === "denied" && <p className="text-ink/70">{t("location.permissionDenied")}</p>}
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -247,7 +247,7 @@ export function LocationBar({
           <p className="font-medium">
             {location.source === "gps" ? t("location.usingGps") : t("location.usingManual")}
           </p>
-          {location.source === "manual" && location.label && <p className="text-ink/50">{location.label}</p>}
+          {location.source === "manual" && location.label && <p className="text-ink/65">{location.label}</p>}
         </div>
       </div>
       <div className="flex shrink-0 flex-wrap gap-2">

@@ -36,7 +36,7 @@ export function RequestActions({ participantId }: { participantId: string }) {
       <button
         onClick={() => decide("approved")}
         disabled={Boolean(busy)}
-        className="rounded-full bg-orange px-4 py-1.5 text-xs font-semibold text-white disabled:opacity-50"
+        className="rounded-full bg-orange-deep px-4 py-1.5 text-xs font-semibold text-white disabled:opacity-50"
       >
         {busy === "approved" ? "…" : t("event.approve")}
       </button>

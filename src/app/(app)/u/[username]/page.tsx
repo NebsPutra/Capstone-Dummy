@@ -77,9 +77,9 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
           <Avatar name={p.display_name} url={p.avatar_url} size={72} />
           <div className="min-w-0 flex-1">
             <h1 className="truncate text-xl font-bold sm:text-2xl">{p.display_name}</h1>
-            <p className="text-sm text-ink/50">@{p.username}</p>
-            {d?.full_name && d.full_name !== p.display_name && <p className="text-sm text-ink/60">{d.full_name}</p>}
-            <p className="mt-1 flex items-center gap-1 text-xs text-ink/40">
+            <p className="text-sm text-ink/65">@{p.username}</p>
+            {d?.full_name && d.full_name !== p.display_name && <p className="text-sm text-ink/70">{d.full_name}</p>}
+            <p className="mt-1 flex items-center gap-1 text-xs text-ink/65">
               <CalendarDays size={13} /> {t("social.memberSince", { date: since })}
             </p>
           </div>
@@ -92,18 +92,18 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
         {(p.friends_count != null || p.mutual_friends > 0) && (
           <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-ink/5 pt-4">
             {p.friends_count != null && <UserFriendsList userId={p.user_id} count={p.friends_count} />}
-            {p.mutual_friends > 0 && !p.is_self && <span className="text-sm text-ink/60">{t("social.mutual", { n: p.mutual_friends })}</span>}
+            {p.mutual_friends > 0 && !p.is_self && <span className="text-sm text-ink/70">{t("social.mutual", { n: p.mutual_friends })}</span>}
           </div>
         )}
       </section>
 
       {p.relationship === "blocked" ? (
-        <section className="card p-6 text-center text-sm text-ink/60">{t("social.youBlocked")}</section>
+        <section className="card p-6 text-center text-sm text-ink/70">{t("social.youBlocked")}</section>
       ) : !p.can_view || !d ? (
         <section className="card flex flex-col items-center gap-2 p-8 text-center">
           <Lock size={28} className="text-ink/30" />
           <p className="font-semibold">{p.visibility === "friends" ? t("social.friendsOnlyProfile") : t("social.privateProfile")}</p>
-          {p.visibility === "friends" && p.relationship === "none" && <p className="text-sm text-ink/50">{t("social.addToSee")}</p>}
+          {p.visibility === "friends" && p.relationship === "none" && <p className="text-sm text-ink/65">{t("social.addToSee")}</p>}
         </section>
       ) : (
         <>
@@ -120,7 +120,7 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
             <section className="card space-y-3 p-5">
               {d.bio && <p className="whitespace-pre-line text-sm leading-relaxed text-ink/80">{d.bio}</p>}
               {facts.length > 0 && (
-                <ul className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-ink/60">
+                <ul className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-ink/70">
                   {facts.map((f) => (
                     <li key={f.text} className="flex items-center gap-1">
                       {f.icon}
@@ -144,8 +144,8 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
                         >
                           {l.platform === "website" && <Globe size={14} />}
                           <span className="font-medium">{t(`links.platform.${l.platform}`)}</span>
-                          <span className="max-w-[12rem] truncate text-ink/50">{socialLabel(l)}</span>
-                          {p.is_self && l.visibility !== "everyone" && <Lock size={12} className="text-ink/40" aria-label={t(`visibility.${l.visibility}`)} />}
+                          <span className="max-w-[12rem] truncate text-ink/65">{socialLabel(l)}</span>
+                          {p.is_self && l.visibility !== "everyone" && <Lock size={12} className="text-ink/65" aria-label={t(`visibility.${l.visibility}`)} />}
                         </a>
                       </li>
                     );
@@ -178,11 +178,11 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
               <div className="grid grid-cols-2 gap-3 text-center">
                 <div>
                   <p className="text-lg font-bold">{d.stats.hosted}</p>
-                  <p className="text-xs text-ink/50">{t("profile.created")}</p>
+                  <p className="text-xs text-ink/65">{t("profile.created")}</p>
                 </div>
                 <div>
                   <p className="text-lg font-bold">{d.stats.joined}</p>
-                  <p className="text-xs text-ink/50">{t("profile.joined")}</p>
+                  <p className="text-xs text-ink/65">{t("profile.joined")}</p>
                 </div>
               </div>
               {d.upcoming && d.upcoming.length > 0 && (
@@ -194,9 +194,9 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
                         <Link href={`/activities/${e.id}`} className="flex items-center justify-between gap-3 py-2.5 text-sm hover:text-orange-dark">
                           <span className="min-w-0">
                             <span className="block truncate font-medium">{e.title}</span>
-                            <span className="block truncate text-xs text-ink/50">{e.location}</span>
+                            <span className="block truncate text-xs text-ink/65">{e.location}</span>
                           </span>
-                          <span className="shrink-0 text-xs text-ink/50">
+                          <span className="shrink-0 text-xs text-ink/65">
                             {formatDate(e.event_date, lang)} · {e.start_time.slice(0, 5)}
                           </span>
                         </Link>

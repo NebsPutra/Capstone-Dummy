@@ -125,7 +125,7 @@ export function BannerUpload({
     <div className="space-y-2">
       <div className="flex items-center justify-between gap-2">
         <span className="text-sm font-medium">{t("banner.label")}</span>
-        <span className="text-xs text-ink/50">{t("banner.recommend")}</span>
+        <span className="text-xs text-ink/65">{t("banner.recommend")}</span>
       </div>
 
       {img ? (
@@ -152,7 +152,7 @@ export function BannerUpload({
               style={{ left: pos.x, top: pos.y, width: drawW, height: drawH }}
             />
           </div>
-          <p className="text-xs text-ink/50">{t("banner.cropHint")}</p>
+          <p className="text-xs text-ink/65">{t("banner.cropHint")}</p>
           <label className="flex items-center gap-3 text-sm">
             <span className="shrink-0">{t("banner.zoom")}</span>
             <input
@@ -183,7 +183,7 @@ export function BannerUpload({
           <div className="overflow-hidden rounded-xl">
             <EventCover bannerUrl={value} categoryKey={categoryKey} emoji={emoji} title={title} className="aspect-video" />
           </div>
-          {!value && <p className="text-xs text-ink/50">{t("banner.default")}</p>}
+          {!value && <p className="text-xs text-ink/65">{t("banner.default")}</p>}
           <div className="flex flex-wrap gap-2">
             <button
               type="button"

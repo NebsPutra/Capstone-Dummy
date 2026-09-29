@@ -36,7 +36,7 @@ export function ActivityCard({
           className="aspect-[16/7] transition duration-300 group-hover:scale-[1.03]"
         />
         {highlight && (
-          <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-orange px-2.5 py-1 text-xs font-semibold text-white">
+          <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-orange-deep px-2.5 py-1 text-xs font-semibold text-white">
             <Star size={12} /> {highlight}
           </span>
         )}
@@ -47,7 +47,7 @@ export function ActivityCard({
           <StatusBadge status={status} />
         </div>
         {event.category && (
-          <p className="text-sm text-ink/60">
+          <p className="text-sm text-ink/70">
             {td(`category.${event.category.key}`, event.category.label)}
           </p>
         )}
@@ -65,7 +65,7 @@ export function ActivityCard({
           )}
         </div>
         <div className="flex items-center justify-between pt-1">
-          <div className="flex items-center gap-1.5 text-sm text-ink/60">
+          <div className="flex items-center gap-1.5 text-sm text-ink/70">
             <Users size={15} />
             <span>
               {event.participant_count ?? 0}/{event.max_participants}

@@ -71,7 +71,7 @@ export default function AdminEventDetail({ params }: { params: Promise<{ id: str
           <>
             <StatusBadge status={status} />
             <Link href={`/activities/${ev.id}`} className="rounded-full border border-ink/10 bg-surface px-3 py-1.5 text-xs font-semibold">{t("common.view")}</Link>
-            <Link href={`/activities/${ev.id}/edit`} className="rounded-full bg-orange px-3 py-1.5 text-xs font-semibold text-white">{t("common.edit")}</Link>
+            <Link href={`/activities/${ev.id}/edit`} className="rounded-full bg-orange-deep px-3 py-1.5 text-xs font-semibold text-white">{t("common.edit")}</Link>
             {ev.status === "cancelled" ? (
               <button onClick={() => window.confirm(t("aevents.restoreConfirm")) && act(() => sb.rpc("admin_restore_event", { p_event: ev.id }), "aevents.restored")}
                 className="rounded-full bg-green-600 px-3 py-1.5 text-xs font-semibold text-white">{t("aevents.restore")}</button>
@@ -86,14 +86,14 @@ export default function AdminEventDetail({ params }: { params: Promise<{ id: str
         <section className="card overflow-hidden lg:col-span-2">
           <EventCover bannerUrl={ev.banner_url} categoryKey={ev.category?.key} emoji={ev.category?.emoji} title={ev.title} className="aspect-[16/6]" />
           <div className="grid grid-cols-2 gap-3 p-5 text-sm sm:grid-cols-3">
-            <p><span className="block text-xs text-ink/40">{t("event.date")}</span>{formatDate(ev.event_date, lang)}</p>
-            <p><span className="block text-xs text-ink/40">{t("event.time")}</span>{formatTimeRange(ev.start_time, ev.end_time)}</p>
-            <p><span className="block text-xs text-ink/40">{t("event.fee")}</span>{formatFee(ev.fee, lang)}</p>
-            <p><span className="block text-xs text-ink/40">{t("event.participants")}</span>{ev.participant_count}/{ev.max_participants}</p>
-            <p><span className="block text-xs text-ink/40">{t("col.category")}</span>{ev.category ? td(`category.${ev.category.key}`, ev.category.label) : "—"}</p>
-            <p><span className="block text-xs text-ink/40">{t("col.organizer")}</span>
+            <p><span className="block text-xs text-ink/65">{t("event.date")}</span>{formatDate(ev.event_date, lang)}</p>
+            <p><span className="block text-xs text-ink/65">{t("event.time")}</span>{formatTimeRange(ev.start_time, ev.end_time)}</p>
+            <p><span className="block text-xs text-ink/65">{t("event.fee")}</span>{formatFee(ev.fee, lang)}</p>
+            <p><span className="block text-xs text-ink/65">{t("event.participants")}</span>{ev.participant_count}/{ev.max_participants}</p>
+            <p><span className="block text-xs text-ink/65">{t("col.category")}</span>{ev.category ? td(`category.${ev.category.key}`, ev.category.label) : "—"}</p>
+            <p><span className="block text-xs text-ink/65">{t("col.organizer")}</span>
               {ev.organizer ? <Link className="text-orange-dark" href={`/admin/users/${ev.organizer.id}`}>@{ev.organizer.username}</Link> : "—"}</p>
-            <p className="col-span-full"><span className="block text-xs text-ink/40">{t("event.location")}</span>{ev.location_name} ({ev.latitude.toFixed(4)}, {ev.longitude.toFixed(4)})</p>
+            <p className="col-span-full"><span className="block text-xs text-ink/65">{t("event.location")}</span>{ev.location_name} ({ev.latitude.toFixed(4)}, {ev.longitude.toFixed(4)})</p>
           </div>
         </section>
 
@@ -108,7 +108,7 @@ export default function AdminEventDetail({ params }: { params: Promise<{ id: str
                   <li key={h.id}>
                     <button className="w-full px-3 py-1.5 text-left text-sm hover:bg-cream-warm"
                       onClick={() => { setQ(""); act(() => sb.rpc("admin_add_participant", { p_event: ev.id, p_user: h.id }), "aevents.added"); }}>
-                      {h.display_name} <span className="text-xs text-ink/40">{h.email}</span>
+                      {h.display_name} <span className="text-xs text-ink/65">{h.email}</span>
                     </button>
                   </li>
                 ))}
@@ -135,13 +135,13 @@ export default function AdminEventDetail({ params }: { params: Promise<{ id: str
 
       <section className="card space-y-2 p-5">
         <h2 className="text-sm font-semibold">{t("aevents.history")}</h2>
-        {audit.length === 0 ? <p className="text-sm text-ink/50">—</p> : (
+        {audit.length === 0 ? <p className="text-sm text-ink/65">—</p> : (
           <ul className="space-y-1.5 text-sm">
             {audit.map((a) => (
               <li key={a.id} className="flex flex-wrap items-baseline gap-2">
-                <time className="text-xs text-ink/40">{fmtDateTime(a.created_at, lang)}</time>
+                <time className="text-xs text-ink/65">{fmtDateTime(a.created_at, lang)}</time>
                 <span className="font-medium">{a.action}</span>
-                {a.new_value && <code className="break-all text-xs text-ink/50">{JSON.stringify(a.old_value)} → {JSON.stringify(a.new_value)}</code>}
+                {a.new_value && <code className="break-all text-xs text-ink/65">{JSON.stringify(a.old_value)} → {JSON.stringify(a.new_value)}</code>}
               </li>
             ))}
           </ul>

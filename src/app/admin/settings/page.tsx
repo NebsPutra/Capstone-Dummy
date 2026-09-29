@@ -72,7 +72,7 @@ export default function AdminSettingsPage() {
       <ReservedUsernames canEdit={rank >= 2} />
       <section className="card space-y-2 p-5">
         <h2 className="text-sm font-semibold">{t("savedViews.title")}</h2>
-        {views.length === 0 ? <p className="text-sm text-ink/50">{t("savedViews.none")}</p> : views.map((v) => (
+        {views.length === 0 ? <p className="text-sm text-ink/65">{t("savedViews.none")}</p> : views.map((v) => (
           <div key={v.id} className="flex items-center justify-between text-sm">
             <Link href={`${v.page}?${new URLSearchParams(v.filters as Record<string, string>)}`} className="text-orange-dark">{v.name}</Link>
             <button onClick={async () => { await sb.from("saved_views").delete().eq("id", v.id); setTick((n) => n + 1); }} className="text-xs text-red-600">✕</button>

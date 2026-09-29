@@ -39,7 +39,7 @@ export default async function HelpPage({
         </span>
         <div>
           <h1 className="text-2xl font-bold">{t("help.title")}</h1>
-          <p className="mt-1 text-ink/60">{t("help.subtitle")}</p>
+          <p className="mt-1 text-ink/70">{t("help.subtitle")}</p>
         </div>
       </div>
 
@@ -52,7 +52,7 @@ export default async function HelpPage({
       <section className="space-y-3">
         <h2 className="text-lg font-semibold">{t("help.myComplaints")}</h2>
         {(complaints ?? []).length === 0 ? (
-          <p className="text-sm text-ink/50">{t("help.none")}</p>
+          <p className="text-sm text-ink/65">{t("help.none")}</p>
         ) : (
           (complaints as Pick<Complaint, "id" | "ref" | "subject" | "category" | "status" | "created_at" | "last_activity_at">[]).map((c) => (
             <Link
@@ -61,11 +61,11 @@ export default async function HelpPage({
               className="card flex flex-col gap-2 p-4 transition hover:-translate-y-0.5 hover:shadow-lift sm:flex-row sm:items-center sm:justify-between"
             >
               <div className="min-w-0">
-                <p className="text-xs font-semibold text-ink/50">
+                <p className="text-xs font-semibold text-ink/65">
                   {c.ref} · {t(`complaint.category.${c.category}`)}
                 </p>
                 <p className="truncate font-medium">{c.subject}</p>
-                <p className="text-xs text-ink/50">
+                <p className="text-xs text-ink/65">
                   {t("help.submittedOn", { date: date(c.created_at) })} · {t("help.lastUpdate", { date: date(c.last_activity_at) })}
                 </p>
               </div>

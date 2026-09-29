@@ -26,7 +26,7 @@ export function InterestPicker({
             aria-pressed={on}
             onClick={() => onToggle(i.id)}
             className={`rounded-full border px-3.5 py-2 text-sm font-medium transition ${
-              on ? "border-orange bg-orange/10 text-orange-dark" : "border-ink/10 text-ink/60 hover:bg-cream-warm"
+              on ? "border-orange bg-orange/10 text-orange-dark" : "border-ink/10 text-ink/70 hover:bg-cream-warm"
             }`}
           >
             {on ? "☑" : "☐"} {i.emoji} {td(`interest.${i.key}`, i.label)}

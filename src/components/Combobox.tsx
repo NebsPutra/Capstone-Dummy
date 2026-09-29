@@ -214,7 +214,7 @@ export function Combobox({
               onChange("");
               inputRef.current?.focus();
             }}
-            className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full text-ink/40 hover:bg-cream-warm hover:text-ink/70"
+            className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full text-ink/65 hover:bg-cream-warm hover:text-ink/70"
           >
             <X size={16} />
           </button>
@@ -230,13 +230,13 @@ export function Combobox({
       {open && (
         <div className="absolute inset-x-0 top-full z-50 mt-1 overflow-hidden rounded-xl border border-ink/10 bg-surface shadow-lg">
           {loading ? (
-            <p className="px-4 py-3 text-sm text-ink/50">{t("common.loading")}</p>
+            <p className="px-4 py-3 text-sm text-ink/65">{t("common.loading")}</p>
           ) : tooShort ? (
-            <p className="px-4 py-3 text-sm text-ink/50">{t("location.typeMin", { n: minChars })}</p>
+            <p className="px-4 py-3 text-sm text-ink/65">{t("location.typeMin", { n: minChars })}</p>
           ) : results.length === 0 ? (
             <div className="px-4 py-3 text-sm">
               <p className="font-medium">{noResults}</p>
-              <p className="text-ink/50">{t("location.tryAnother")}</p>
+              <p className="text-ink/65">{t("location.tryAnother")}</p>
             </div>
           ) : (
             <ul
@@ -267,7 +267,7 @@ export function Combobox({
                   {o.label}
                 </li>
               ))}
-              {more && <li className="px-4 py-2 text-xs text-ink/40">{t("location.moreResults")}</li>}
+              {more && <li className="px-4 py-2 text-xs text-ink/65">{t("location.moreResults")}</li>}
             </ul>
           )}
         </div>

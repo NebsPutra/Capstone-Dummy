@@ -81,14 +81,14 @@ export function OwnerPanel({
       <section className="space-y-2">
         <h3 className="text-sm font-semibold">{t("event.pendingTitle")}</h3>
         {pending.length === 0 ? (
-          <p className="text-sm text-ink/50">{t("event.noPending")}</p>
+          <p className="text-sm text-ink/65">{t("event.noPending")}</p>
         ) : (
           pending.map((p) => (
             <Row key={p.id} name={nameOf(p)}>
               <button
                 disabled={Boolean(busyId) || locked || approvedCount >= maxParticipants}
                 onClick={() => setStatus(p, "approved")}
-                className="rounded-full bg-orange px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50"
+                className="rounded-full bg-orange-deep px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50"
               >
                 {t("event.approve")}
               </button>
@@ -109,7 +109,7 @@ export function OwnerPanel({
           {t("event.participantsTitle", { n: approvedCount, max: maxParticipants })}
         </h3>
         {approved.length === 0 ? (
-          <p className="text-sm text-ink/50">{t("event.noParticipants")}</p>
+          <p className="text-sm text-ink/65">{t("event.noParticipants")}</p>
         ) : (
           approved.map((p) => (
             <Row key={p.id} name={nameOf(p)}>

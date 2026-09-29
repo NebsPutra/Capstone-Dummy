@@ -6,7 +6,7 @@ import { useLanguage } from "@/lib/i18n/LanguageContext";
 function MapLoading() {
   const { t } = useLanguage();
   return (
-    <div className="flex h-[220px] items-center justify-center rounded-xl bg-cream-warm text-sm text-ink/40">
+    <div className="flex h-[220px] items-center justify-center rounded-xl bg-cream-warm text-sm text-ink/65">
       {t("create.loadingMap")}
     </div>
   );

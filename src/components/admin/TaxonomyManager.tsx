@@ -39,7 +39,7 @@ export function TaxonomyManager({ kind }: { kind: "interests" | "categories" }) 
         title={t(kind === "interests" ? "taxo.hobbies" : "taxo.categories")}
         subtitle={t("taxo.inactiveHint")}
         actions={<button onClick={() => setItems([...items, { id: null, key: "", label: "", emoji: "✨", is_active: true, sort_order: items.length }])}
-          className="rounded-full bg-orange px-4 py-2 text-sm font-semibold text-white">+ {t("taxo.add")}</button>}
+          className="rounded-full bg-orange-deep px-4 py-2 text-sm font-semibold text-white">+ {t("taxo.add")}</button>}
       />
       <Table>
         <thead><tr><th>{t("taxo.emoji")}</th><th>{t("taxo.key")}</th><th>{t("taxo.label")}</th><th>{t("taxo.order")}</th><th>{t("taxo.active")}</th><th /></tr></thead>
@@ -50,11 +50,11 @@ export function TaxonomyManager({ kind }: { kind: "interests" | "categories" }) 
               <td>{it.id ? <code className="text-xs">{it.key}</code> : <input className={cell} placeholder="snake_case" title={t("taxo.keyHint")} value={it.key} onChange={(e) => update(i, { key: e.target.value })} />}</td>
               <td>
                 <input className={cell} value={it.label} onChange={(e) => update(i, { label: e.target.value })} />
-                {it.id && <span className="text-xs text-ink/40">{td(`${prefix}.${it.key}`, it.label)}</span>}
+                {it.id && <span className="text-xs text-ink/65">{td(`${prefix}.${it.key}`, it.label)}</span>}
               </td>
               <td className="w-20"><input type="number" className={cell} value={it.sort_order} onChange={(e) => update(i, { sort_order: Number(e.target.value) })} /></td>
               <td><input type="checkbox" className="accent-orange" checked={it.is_active} onChange={(e) => update(i, { is_active: e.target.checked })} /></td>
-              <td><button disabled={!it.label || (!it.id && !it.key)} onClick={() => save(it)} className="rounded-full bg-orange px-3 py-1 text-xs font-semibold text-white disabled:opacity-40">{t("common.save")}</button></td>
+              <td><button disabled={!it.label || (!it.id && !it.key)} onClick={() => save(it)} className="rounded-full bg-orange-deep px-3 py-1 text-xs font-semibold text-white disabled:opacity-40">{t("common.save")}</button></td>
             </tr>
           ))}
         </tbody>

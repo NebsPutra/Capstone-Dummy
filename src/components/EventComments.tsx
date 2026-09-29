@@ -99,18 +99,18 @@ function Composer({
         className="w-full resize-y rounded-xl border border-ink/10 bg-surface px-3 py-2 text-sm outline-none focus:border-orange"
       />
       <div className="flex items-center justify-end gap-2">
-        <span className={cn("mr-auto text-xs", trimmed.length > MAX ? "text-red-600" : "text-ink/40")}>
+        <span className={cn("mr-auto text-xs", trimmed.length > MAX ? "text-red-600" : "text-ink/65")}>
           {trimmed.length}/{MAX}
         </span>
         {onCancel && (
-          <button type="button" onClick={onCancel} className="rounded-full px-3 py-1.5 text-sm font-medium text-ink/60">
+          <button type="button" onClick={onCancel} className="rounded-full px-3 py-1.5 text-sm font-medium text-ink/70">
             {t("common.cancel")}
           </button>
         )}
         <button
           type="submit"
           disabled={!trimmed || trimmed.length > MAX || busy}
-          className="rounded-full bg-orange px-4 py-1.5 text-sm font-semibold text-white disabled:opacity-50"
+          className="rounded-full bg-orange-deep px-4 py-1.5 text-sm font-semibold text-white disabled:opacity-50"
         >
           {busy ? t("comments.posting") : submitLabel}
         </button>
@@ -175,7 +175,7 @@ function CommentItem({ c, thread, eventId, reload, isReply }: { c: Comment; thre
                 <Pin size={12} /> {t("comments.pinned")}
               </span>
             )}
-            <span className="text-xs text-ink/40">
+            <span className="text-xs text-ink/65">
               {timeAgo(c.created_at, lang)}
               {c.edited && ` · ${t("comments.edited")}`}
             </span>
@@ -209,13 +209,13 @@ function CommentItem({ c, thread, eventId, reload, isReply }: { c: Comment; thre
               />
             </div>
           ) : placeholder ? (
-            <p className="mt-0.5 text-sm italic text-ink/40">{placeholder}</p>
+            <p className="mt-0.5 text-sm italic text-ink/65">{placeholder}</p>
           ) : (
-            <p className={cn("mt-0.5 whitespace-pre-line break-words text-sm leading-relaxed", c.status === "hidden" && "text-ink/50")}>{c.body}</p>
+            <p className={cn("mt-0.5 whitespace-pre-line break-words text-sm leading-relaxed", c.status === "hidden" && "text-ink/65")}>{c.body}</p>
           )}
 
           {mode === "view" && c.status !== "deleted" && (
-            <div className="mt-1 flex items-center gap-3 text-xs font-medium text-ink/50">
+            <div className="mt-1 flex items-center gap-3 text-xs font-medium text-ink/65">
               {!isReply && thread.can_post && c.status === "visible" && (
                 <button onClick={() => setMode("reply")} className="inline-flex items-center gap-1 hover:text-orange-dark">
                   <Reply size={13} /> {t("comments.reply")}
@@ -313,10 +313,10 @@ function CommentItem({ c, thread, eventId, reload, isReply }: { c: Comment; thre
                   </option>
                 ))}
               </select>
-              <button type="submit" className="rounded-full bg-orange px-3 py-1 font-semibold text-white">
+              <button type="submit" className="rounded-full bg-orange-deep px-3 py-1 font-semibold text-white">
                 {t("comments.sendReport")}
               </button>
-              <button type="button" onClick={() => setMode("view")} className="px-2 text-ink/60">
+              <button type="button" onClick={() => setMode("view")} className="px-2 text-ink/70">
                 {t("common.cancel")}
               </button>
             </form>
@@ -393,10 +393,10 @@ export function EventComments({ eventId, isOwner }: { eventId: string; isOwner: 
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h2 className="flex items-center gap-2 font-semibold">
           <MessageSquare size={18} className="text-orange-dark" /> {t("comments.title")}
-          {thread && thread.count > 0 && <span className="text-sm font-normal text-ink/50">({thread.count})</span>}
+          {thread && thread.count > 0 && <span className="text-sm font-normal text-ink/65">({thread.count})</span>}
         </h2>
         {isOwner && thread && (
-          <label className="flex cursor-pointer items-center gap-2 text-sm text-ink/60">
+          <label className="flex cursor-pointer items-center gap-2 text-sm text-ink/70">
             <input
               type="checkbox"
               className="h-4 w-4 accent-orange"
@@ -425,10 +425,10 @@ export function EventComments({ eventId, isOwner }: { eventId: string; isOwner: 
               }}
             />
           ) : (
-            thread.blocked_reason && <p className="rounded-xl bg-cream-warm px-4 py-2.5 text-sm text-ink/60">{t(blocked[thread.blocked_reason])}</p>
+            thread.blocked_reason && <p className="rounded-xl bg-cream-warm px-4 py-2.5 text-sm text-ink/70">{t(blocked[thread.blocked_reason])}</p>
           )}
           {thread.comments.length === 0 ? (
-            <p className="py-4 text-center text-sm text-ink/50">{t("comments.empty")}</p>
+            <p className="py-4 text-center text-sm text-ink/65">{t("comments.empty")}</p>
           ) : (
             <ul className="divide-y divide-ink/5">
               {thread.comments.map((c) => (
@@ -436,7 +436,7 @@ export function EventComments({ eventId, isOwner }: { eventId: string; isOwner: 
               ))}
             </ul>
           )}
-          <p className="text-xs text-ink/40">{t("comments.guidelines")}</p>
+          <p className="text-xs text-ink/65">{t("comments.guidelines")}</p>
         </>
       )}
     </section>

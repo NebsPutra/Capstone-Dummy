@@ -19,7 +19,7 @@ export function Avatar({ name, url, size = 44 }: { name: string; url?: string | 
   ) : (
     <span
       aria-hidden
-      className="flex shrink-0 items-center justify-center rounded-full bg-orange font-bold text-white"
+      className="flex shrink-0 items-center justify-center rounded-full bg-orange-deep font-bold text-white"
       style={{ width: size, height: size, fontSize: size * 0.4 }}
     >
       {initial}
@@ -102,7 +102,7 @@ export function FriendButton({
   if (rel === "incoming") {
     return (
       <span className="inline-flex gap-2">
-        <button disabled={busy} onClick={() => act("respond_friend_request", { p_user: userId, p_accept: true }, "friends", t("social.accepted"))} className={cn(btn, "bg-orange text-white hover:bg-orange-deep")}>
+        <button disabled={busy} onClick={() => act("respond_friend_request", { p_user: userId, p_accept: true }, "friends", t("social.accepted"))} className={cn(btn, "bg-orange-deep text-white hover:bg-orange-deeper")}>
           <Check size={16} /> {t("social.accept")}
         </button>
         <button disabled={busy} onClick={() => act("respond_friend_request", { p_user: userId, p_accept: false }, "none")} className={cn(btn, "border border-ink/10")} aria-label={t("social.decline")}>
@@ -114,17 +114,17 @@ export function FriendButton({
   }
   if (rel === "outgoing") {
     return (
-      <button disabled={busy} onClick={() => act("remove_friend", { p_user: userId }, "none")} className={cn(btn, "border border-ink/10 text-ink/60")} title={t("social.cancelRequest")}>
+      <button disabled={busy} onClick={() => act("remove_friend", { p_user: userId }, "none")} className={cn(btn, "border border-ink/10 text-ink/70")} title={t("social.cancelRequest")}>
         {t("social.requested")}
       </button>
     );
   }
-  if (!acceptsRequests) return <span className="text-xs text-ink/50">{t("social.notAccepting")}</span>;
+  if (!acceptsRequests) return <span className="text-xs text-ink/65">{t("social.notAccepting")}</span>;
   return (
     <button
       disabled={busy}
       onClick={() => act("send_friend_request", { p_user: userId }, (d) => (d === "friends" ? "friends" : "outgoing"), t("social.requestSent"))}
-      className={cn(btn, "bg-orange text-white hover:bg-orange-deep")}
+      className={cn(btn, "bg-orange-deep text-white hover:bg-orange-deeper")}
     >
       <UserPlus size={16} /> {t("social.addFriend")}
     </button>
@@ -140,9 +140,9 @@ export function PersonRow({ person, onChange }: { person: PersonCard; onChange?:
         <Avatar name={person.display_name} url={person.avatar_url} />
         <span className="min-w-0">
           <span className="block truncate font-semibold">{person.display_name}</span>
-          <span className="block truncate text-xs text-ink/50">{sub}</span>
+          <span className="block truncate text-xs text-ink/65">{sub}</span>
           {(person.mutual > 0 || person.primary_interest) && (
-            <span className="block truncate text-xs text-ink/40">
+            <span className="block truncate text-xs text-ink/65">
               {person.primary_interest && `${person.primary_interest.emoji ?? ""} ${td(`interest.${person.primary_interest.key}`, person.primary_interest.label)}`}
               {person.primary_interest && person.mutual > 0 && " · "}
               {person.mutual > 0 && t("social.mutual", { n: person.mutual })}
@@ -157,7 +157,7 @@ export function PersonRow({ person, onChange }: { person: PersonCard; onChange?:
 
 function PeopleList({ people, empty, onChange }: { people: PersonCard[] | null; empty: string; onChange?: (p: PersonCard, next: Relationship) => void }) {
   if (!people) return <div className="skeleton h-40" />;
-  if (people.length === 0) return <p className="py-6 text-center text-sm text-ink/50">{empty}</p>;
+  if (people.length === 0) return <p className="py-6 text-center text-sm text-ink/65">{empty}</p>;
   return (
     <ul className="divide-y divide-ink/5">
       {people.map((p) => (
@@ -320,10 +320,10 @@ export function CommunityHub({ initialTab }: { initialTab?: string }) {
             role="tab"
             aria-selected={tab === k}
             onClick={() => switchTab(k)}
-            className={cn("flex-1 whitespace-nowrap rounded-full px-3 py-2 font-semibold transition", tab === k ? "bg-surface shadow-soft" : "text-ink/60 hover:text-ink")}
+            className={cn("flex-1 whitespace-nowrap rounded-full px-3 py-2 font-semibold transition", tab === k ? "bg-surface shadow-soft" : "text-ink/70 hover:text-ink")}
           >
             {t(`social.tab.${k}`)}
-            {k === "requests" && incoming > 0 && <span className="ml-1.5 rounded-full bg-orange px-1.5 py-0.5 text-xs text-white">{incoming}</span>}
+            {k === "requests" && incoming > 0 && <span className="ml-1.5 rounded-full bg-orange-deep px-1.5 py-0.5 text-xs text-white">{incoming}</span>}
           </button>
         ))}
       </div>
@@ -375,7 +375,7 @@ export function CommunityHub({ initialTab }: { initialTab?: string }) {
         {tab === "find" && (
           <>
             <label className="relative block">
-              <Search size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink/40" />
+              <Search size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink/65" />
               <input
                 autoFocus
                 value={query}
@@ -388,14 +388,14 @@ export function CommunityHub({ initialTab }: { initialTab?: string }) {
             {query.trim().replace(/^@/, "").length >= 2 ? (
               <PeopleList people={results} empty={t("social.noResults")} onChange={() => loadRequests()} />
             ) : (
-              <p className="py-6 text-center text-sm text-ink/50">{t("social.searchHint")}</p>
+              <p className="py-6 text-center text-sm text-ink/65">{t("social.searchHint")}</p>
             )}
           </>
         )}
 
         {tab === "suggested" && (
           <>
-            <p className="mb-1 text-sm text-ink/60">{t("social.suggestedHint")}</p>
+            <p className="mb-1 text-sm text-ink/70">{t("social.suggestedHint")}</p>
             <PeopleList people={suggested} empty={t("social.noSuggestions")} onChange={() => loadRequests()} />
           </>
         )}

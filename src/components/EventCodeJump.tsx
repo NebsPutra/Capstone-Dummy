@@ -40,7 +40,7 @@ export function EventCodeJump() {
         />
         <button
           type="submit"
-          className="shrink-0 rounded-full bg-orange px-5 py-2 text-sm font-semibold text-white hover:bg-orange-deep"
+          className="shrink-0 rounded-full bg-orange-deep px-5 py-2 text-sm font-semibold text-white hover:bg-orange-deeper"
         >
           {t("code.open")}
         </button>

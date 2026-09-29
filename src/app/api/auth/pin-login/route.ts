@@ -55,11 +55,12 @@ export async function POST(req: NextRequest) {
       const until = new Date(r.until!).toLocaleString("id-ID", { timeZone: "Asia/Jakarta", dateStyle: "medium", timeStyle: "short" });
       const heading = t("email.pinLocked.title");
       const paras = [t("email.pinLocked.body", { until: `${until} WIB` }), t("email.pinLocked.notYou")];
+      const footer = t("email.footer", { url: `${req.nextUrl.origin}/legal/privacy` });
       await sendMail({
         to: r.email,
         subject: heading,
-        text: paras.join("\n\n"),
-        html: simpleEmailHtml(heading, paras, { label: t("email.pinLocked.action"), href: `${req.nextUrl.origin}/forgot-pin` }),
+        text: [...paras, footer].join("\n\n"),
+        html: simpleEmailHtml(heading, paras, { label: t("email.pinLocked.action"), href: `${req.nextUrl.origin}/forgot-pin` }, footer),
       });
     }
     const status = r.reason === "rate_limited" ? 429 : r.reason === "locked" ? 423 : 401;

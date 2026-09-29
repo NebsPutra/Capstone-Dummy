@@ -51,7 +51,7 @@ export default async function NotificationsPage() {
     <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-bold">{t("notif.title")}</h1>
-        <p className="mt-1 text-ink/60">{t("notif.subtitle")}</p>
+        <p className="mt-1 text-ink/70">{t("notif.subtitle")}</p>
       </div>
 
       <NotificationFeed items={(feed ?? []) as NotificationRow[]} />
@@ -59,7 +59,7 @@ export default async function NotificationsPage() {
       <section className="space-y-3">
         <h2 className="text-lg font-semibold">{t("notif.incoming")}</h2>
         {incomingRows.length === 0 ? (
-          <p className="text-sm text-ink/50">{t("notif.caughtUp")}</p>
+          <p className="text-sm text-ink/65">{t("notif.caughtUp")}</p>
         ) : (
           incomingRows.map((p) => (
             <div key={p.id} className="card flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
@@ -83,7 +83,7 @@ export default async function NotificationsPage() {
       <section className="space-y-3">
         <h2 className="text-lg font-semibold">{t("notif.mine")}</h2>
         {mineRows.length === 0 ? (
-          <p className="text-sm text-ink/50">{t("notif.noRequests")}</p>
+          <p className="text-sm text-ink/65">{t("notif.noRequests")}</p>
         ) : (
           mineRows.map((r) => (
             <Link

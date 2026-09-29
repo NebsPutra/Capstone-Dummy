@@ -107,7 +107,7 @@ export default function AdminUserDetail({ params }: { params: Promise<{ id: stri
           <p>{t("col.registered")}: {fmtDateTime(p.created_at, lang)}</p>
           <p>{t("col.lastActive")}: {d.last_sign_in_at ? fmtDateTime(d.last_sign_in_at, lang) : t("ausers.never")}</p>
           <p>{t("ausers.emailVerified")}: {d.email_confirmed_at ? "✓" : "—"}</p>
-          {p.status_reason && <p className="text-ink/60">{t("suspended.reason", { reason: p.status_reason })}</p>}
+          {p.status_reason && <p className="text-ink/70">{t("suspended.reason", { reason: p.status_reason })}</p>}
           {canEdit && (
             <div className="flex flex-wrap gap-2 pt-2">
               {p.account_status !== "active" ? (
@@ -194,9 +194,9 @@ export default function AdminUserDetail({ params }: { params: Promise<{ id: stri
         ].map((s) => (
           <section key={s.title} className="card space-y-2 p-5">
             <h2 className="text-sm font-semibold">{s.title}</h2>
-            {s.rows.length === 0 ? <p className="text-sm text-ink/50">—</p> : s.rows.map((r) => (
+            {s.rows.length === 0 ? <p className="text-sm text-ink/65">—</p> : s.rows.map((r) => (
               <Link key={r.href + r.a} href={r.href} className="flex justify-between gap-2 text-sm hover:text-orange-dark">
-                <span className="truncate">{r.a}</span><span className="shrink-0 text-xs text-ink/50">{r.b}</span>
+                <span className="truncate">{r.a}</span><span className="shrink-0 text-xs text-ink/65">{r.b}</span>
               </Link>
             ))}
           </section>
@@ -210,14 +210,14 @@ export default function AdminUserDetail({ params }: { params: Promise<{ id: stri
 
       <section className="card space-y-2 p-5">
         <h2 className="text-sm font-semibold">{t("ausers.history")}</h2>
-        {d.history.length === 0 ? <p className="text-sm text-ink/50">—</p> : (
+        {d.history.length === 0 ? <p className="text-sm text-ink/65">—</p> : (
           <ul className="space-y-1 text-sm">
             {d.history.map((h, i) => (
               <li key={i} className="flex flex-wrap gap-2">
-                <time className="text-xs text-ink/40">{fmtDateTime(h.created_at, lang)}</time>
+                <time className="text-xs text-ink/65">{fmtDateTime(h.created_at, lang)}</time>
                 <span className="font-medium">{h.action}</span>
-                <span className="text-ink/50">@{h.actor ?? "system"}</span>
-                {h.new_value && <code className="truncate text-xs text-ink/50">{JSON.stringify(h.new_value)}</code>}
+                <span className="text-ink/65">@{h.actor ?? "system"}</span>
+                {h.new_value && <code className="truncate text-xs text-ink/65">{JSON.stringify(h.new_value)}</code>}
               </li>
             ))}
           </ul>

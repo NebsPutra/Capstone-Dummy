@@ -42,7 +42,7 @@ export default function AdminNotificationsPage() {
             <li key={f.id} className="card flex items-center gap-3 p-3 text-sm">
               <Badge kind="severity" value={f.severity} label={t(`sev.${f.severity}` as "sev.info")} />
               <Link href={feedHref(f)} className="min-w-0 flex-1 truncate hover:text-orange-dark">{feedText(f)}</Link>
-              <time className="shrink-0 text-xs text-ink/40">{fmtDateTime(f.created_at, lang)}</time>
+              <time className="shrink-0 text-xs text-ink/65">{fmtDateTime(f.created_at, lang)}</time>
               {!f.acknowledged_at && <button onClick={() => ack([f.id])} className="shrink-0 text-xs font-semibold text-orange-dark">{t("feed.acknowledge")}</button>}
             </li>
           ))}

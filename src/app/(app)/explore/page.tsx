@@ -144,13 +144,13 @@ export default function ExplorePage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold">{t("explore.title")}</h1>
-        <p className="mt-1 text-ink/60">{t("explore.subtitle")}</p>
+        <p className="mt-1 text-ink/70">{t("explore.subtitle")}</p>
       </div>
 
       <EventCodeJump />
 
       <div className="relative">
-        <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/40" />
+        <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/65" />
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
@@ -202,7 +202,7 @@ export default function ExplorePage() {
 
       {!coords && (
         <div className="space-y-2">
-          <p className="text-xs text-ink/50">{t("explore.distanceNeedsLocation")}</p>
+          <p className="text-xs text-ink/65">{t("explore.distanceNeedsLocation")}</p>
           <LocationBar location={location} onManual={() => setDialogOpen(true)} onGps={switchToGps} />
         </div>
       )}
@@ -210,9 +210,9 @@ export default function ExplorePage() {
       {error ? (
         <Alert>{t(error)}</Alert>
       ) : loading && events.length === 0 ? (
-        <p className="py-12 text-center text-sm text-ink/50">{t("explore.loading")}</p>
+        <p className="py-12 text-center text-sm text-ink/65">{t("explore.loading")}</p>
       ) : visible.length === 0 ? (
-        <p className="py-12 text-center text-sm text-ink/50">{t("explore.noResults")}</p>
+        <p className="py-12 text-center text-sm text-ink/65">{t("explore.noResults")}</p>
       ) : (
         <>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -264,7 +264,7 @@ function Chip({
       disabled={disabled}
       aria-pressed={active}
       className={`shrink-0 rounded-full border px-3.5 py-1.5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-40 ${
-        active ? "border-orange bg-orange text-white" : "border-ink/10 bg-surface text-ink/60 hover:bg-cream-warm"
+        active ? "border-orange bg-orange-deep text-white" : "border-ink/10 bg-surface text-ink/70 hover:bg-cream-warm"
       }`}
     >
       {children}

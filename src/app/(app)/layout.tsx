@@ -5,6 +5,8 @@ import { onboardingStep } from "@/lib/onboarding";
 import { Sidebar } from "@/components/Sidebar";
 import { MobileNav } from "@/components/MobileNav";
 import { Header } from "@/components/Header";
+import { LegalFooter } from "@/components/LegalFooter";
+import { SkipLink } from "@/components/SkipLink";
 
 export default async function AppLayout({
   children,
@@ -48,6 +50,7 @@ export default async function AppLayout({
 
   return (
     <div className="ambient-gradient flex min-h-screen">
+      <SkipLink />
       <Sidebar isAdmin={["moderator", "admin", "super_admin"].includes(profile?.role ?? "")} unreadMessages={(unreadMessages as number | null) ?? 0} />
       <div className="flex min-h-screen min-w-0 flex-1 flex-col">
         <Header
@@ -55,7 +58,10 @@ export default async function AppLayout({
           avatarUrl={profile?.avatar_url}
           unread={unread ?? 0}
         />
-        <main className="flex-1 px-4 pb-24 pt-5 md:px-8 md:pb-8">{children}</main>
+        <main id="main" tabIndex={-1} className="flex-1 px-4 pb-24 pt-5 outline-none md:px-8 md:pb-8">
+          {children}
+          <LegalFooter className="mt-12" />
+        </main>
       </div>
       <MobileNav unreadMessages={(unreadMessages as number | null) ?? 0} />
     </div>

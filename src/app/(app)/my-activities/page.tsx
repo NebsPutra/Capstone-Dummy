@@ -31,7 +31,7 @@ export default async function MyActivitiesPage() {
     <div className="space-y-10">
       <div>
         <h1 className="text-2xl font-bold">{t("my.title")}</h1>
-        <p className="mt-1 text-ink/60">{t("my.subtitle")}</p>
+        <p className="mt-1 text-ink/70">{t("my.subtitle")}</p>
       </div>
 
       <Section title={t("my.created")} events={(created ?? []) as EventRecord[]} empty={t("my.emptyCreated")} />
@@ -46,7 +46,7 @@ function Section({ title, events, empty }: { title: string; events: EventRecord[
     <section>
       <h2 className="mb-4 text-lg font-semibold">{title}</h2>
       {events.length === 0 ? (
-        <p className="text-sm text-ink/50">{empty}</p>
+        <p className="text-sm text-ink/65">{empty}</p>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {events.map((e) => (

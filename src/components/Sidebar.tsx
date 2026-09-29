@@ -56,7 +56,7 @@ export function Sidebar({ isAdmin = false, unreadMessages = 0 }: { isAdmin?: boo
         )}
         <button
           onClick={() => setCollapsed((c) => !c)}
-          className="ml-auto rounded-full p-1.5 text-ink/50 hover:bg-cream-warm"
+          className="ml-auto rounded-full p-1.5 text-ink/65 hover:bg-cream-warm"
           aria-label={t("nav.toggleSidebar")}
         >
           {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
@@ -74,7 +74,7 @@ export function Sidebar({ isAdmin = false, unreadMessages = 0 }: { isAdmin?: boo
               className={cn(
                 "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition active:scale-[0.98]",
                 active
-                  ? "bg-orange text-white shadow-soft"
+                  ? "bg-orange-deep text-white shadow-soft"
                   : "text-ink/70 hover:bg-cream-warm"
               )}
               title={collapsed ? label : undefined}
@@ -82,7 +82,7 @@ export function Sidebar({ isAdmin = false, unreadMessages = 0 }: { isAdmin?: boo
               <span className="relative shrink-0">
                 <Icon size={19} />
                 {href === "/messages" && unreadMessages > 0 && (
-                  <span className="absolute -right-1.5 -top-1.5 min-w-4 rounded-full bg-orange px-1 text-center text-[10px] font-bold leading-4 text-white ring-2 ring-surface">
+                  <span className="absolute -right-1.5 -top-1.5 min-w-4 rounded-full bg-orange-deep px-1 text-center text-[10px] font-bold leading-4 text-white ring-2 ring-surface">
                     {unreadMessages > 9 ? "9+" : unreadMessages}
                   </span>
                 )}

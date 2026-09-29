@@ -80,7 +80,7 @@ export function JoinPanel({
   }
 
   if (isOwner) {
-    return <div className="card p-5 text-center text-sm text-ink/60">{t("join.owner")}</div>;
+    return <div className="card p-5 text-center text-sm text-ink/70">{t("join.owner")}</div>;
   }
 
   const canLeave = status !== "ongoing" && status !== "completed" && status !== "cancelled";
@@ -142,7 +142,7 @@ export function JoinPanel({
           : t("join.request")}
       </PrimaryButton>
       {joinable && joinPermission === "approval_required" && (
-        <p className="text-center text-xs text-ink/50">{t("join.approvalNote")}</p>
+        <p className="text-center text-xs text-ink/65">{t("join.approvalNote")}</p>
       )}
       {error && (
         <Alert>

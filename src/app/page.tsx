@@ -1,14 +1,21 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { MapPin, Users, PlusCircle, Repeat } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
+import { LegalFooter } from "@/components/LegalFooter";
 
 export default function LandingPage() {
   const { t } = useLanguage();
+  const [deleted, setDeleted] = useState(false);
+  useEffect(() => {
+    // Set by the account deletion flow (DeleteAccount.tsx).
+    if (new URLSearchParams(window.location.search).get("deleted") === "1") setDeleted(true);
+  }, []);
 
   const FEATURES = [
     { icon: MapPin, title: t("landing.feature1Title"), desc: t("landing.feature1Desc") },
@@ -35,26 +42,31 @@ export default function LandingPage() {
           </Link>
           <Link
             href="/register"
-            className="whitespace-nowrap rounded-full bg-orange px-3 py-2 text-sm font-semibold text-white shadow-soft hover:bg-orange-deep sm:px-4"
+            className="whitespace-nowrap rounded-full bg-orange-deep px-3 py-2 text-sm font-semibold text-white shadow-soft hover:bg-orange-deeper sm:px-4"
           >
             {t("landing.signup")}
           </Link>
         </div>
       </header>
 
+      {deleted && (
+        <p role="status" className="mx-auto max-w-md rounded-xl bg-green-50 px-4 py-3 text-center text-sm font-medium text-green-700">
+          {t("deleteAccount.done")}
+        </p>
+      )}
       <section className="mx-auto max-w-3xl px-6 py-20 text-center md:py-28">
         <h1 className="text-4xl font-extrabold leading-tight tracking-tight md:text-6xl">
           {t("landing.headline1")}
           <br />
           <span className="text-orange-dark">{t("landing.headline2")}</span>
         </h1>
-        <p className="mx-auto mt-6 max-w-xl text-lg text-ink/60">
+        <p className="mx-auto mt-6 max-w-xl text-lg text-ink/70">
           {t("landing.subheadline")}
         </p>
         <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
             href="/explore"
-            className="w-full rounded-full bg-orange px-7 py-3.5 text-center text-base font-semibold text-white shadow-soft hover:bg-orange-deep sm:w-auto"
+            className="w-full rounded-full bg-orange-deep px-7 py-3.5 text-center text-base font-semibold text-white shadow-soft hover:bg-orange-deeper sm:w-auto"
           >
             {t("landing.ctaExplore")}
           </Link>
@@ -75,11 +87,12 @@ export default function LandingPage() {
                 <Icon size={22} />
               </div>
               <h3 className="font-semibold">{title}</h3>
-              <p className="mt-1.5 text-sm text-ink/60">{desc}</p>
+              <p className="mt-1.5 text-sm text-ink/70">{desc}</p>
             </div>
           ))}
         </div>
       </section>
+      <LegalFooter className="px-6 pb-10" />
     </main>
   );
 }

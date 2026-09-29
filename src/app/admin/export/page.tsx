@@ -129,7 +129,7 @@ export default function ExportCenterPage() {
           {([["xlsx", FileSpreadsheet], ["docx", FileText], ["png", ImageDown]] as const).map(([f, Icon]) => (
             <button key={f} onClick={() => setFormat(f)} className={cn(choice(format === f), "flex w-full items-center gap-2")}><Icon size={16} />{t(`exp.fmt.${f}`)}</button>
           ))}
-          {format === "png" && <p className="text-xs text-ink/50">{t("exp.pngHint")}</p>}
+          {format === "png" && <p className="text-xs text-ink/65">{t("exp.pngHint")}</p>}
         </section>
         <section className="card space-y-3 p-5">
           <h2 className="text-sm font-semibold">{t("exp.scope")}</h2>
@@ -139,7 +139,7 @@ export default function ExportCenterPage() {
         </section>
       </div>
       <div className="card flex flex-wrap items-center justify-between gap-3 p-5">
-        <p className="text-sm text-ink/60">{estimate === null ? t("exp.estimating") : t("exp.estimate", { n: estimate })}</p>
+        <p className="text-sm text-ink/70">{estimate === null ? t("exp.estimating") : t("exp.estimate", { n: estimate })}</p>
         <PrimaryButton onClick={run} loading={pct !== null} loadingText={t("exp.running", { pct: pct ?? 0 })}>{t("exp.run")}</PrimaryButton>
         {pct !== null && <div className="h-1.5 w-full overflow-hidden rounded-full bg-cream-warm"><div className="h-full bg-orange transition-all" style={{ width: `${pct}%` }} /></div>}
         {result && <Alert tone={result.ok ? "success" : "error"}>{result.ok ? t("exp.done", { file: result.file ?? "" }) : t("exp.failed")}</Alert>}
@@ -147,7 +147,7 @@ export default function ExportCenterPage() {
       <section className="card space-y-2 p-5">
         <h2 className="text-sm font-semibold">{t("exp.history")}</h2>
         {jobs.map((j) => (
-          <p key={j.id} className="text-xs text-ink/60">{fmtDateTime(j.created_at, lang)} · {j.dataset} · {j.format} · {j.status}{j.row_count != null ? ` · ${j.row_count}` : ""}</p>
+          <p key={j.id} className="text-xs text-ink/70">{fmtDateTime(j.created_at, lang)} · {j.dataset} · {j.format} · {j.status}{j.row_count != null ? ` · ${j.row_count}` : ""}</p>
         ))}
       </section>
       {format === "png" && charts && (

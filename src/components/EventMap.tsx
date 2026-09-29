@@ -3,11 +3,16 @@
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+// Leaflet's default icon paths don't resolve under bundlers, so import the
+// bundled images (served from our own domain, no third-party CDN).
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
 
 const icon = L.icon({
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  iconUrl: markerIcon.src,
+  iconRetinaUrl: markerIcon2x.src,
+  shadowUrl: markerShadow.src,
   iconSize: [25, 41],
   iconAnchor: [12, 41],
 });

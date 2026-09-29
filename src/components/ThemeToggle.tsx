@@ -27,7 +27,7 @@ export function ThemeToggle({ compact = false }: { compact?: boolean }) {
           onClick={() => setPref(value)}
           className={cn(
             "flex items-center gap-1 rounded-full px-2 py-1 transition",
-            pref === value ? "bg-orange text-white shadow-soft" : "text-ink/50 hover:text-ink/80"
+            pref === value ? "bg-orange-deep text-white shadow-soft" : "text-ink/65 hover:text-ink/80"
           )}
         >
           <Icon size={14} />

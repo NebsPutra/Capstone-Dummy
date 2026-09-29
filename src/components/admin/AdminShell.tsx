@@ -115,7 +115,7 @@ function GlobalSearch() {
 
   return (
     <div className="relative w-full max-w-md">
-      <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink/40" />
+      <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink/65" />
       <input
         value={q}
         onChange={(e) => {
@@ -138,7 +138,7 @@ function GlobalSearch() {
       {open && q.trim().length >= 2 && (
         <div className="absolute inset-x-0 top-full z-50 mt-1 max-h-96 overflow-auto rounded-xl border border-ink/10 bg-surface py-1 shadow-lg">
           {hits.length === 0 ? (
-            <p className="px-4 py-3 text-sm text-ink/50">{t("admin.searchNoResults")}</p>
+            <p className="px-4 py-3 text-sm text-ink/65">{t("admin.searchNoResults")}</p>
           ) : (
             hits.map((h) => (
               <Link
@@ -148,9 +148,9 @@ function GlobalSearch() {
               >
                 <span className="min-w-0">
                   <span className="block truncate font-medium">{h.title}</span>
-                  <span className="block truncate text-xs text-ink/50">{h.subtitle}</span>
+                  <span className="block truncate text-xs text-ink/65">{h.subtitle}</span>
                 </span>
-                <span className="shrink-0 rounded-full bg-cream-warm px-2 py-0.5 text-[10px] font-semibold uppercase text-ink/50">
+                <span className="shrink-0 rounded-full bg-cream-warm px-2 py-0.5 text-[10px] font-semibold uppercase text-ink/65">
                   {t(`admin.searchType.${h.type}`)}
                 </span>
               </Link>
@@ -184,7 +184,7 @@ export function AdminShell({ rank, role, children }: { rank: number; role: strin
                   href={href}
                   className={cn(
                     "flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition active:scale-[0.98]",
-                    isActive(href) ? "bg-orange text-white shadow-soft" : "text-ink/70 hover:bg-cream-warm"
+                    isActive(href) ? "bg-orange-deep text-white shadow-soft" : "text-ink/70 hover:bg-cream-warm"
                   )}
                 >
                   <Icon size={17} className="shrink-0" />
@@ -230,7 +230,7 @@ export function AdminShell({ rank, role, children }: { rank: number; role: strin
                 href={href}
                 className={cn(
                   "flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium",
-                  isActive(href) ? "bg-orange text-white" : "bg-cream-warm text-ink/70"
+                  isActive(href) ? "bg-orange-deep text-white" : "bg-cream-warm text-ink/70"
                 )}
               >
                 <Icon size={14} />

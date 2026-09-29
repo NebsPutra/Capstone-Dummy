@@ -24,15 +24,15 @@ export default async function AccountSuspendedPage() {
           <h1 className="text-xl font-bold">
             {profile.account_status === "suspended" ? t("suspended.title") : t("suspended.deactivated")}
           </h1>
-          <p className="text-sm text-ink/60">{t("suspended.desc")}</p>
+          <p className="text-sm text-ink/70">{t("suspended.desc")}</p>
           {profile.status_reason && (
             <p className="rounded-xl bg-cream-warm px-4 py-2 text-sm">{t("suspended.reason", { reason: profile.status_reason })}</p>
           )}
           <div className="flex flex-col gap-2 pt-2">
-            <Link href="/help?category=account" className="rounded-full bg-orange py-3 text-sm font-semibold text-white hover:bg-orange-deep">
+            <Link href="/help?category=account" className="rounded-full bg-orange-deep py-3 text-sm font-semibold text-white hover:bg-orange-deeper">
               {t("suspended.contact")}
             </Link>
-            <Link href="/settings" className="text-sm font-medium text-ink/60">
+            <Link href="/settings" className="text-sm font-medium text-ink/70">
               {t("settings.logout")}
             </Link>
           </div>

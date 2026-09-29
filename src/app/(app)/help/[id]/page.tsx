@@ -39,7 +39,7 @@ export default async function ComplaintPage({ params }: { params: Promise<{ id: 
       <div className="card space-y-3 p-6">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <p className="text-xs font-semibold text-ink/50">
+            <p className="text-xs font-semibold text-ink/65">
               {complaint.ref} · {t(`complaint.category.${complaint.category}`)} · {t(`complaint.severity.${complaint.severity}`)}
             </p>
             <h1 className="mt-1 text-xl font-bold">{complaint.subject}</h1>

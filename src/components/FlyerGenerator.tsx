@@ -494,9 +494,9 @@ function FlyerDialog({ event, onClose }: { event: FlyerEvent; onClose: () => voi
             <h2 id="flyer-title" className="text-lg font-semibold">
               {t("flyer.title")}
             </h2>
-            <p className="mt-1 text-sm text-ink/60">{t("flyer.hint")}</p>
+            <p className="mt-1 text-sm text-ink/70">{t("flyer.hint")}</p>
           </div>
-          <button onClick={onClose} aria-label={t("common.close")} className="text-ink/50">
+          <button onClick={onClose} aria-label={t("common.close")} className="text-ink/65">
             <X size={20} />
           </button>
         </div>
@@ -522,7 +522,7 @@ function FlyerDialog({ event, onClose }: { event: FlyerEvent; onClose: () => voi
                   />
                 </span>
                 <span className="text-sm font-semibold">{t(`flyer.${key}`)}</span>
-                <span className="hidden text-[11px] leading-tight text-ink/50 sm:block">{t(`flyer.${key}Hint`)}</span>
+                <span className="hidden text-[11px] leading-tight text-ink/65 sm:block">{t(`flyer.${key}Hint`)}</span>
               </button>
             ))}
           </div>
@@ -550,7 +550,7 @@ function FlyerDialog({ event, onClose }: { event: FlyerEvent; onClose: () => voi
           </div>
         </div>
 
-        {note && <p className="text-xs text-ink/50">{note}</p>}
+        {note && <p className="text-xs text-ink/65">{note}</p>}
         {error && <Alert>{error}</Alert>}
 
         <div className="grid gap-2 sm:grid-cols-3">
@@ -592,7 +592,7 @@ function ActionButton({
       disabled={disabled}
       className={cn(
         "flex items-center justify-center gap-2 rounded-full py-2.5 text-sm font-semibold transition disabled:opacity-50",
-        primary ? "bg-orange text-white hover:bg-orange-deep" : "border border-ink/10 hover:bg-cream-warm"
+        primary ? "bg-orange-deep text-white hover:bg-orange-deeper" : "border border-ink/10 hover:bg-cream-warm"
       )}
     >
       {busy ? (

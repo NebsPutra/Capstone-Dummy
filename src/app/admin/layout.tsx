@@ -22,7 +22,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   if (rank < 1) {
     return (
       <main className="ambient-gradient flex min-h-screen items-center justify-center p-6">
-        <p className="card p-8 text-center text-sm text-ink/60">{t("admin.forbidden")}</p>
+        <p className="card p-8 text-center text-sm text-ink/70">{t("admin.forbidden")}</p>
       </main>
     );
   }

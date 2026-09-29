@@ -204,7 +204,7 @@ function PinSignIn({
           <Link href={forgotHref} className="font-medium text-orange-dark">
             {t("pinLogin.forgot")}
           </Link>
-          <button type="button" onClick={onUsePassword} className="font-medium text-ink/60 hover:text-ink">
+          <button type="button" onClick={onUsePassword} className="font-medium text-ink/70 hover:text-ink">
             {t("pinLogin.usePassword")}
           </button>
         </div>
@@ -435,7 +435,7 @@ function SignIn({ initialEmail, onUsePin }: { initialEmail: string; onUsePin: ()
           <PrimaryButton type="submit" className="w-full" loading={loading} loadingText={t("auth.checking")}>
             {t("auth.continue")}
           </PrimaryButton>
-          <button type="button" onClick={onUsePin} className="w-full text-center text-sm font-medium text-ink/60 hover:text-ink">
+          <button type="button" onClick={onUsePin} className="w-full text-center text-sm font-medium text-ink/70 hover:text-ink">
             {t("pinLogin.usePin")}
           </button>
         </form>
@@ -485,7 +485,7 @@ function SignIn({ initialEmail, onUsePin }: { initialEmail: string; onUsePin: ()
         >
           <div className="text-center">
             <p className="font-semibold">{t("auth.codeSent")}</p>
-            <p className="mt-1 text-sm text-ink/60">{t("auth.codeSentTo", { email: cleanEmail })}</p>
+            <p className="mt-1 text-sm text-ink/70">{t("auth.codeSentTo", { email: cleanEmail })}</p>
           </div>
 
           <OtpInput
@@ -508,11 +508,11 @@ function SignIn({ initialEmail, onUsePin }: { initialEmail: string; onUsePin: ()
 
           <div className="flex items-center justify-between">
             <ResendButton seconds={cooldown.seconds} sending={resending} onResend={resend} />
-            <button type="button" onClick={changeEmail} className="text-sm font-medium text-ink/60">
+            <button type="button" onClick={changeEmail} className="text-sm font-medium text-ink/70">
               {t("auth.changeEmail")}
             </button>
           </div>
-          <p className="text-center text-xs text-ink/40">{t("auth.checkSpam")}</p>
+          <p className="text-center text-xs text-ink/65">{t("auth.checkSpam")}</p>
         </form>
       )}
     </AuthShell>

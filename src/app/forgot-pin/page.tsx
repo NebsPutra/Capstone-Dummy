@@ -170,7 +170,7 @@ function ForgotPin() {
         >
           <div className="text-center">
             <p className="font-semibold">{t("auth.codeSent")}</p>
-            <p className="mt-1 text-sm text-ink/60">{t("auth.codeSentTo", { email: masked })}</p>
+            <p className="mt-1 text-sm text-ink/70">{t("auth.codeSentTo", { email: masked })}</p>
           </div>
           <OtpInput
             value={code}
@@ -189,11 +189,11 @@ function ForgotPin() {
           </PrimaryButton>
           <div className="flex items-center justify-between">
             <ResendButton seconds={cooldown.seconds} sending={resending} onResend={resend} />
-            <button type="button" onClick={() => setStep("identify")} className="text-sm font-medium text-ink/60">
+            <button type="button" onClick={() => setStep("identify")} className="text-sm font-medium text-ink/70">
               {t("forgotPin.changeAccount")}
             </button>
           </div>
-          <p className="text-center text-xs text-ink/40">{t("auth.checkSpam")}</p>
+          <p className="text-center text-xs text-ink/65">{t("auth.checkSpam")}</p>
         </form>
       )}
 
