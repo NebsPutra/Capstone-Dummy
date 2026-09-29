@@ -18,5 +18,6 @@ export default defineConfig([
     "next-env.d.ts",
     // Standalone Node scripts for marketing assets, not part of the app.
     "flyer/**",
+    "brag-output*/**",
   ]),
 ]);

@@ -8,6 +8,7 @@ import { ThemeProvider } from "@/lib/theme";
 import { THEME_BOOT_SCRIPT, THEME_COOKIE, isThemePref } from "@/lib/theme-shared";
 import { ToastProvider } from "@/components/Toast";
 import { CookieNotice } from "@/components/CookieNotice";
+import { SITE_URL } from "@/lib/site";
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -15,9 +16,33 @@ const plusJakarta = Plus_Jakarta_Sans({
   weight: ["400", "500", "600", "700", "800"],
 });
 
+const DESCRIPTION =
+  "Discover and create social activities around you based on your interests and location. " +
+  "Temukan dan buat aktivitas sosial di sekitarmu.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "Komunitas — Find Activities. Meet People. Build Community.",
-  description: "Discover and create social activities around you based on your interests and location.",
+  description: DESCRIPTION,
+  applicationName: "Komunitas",
+  keywords: [
+    "Komunitas", "local activities", "community events", "group run", "book club", "badminton",
+    "cycling", "aktivitas sosial", "komunitas lari", "klub buku", "cari teman olahraga", "acara komunitas",
+  ],
+  openGraph: {
+    type: "website",
+    siteName: "Komunitas",
+    url: "/",
+    title: "Komunitas — Find Activities. Meet People. Build Community.",
+    description: DESCRIPTION,
+    locale: "id_ID",
+    alternateLocale: ["en_US"],
+  },
+  twitter: { card: "summary_large_image" },
+  // Google Search Console ownership check (HTML tag method). Set the env var in Vercel.
+  verification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
+    : undefined,
 };
 
 export const viewport: Viewport = {
