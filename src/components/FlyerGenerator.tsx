@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
+import { createPortal } from "react-dom";
 import { QRCodeSVG } from "qrcode.react";
 import { CalendarDays, Clock, Download, ImageDown, Loader2, MapPin, Share2, Sparkles, Ticket, X } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
@@ -477,7 +478,7 @@ function FlyerDialog({ event, onClose }: { event: FlyerEvent; onClose: () => voi
     }
   }
 
-  return (
+  return createPortal(
     <div
       role="dialog"
       aria-modal="true"
@@ -567,7 +568,8 @@ function FlyerDialog({ event, onClose }: { event: FlyerEvent; onClose: () => voi
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 

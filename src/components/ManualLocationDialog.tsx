@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { geocodeArea } from "@/lib/wilayah";
 import type { ManualArea } from "@/lib/location";
@@ -44,7 +45,7 @@ export function ManualLocationDialog({
     });
   }
 
-  return (
+  return createPortal(
     <div
       role="dialog"
       aria-modal="true"
@@ -53,7 +54,7 @@ export function ManualLocationDialog({
       onClick={onClose}
     >
       <div
-        className="card w-full max-w-lg space-y-4 rounded-b-none p-6 sm:rounded-b-2xl"
+        className="card max-h-[94vh] w-full max-w-lg space-y-4 overflow-y-auto rounded-b-none p-6 sm:rounded-b-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between gap-4">
@@ -102,6 +103,7 @@ export function ManualLocationDialog({
           </PrimaryButton>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
