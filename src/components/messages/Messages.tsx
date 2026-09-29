@@ -324,7 +324,7 @@ export function ChatThread({ initial, initialMessages }: { initial: Conversation
               </button>
               {card.other && (
                 <>
-                  <button onClick={toggleBlock} className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-red-600 hover:bg-red-50">
+                  <button onClick={toggleBlock} className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-danger hover:bg-danger-soft">
                     <ShieldBan size={16} /> {card.blocked_by_me ? t("social.unblock") : t("social.block")}
                   </button>
                   <Link href={`/help?user=${card.other.id}&category=harassment_abuse`} className="flex items-center gap-2 px-4 py-2.5 hover:bg-cream-warm">
@@ -392,7 +392,7 @@ export function ChatThread({ initial, initialMessages }: { initial: Conversation
                           setSelected(null);
                         }
                       }}
-                      className="inline-flex items-center gap-1 rounded-full border border-red-200 px-2.5 py-1 font-semibold text-red-600"
+                      className="inline-flex items-center gap-1 rounded-full border border-danger/25 px-2.5 py-1 font-semibold text-danger"
                     >
                       <Trash2 size={12} /> {t("messages.delete")}
                     </button>

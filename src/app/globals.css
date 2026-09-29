@@ -10,6 +10,22 @@
   --orange-dark: 194 65 12;
   --ink: 41 37 36;
   --surface: 255 255 255;
+
+  /* Semantic status colors: text (AA on cream/surface), soft background, solid fill for white text. */
+  --success: 21 128 61;
+  --success-soft: 240 253 244;
+  --success-solid: 21 128 61;
+  --warning: 180 83 9;
+  --warning-soft: 255 251 235;
+  --warning-solid: 180 83 9;
+  --danger: 220 38 38;
+  --danger-soft: 254 242 242;
+  --danger-solid: 185 28 28;
+  --info: 29 78 216;
+  --info-soft: 239 246 255;
+  --info-solid: 37 99 235;
+  --muted: 120 113 108;
+  --muted-soft: 245 245 244;
   color-scheme: light;
 }
 
@@ -20,6 +36,17 @@
   --orange-dark: 253 164 95;
   --ink: 244 236 226;
   --surface: 33 28 24;
+
+  --success: 134 239 172;
+  --success-soft: 30 46 31;
+  --warning: 252 211 77;
+  --warning-soft: 67 39 21;
+  --danger: 252 165 165;
+  --danger-soft: 67 28 25;
+  --info: 147 197 253;
+  --info-soft: 32 39 69;
+  --muted: 214 211 209;
+  --muted-soft: 54 50 46;
   color-scheme: dark;
 }
 
@@ -76,18 +103,69 @@ body {
   }
 }
 
-/* Dark-mode equivalents for the few fixed status colors in use. */
-.dark .bg-green-50 { background-color: rgb(22 101 52 / 0.25); }
-.dark .bg-amber-50 { background-color: rgb(146 64 14 / 0.3); }
-.dark .bg-red-50 { background-color: rgb(153 27 27 / 0.28); }
-.dark .bg-blue-50 { background-color: rgb(30 64 175 / 0.3); }
-.dark .bg-stone-100 { background-color: rgb(68 64 60 / 0.6); }
-.dark .text-green-700, .dark .text-green-600 { color: rgb(134 239 172); }
-.dark .text-amber-700 { color: rgb(252 211 77); }
-.dark .text-red-700, .dark .text-red-600 { color: rgb(252 165 165); }
-.dark .text-blue-700 { color: rgb(147 197 253); }
-.dark .text-stone-500 { color: rgb(214 211 209); }
-.dark .border-red-200, .dark .border-red-400 { border-color: rgb(248 113 113 / 0.5); }
+/* Landing illustrations (components/landing/Scenes.tsx). Frozen by the reduced-motion rule below. */
+.ks-swing-a,
+.ks-swing-b,
+.ks-wave-arm,
+.ks-flip,
+.ks-grow,
+.ks-flag,
+.ks-sway {
+  transform-box: fill-box;
+}
+.ks-swing-a,
+.ks-swing-b {
+  transform-origin: top center;
+  animation: ks-swing 0.62s ease-in-out infinite alternate;
+}
+.ks-swing-b {
+  animation-direction: alternate-reverse;
+}
+@keyframes ks-swing {
+  from { transform: rotate(34deg); }
+  to { transform: rotate(-34deg); }
+}
+.ks-bob { animation: ks-bob 0.31s ease-in-out infinite alternate; }
+@keyframes ks-bob { to { transform: translateY(-4px); } }
+.ks-bob-slow { animation: ks-bob-slow 2.4s ease-in-out infinite alternate; }
+@keyframes ks-bob-slow { to { transform: translateY(-8px); } }
+.ks-scroll { animation: ks-scroll 7s linear infinite; }
+@keyframes ks-scroll { to { transform: translateX(-480px); } }
+.ks-dash { animation: ks-dash 0.9s linear infinite; }
+@keyframes ks-dash { to { stroke-dashoffset: 40; } }
+.ks-drift { animation: ks-drift 12s ease-in-out infinite alternate; }
+@keyframes ks-drift { to { transform: translateX(36px); } }
+.ks-steam { animation: ks-steam 2.2s ease-out infinite; }
+@keyframes ks-steam {
+  from { opacity: 0; transform: translateY(4px); }
+  40% { opacity: 0.8; }
+  to { opacity: 0; transform: translateY(-10px); }
+}
+.ks-flip { transform-origin: left bottom; animation: ks-flip 3.2s ease-in-out infinite; }
+@keyframes ks-flip {
+  0%, 35% { transform: scaleX(1); }
+  65%, 100% { transform: scaleX(-1); }
+}
+.ks-float { animation: ks-float 3.2s ease-out infinite; }
+@keyframes ks-float {
+  from { opacity: 0; transform: translateY(10px) scale(0.6); }
+  30% { opacity: 1; }
+  to { opacity: 0; transform: translateY(-34px) scale(1); }
+}
+.ks-sway { transform-origin: top center; animation: ks-sway 3s ease-in-out infinite alternate; }
+@keyframes ks-sway { from { transform: rotate(-4deg); } to { transform: rotate(4deg); } }
+.ks-wave-arm { transform-origin: bottom center; animation: ks-wave-arm 0.5s ease-in-out infinite alternate; }
+@keyframes ks-wave-arm { from { transform: rotate(-18deg); } to { transform: rotate(22deg); } }
+.ks-flag { transform-origin: left center; animation: ks-flag 1.4s ease-in-out infinite alternate; }
+@keyframes ks-flag { from { transform: skewY(-5deg) scaleX(0.94); } to { transform: skewY(5deg) scaleX(1); } }
+.ks-grow { transform-origin: bottom center; animation: ks-grow 2.6s ease-in-out infinite alternate; }
+@keyframes ks-grow { from { transform: scale(0.82); } to { transform: scale(1.06); } }
+.ks-drop { animation: ks-drop 0.9s ease-in infinite; }
+@keyframes ks-drop {
+  from { opacity: 0; transform: translate(0, 0); }
+  20% { opacity: 1; }
+  to { opacity: 0; transform: translate(-4px, 36px); }
+}
 
 /* Map tiles have no dark variant; invert them softly. */
 .dark .leaflet-tile-pane {

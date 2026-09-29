@@ -49,9 +49,9 @@ export function DeleteAccount() {
   }
 
   return (
-    <section className="card space-y-4 border-red-200 p-5" aria-labelledby="delete-account-title">
+    <section className="card space-y-4 border-danger/25 p-5" aria-labelledby="delete-account-title">
       <div>
-        <h2 id="delete-account-title" className="flex items-center gap-2 font-semibold text-red-700">
+        <h2 id="delete-account-title" className="flex items-center gap-2 font-semibold text-danger">
           <Trash2 size={18} aria-hidden /> {t("deleteAccount.title")}
         </h2>
         <p className="mt-1 text-sm text-ink/70">{t("deleteAccount.desc")}</p>
@@ -61,13 +61,13 @@ export function DeleteAccount() {
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="rounded-full border border-red-200 px-4 py-2 text-sm font-semibold text-red-700 hover:bg-red-50"
+          className="rounded-full border border-danger/25 px-4 py-2 text-sm font-semibold text-danger hover:bg-danger-soft"
         >
           {t("deleteAccount.open")}
         </button>
       ) : (
         <div className="space-y-4">
-          <div className="rounded-xl bg-red-50 p-4 text-sm text-red-700">
+          <div className="rounded-xl bg-danger-soft p-4 text-sm text-danger">
             <p className="font-semibold">{t("deleteAccount.listTitle")}</p>
             <ul className="mt-1.5 list-disc space-y-1 pl-5">
               <li>{t("deleteAccount.item1")}</li>
@@ -104,7 +104,7 @@ export function DeleteAccount() {
               type="button"
               onClick={remove}
               disabled={!matches || busy}
-              className="rounded-full bg-red-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-red-800 disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-full bg-danger-solid px-5 py-2.5 text-sm font-semibold text-white hover:bg-danger-solid/90 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {busy ? t("deleteAccount.deleting") : t("deleteAccount.confirm")}
             </button>

@@ -77,7 +77,7 @@ export function KpiCard({
         </p>
       )}
       {typeof delta === "number" && (
-        <p className={cn("mt-1 flex items-center gap-0.5 text-xs font-medium", delta >= 0 ? "text-green-700" : "text-red-600")}>
+        <p className={cn("mt-1 flex items-center gap-0.5 text-xs font-medium", delta >= 0 ? "text-success" : "text-danger")}>
           {delta >= 0 ? <ArrowUpRight size={13} /> : <ArrowDownRight size={13} />}
           {t("kpi.vsPrev", { pct: `${delta > 0 ? "+" : ""}${delta}%` })}
         </p>
@@ -87,7 +87,7 @@ export function KpiCard({
 }
 
 export function Badge({ value, label, kind = "status" }: { value: string; label: string; kind?: "status" | "severity" }) {
-  const tone = (kind === "severity" ? SEVERITY_TONE : STATUS_TONE)[value] ?? "bg-stone-100 text-stone-500";
+  const tone = (kind === "severity" ? SEVERITY_TONE : STATUS_TONE)[value] ?? "bg-muted-soft text-muted";
   return <span className={cn("inline-flex shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium", tone)}>{label}</span>;
 }
 

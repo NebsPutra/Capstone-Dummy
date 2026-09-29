@@ -32,7 +32,7 @@ export default function AdminHealthPage() {
     { label: t("health.email"), level: h ? (h.emails_failed ? "warning" : "healthy") : "warning", detail: h ? t("health.emails", { failed: h.emails_failed, pending: h.emails_pending }) : "" },
     { label: t("health.errors"), level: h ? (h.errors_24h > 10 ? "error" : h.errors_24h ? "warning" : "healthy") : "warning", detail: h ? String(h.errors_24h) : "" },
   ];
-  const tone: Record<Level, string> = { healthy: "bg-green-500", warning: "bg-amber-500", error: "bg-red-500" };
+  const tone: Record<Level, string> = { healthy: "bg-success-solid", warning: "bg-warning-solid", error: "bg-danger-solid" };
 
   return (
     <div className="space-y-4">

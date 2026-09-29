@@ -83,7 +83,7 @@ export default function SettingsPage() {
       <button
         onClick={handleSignOut}
         disabled={signingOut}
-        className="w-full rounded-full border border-red-200 bg-surface py-3 text-sm font-semibold text-red-600 hover:bg-red-50 disabled:opacity-60"
+        className="w-full rounded-full border border-danger/25 bg-surface py-3 text-sm font-semibold text-danger hover:bg-danger-soft disabled:opacity-60"
       >
         {t("settings.logout")}
       </button>

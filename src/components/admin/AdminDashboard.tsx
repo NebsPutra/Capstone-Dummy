@@ -47,7 +47,7 @@ export function AlertsList({ alerts }: { alerts: AlertItem[] | null }) {
       {alerts.map((a, i) => (
         <li key={i}>
           <Link href={alertHref(a)} className="flex items-start gap-2.5 rounded-xl bg-cream-warm/60 px-3 py-2.5 text-sm hover:bg-cream-warm">
-            <AlertTriangle size={16} className={a.severity === "critical" ? "mt-0.5 shrink-0 text-red-600" : "mt-0.5 shrink-0 text-amber-700"} />
+            <AlertTriangle size={16} className={a.severity === "critical" ? "mt-0.5 shrink-0 text-danger" : "mt-0.5 shrink-0 text-warning"} />
             <span className="flex-1">{td(`alert.${a.type}`, a.type).replace(/\{(\w+)\}/g, (_, k) => String(a.params[k] ?? ""))}</span>
             <Badge value={a.severity} label={t(`sev.${a.severity}` as "sev.info")} kind="severity" />
           </Link>
@@ -144,7 +144,7 @@ export function AdminDashboard() {
                 <li key={f.id}>
                   <Link href={feedHref(f)} className="flex items-center gap-2 py-2 text-sm hover:text-orange-dark">
                     <span
-                      className={`h-2 w-2 shrink-0 rounded-full ${f.severity === "critical" ? "bg-red-500" : f.severity === "warning" ? "bg-amber-500" : "bg-blue-400"}`}
+                      className={`h-2 w-2 shrink-0 rounded-full ${f.severity === "critical" ? "bg-danger-solid" : f.severity === "warning" ? "bg-warning-solid" : "bg-info-solid"}`}
                     />
                     <span className="min-w-0 flex-1 truncate">{feedText(f)}</span>
                     <time className="shrink-0 text-xs text-ink/65">{fmtDateTime(f.created_at, lang)}</time>

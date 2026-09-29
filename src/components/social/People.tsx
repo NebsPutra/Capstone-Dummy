@@ -90,7 +90,7 @@ export function FriendButton({
       <button
         disabled={busy}
         onClick={() => window.confirm(t("social.unfriendConfirm")) && act("remove_friend", { p_user: userId }, "none", t("social.unfriended"))}
-        className={cn(btn, "group border border-green-200 bg-green-50 text-green-700 hover:border-red-200 hover:bg-red-50 hover:text-red-600")}
+        className={cn(btn, "group border border-success/25 bg-success-soft text-success hover:border-danger/25 hover:bg-danger-soft hover:text-danger")}
         title={t("social.unfriend")}
       >
         <UserCheck size={16} />
@@ -218,7 +218,7 @@ export function ProfileActions({
           </button>
           {open && (
             <div className="absolute right-0 z-20 mt-2 w-48 overflow-hidden rounded-xl border border-ink/10 bg-surface py-1 text-sm shadow-lift">
-              <button onClick={block} className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-red-600 hover:bg-red-50">
+              <button onClick={block} className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-danger hover:bg-danger-soft">
                 <ShieldBan size={16} /> {t("social.block")}
               </button>
               <Link href={`/help?user=${userId}&category=harassment_abuse`} className="flex items-center gap-2 px-4 py-2.5 hover:bg-cream-warm">

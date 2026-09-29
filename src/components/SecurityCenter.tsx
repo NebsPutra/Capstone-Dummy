@@ -65,7 +65,7 @@ export function SecurityCenter({ email, pinSetAt, events }: { email: string; pin
           <ul className="mt-3 divide-y divide-ink/5">
             {events.map((e) => (
               <li key={e.id} className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 py-2.5 text-sm">
-                <span className={e.type === "pin_failed" || e.type === "pin_locked" ? "font-medium text-red-600" : "font-medium"}>
+                <span className={e.type === "pin_failed" || e.type === "pin_locked" ? "font-medium text-danger" : "font-medium"}>
                   {td(`security.event.${e.type}`, e.type)}
                 </span>
                 <span className="text-xs text-ink/65">
@@ -410,13 +410,13 @@ function SessionsSection() {
       <SectionHeader icon={<Laptop size={18} className="text-orange-dark" />} title={t("security.sessionsTitle")} desc={t("security.sessionsDesc")} />
       <div className="flex items-center justify-between gap-3 rounded-xl bg-cream-warm px-4 py-3 text-sm">
         <span className="font-medium">{device || "…"}</span>
-        <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-700">{t("security.thisDevice")}</span>
+        <span className="rounded-full bg-success-soft px-2 py-0.5 text-xs font-semibold text-success">{t("security.thisDevice")}</span>
       </div>
       <div className="flex flex-col gap-2 sm:flex-row">
         <button onClick={signOutOthers} disabled={busy !== null} className="rounded-full border border-ink/10 px-4 py-2 text-sm font-semibold hover:border-orange disabled:opacity-60">
           {busy === "others" ? t("security.working") : t("security.logoutOthers")}
         </button>
-        <button onClick={signOutEverywhere} disabled={busy !== null} className="rounded-full border border-red-200 px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50 disabled:opacity-60">
+        <button onClick={signOutEverywhere} disabled={busy !== null} className="rounded-full border border-danger/25 px-4 py-2 text-sm font-semibold text-danger hover:bg-danger-soft disabled:opacity-60">
           {busy === "global" ? t("security.working") : t("security.logoutAll")}
         </button>
       </div>

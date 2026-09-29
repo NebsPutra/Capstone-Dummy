@@ -125,16 +125,16 @@ function CommentQueue() {
                   </Link>
                 )}
                 <span>{fmtDateTime(c.created_at, lang)}</span>
-                <span className={cn("rounded-full px-2 py-0.5 font-semibold", c.status === "visible" ? "bg-green-50 text-green-700" : "bg-red-50 text-red-600")}>
+                <span className={cn("rounded-full px-2 py-0.5 font-semibold", c.status === "visible" ? "bg-success-soft text-success" : "bg-danger-soft text-danger")}>
                   {t(`amod.status.${c.status}`)}
                 </span>
-                {c.open_reports > 0 && <span className="font-semibold text-red-600">{t("comments.reports", { n: c.open_reports })}</span>}
+                {c.open_reports > 0 && <span className="font-semibold text-danger">{t("comments.reports", { n: c.open_reports })}</span>}
               </div>
               <p className="whitespace-pre-line break-words rounded-xl bg-cream-warm px-3 py-2">{c.body}</p>
               {c.reasons.length > 0 && (
                 <ul className="flex flex-wrap gap-1.5 text-xs">
                   {c.reasons.map((r, i) => (
-                    <li key={i} className="rounded-full bg-red-50 px-2 py-0.5 text-red-700">
+                    <li key={i} className="rounded-full bg-danger-soft px-2 py-0.5 text-danger">
                       {td(`comments.reason.${r.reason}`, r.reason)}
                       {r.details ? `: ${r.details}` : ""}
                     </li>
@@ -149,11 +149,11 @@ function CommentQueue() {
                     </button>
                   )}
                   {c.status === "visible" ? (
-                    <button onClick={() => act(c.id, "hide")} className="rounded-full bg-red-600 px-3 py-1.5 text-xs font-semibold text-white">
+                    <button onClick={() => act(c.id, "hide")} className="rounded-full bg-danger-solid px-3 py-1.5 text-xs font-semibold text-white">
                       {t("comments.hide")}
                     </button>
                   ) : (
-                    <button onClick={() => act(c.id, "unhide")} className="rounded-full bg-green-600 px-3 py-1.5 text-xs font-semibold text-white">
+                    <button onClick={() => act(c.id, "unhide")} className="rounded-full bg-success-solid px-3 py-1.5 text-xs font-semibold text-white">
                       {t("comments.unhide")}
                     </button>
                   )}
@@ -221,8 +221,8 @@ function MessageReports() {
                   {t("amod.reporter")}: @{r.reporter?.username}
                 </span>
                 <span>{fmtDateTime(r.created_at, lang)}</span>
-                <span className="rounded-full bg-red-50 px-2 py-0.5 font-semibold text-red-700">{td(`messages.reason.${r.reason}`, r.reason)}</span>
-                {r.sender_open_reports > 1 && <span className="font-semibold text-red-600">{t("amod.senderReports", { n: r.sender_open_reports })}</span>}
+                <span className="rounded-full bg-danger-soft px-2 py-0.5 font-semibold text-danger">{td(`messages.reason.${r.reason}`, r.reason)}</span>
+                {r.sender_open_reports > 1 && <span className="font-semibold text-danger">{t("amod.senderReports", { n: r.sender_open_reports })}</span>}
                 {r.resolved_at && <span className="font-semibold">{t(r.resolution === "remove" ? "amod.resolution.remove" : "amod.resolution.dismiss")}</span>}
               </div>
               <p className="whitespace-pre-line break-words rounded-xl bg-cream-warm px-3 py-2">{r.snapshot}</p>
@@ -232,7 +232,7 @@ function MessageReports() {
                   <button onClick={() => act(r.message_id, "dismiss")} className="rounded-full border border-ink/10 px-3 py-1.5 text-xs font-semibold">
                     {t("amod.dismiss")}
                   </button>
-                  <button onClick={() => act(r.message_id, "remove")} className="rounded-full bg-red-600 px-3 py-1.5 text-xs font-semibold text-white">
+                  <button onClick={() => act(r.message_id, "remove")} className="rounded-full bg-danger-solid px-3 py-1.5 text-xs font-semibold text-white">
                     {t("amod.removeMessage")}
                   </button>
                   {r.sender && (

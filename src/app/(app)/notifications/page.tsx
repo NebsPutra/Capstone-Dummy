@@ -95,10 +95,10 @@ export default async function NotificationsPage() {
               <span
                 className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ${
                   r.status === "approved"
-                    ? "bg-green-50 text-green-700"
+                    ? "bg-success-soft text-success"
                     : r.status === "pending"
-                    ? "bg-amber-50 text-amber-700"
-                    : "bg-stone-100 text-stone-500"
+                    ? "bg-warning-soft text-warning"
+                    : "bg-muted-soft text-muted"
                 }`}
               >
                 {t(`participation.${r.status}`)}

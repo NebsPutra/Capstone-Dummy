@@ -204,7 +204,7 @@ export function LocationSelect({
         <button
           type="button"
           onClick={() => setReloadKey((k) => k + 1)}
-          className="flex w-full items-center justify-between gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-left text-sm text-red-600"
+          className="flex w-full items-center justify-between gap-2 rounded-xl border border-danger/25 bg-danger-soft px-4 py-2.5 text-left text-sm text-danger"
         >
           <span className="flex items-center gap-1.5">
             <AlertCircle size={14} className="shrink-0" /> {t("location.loadFailed")}
@@ -335,7 +335,7 @@ function GpsAssist({ onDetected }: { onDetected: (area: Awaited<ReturnType<typeo
         {busy ? t("location.detecting") : t("location.useCurrent")}
       </button>
       {message && (
-        <p className={`text-xs ${message.tone === "error" ? "text-red-600" : "text-ink/70"}`}>{t(message.key)}</p>
+        <p className={`text-xs ${message.tone === "error" ? "text-danger" : "text-ink/70"}`}>{t(message.key)}</p>
       )}
     </div>
   );

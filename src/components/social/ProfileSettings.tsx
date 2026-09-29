@@ -68,7 +68,7 @@ export function UsernameField({
   }, [value]);
 
   const bad = status === "invalid" || status === "reserved" || status === "taken";
-  const tone = status === "available" || status === "current" ? "text-green-600" : bad ? "text-red-600" : "text-ink/65";
+  const tone = status === "available" || status === "current" ? "text-success" : bad ? "text-danger" : "text-ink/65";
   return (
     <div>
       <div className="relative">
@@ -252,11 +252,11 @@ export function SocialLinksEditor({ userId }: { userId: string }) {
                   className={cn(inputClass(invalid.includes(r.platform)), "col-span-2 sm:col-span-1")}
                 />
                 <VisibilitySelect value={r.visibility} onChange={(v) => update(i, { visibility: v })} className="w-full sm:w-auto" />
-                <button onClick={() => setRows(rows.filter((_, j) => j !== i))} className="rounded-full p-2 text-ink/65 hover:bg-red-50 hover:text-red-600" aria-label={t("links.remove")}>
+                <button onClick={() => setRows(rows.filter((_, j) => j !== i))} className="rounded-full p-2 text-ink/65 hover:bg-danger-soft hover:text-danger" aria-label={t("links.remove")}>
                   <Trash2 size={16} />
                 </button>
                 {invalid.includes(r.platform) && (
-                  <p className="col-span-2 text-xs text-red-600 sm:col-span-4">{t(r.platform === "website" ? "links.invalidWebsite" : "links.invalidHandle")}</p>
+                  <p className="col-span-2 text-xs text-danger sm:col-span-4">{t(r.platform === "website" ? "links.invalidWebsite" : "links.invalidHandle")}</p>
                 )}
               </li>
             ))}

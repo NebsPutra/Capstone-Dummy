@@ -52,7 +52,7 @@ export default function AdminEventsPage() {
         title={t("aevents.title")}
         actions={
           selected.length > 0 && (
-            <button onClick={bulkCancel} className="rounded-full border border-red-200 bg-surface px-4 py-2 text-sm font-semibold text-red-600">
+            <button onClick={bulkCancel} className="rounded-full border border-danger/25 bg-surface px-4 py-2 text-sm font-semibold text-danger">
               {t("aevents.bulkCancel", { n: selected.length })}
             </button>
           )
@@ -100,7 +100,7 @@ export default function AdminEventsPage() {
                     <Link href={`/admin/events/${e.id}`} className="font-medium hover:text-orange-dark">
                       {e.category?.emoji} {e.title}
                     </Link>
-                    {e.open_complaints > 0 && <span className="ml-2 text-xs text-red-600">⚠ {t("aevents.openComplaints", { n: e.open_complaints })}</span>}
+                    {e.open_complaints > 0 && <span className="ml-2 text-xs text-danger">⚠ {t("aevents.openComplaints", { n: e.open_complaints })}</span>}
                     <span className="block text-xs text-ink/65">{e.location_name}{e.privacy === "private" ? ` · ${t("privacy.private")}` : ""}</span>
                   </td>
                   <td className="whitespace-nowrap text-xs">{e.event_date} {e.start_time.slice(0, 5)}</td>

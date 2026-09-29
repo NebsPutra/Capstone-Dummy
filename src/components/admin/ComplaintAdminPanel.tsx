@@ -67,7 +67,7 @@ export function ComplaintAdminPanel({ complaint: c, staff }: { complaint: Compla
       </label>
       <button disabled={busy} onClick={assignMe} className="rounded-full border border-ink/10 px-3 py-1.5 font-medium">{t("acomp.assignMe")}</button>
       {open ? (
-        <button disabled={busy} onClick={() => update({ p_status: "RESOLVED" })} className="rounded-full bg-green-600 px-3 py-1.5 font-semibold text-white">{t("complaint.status.RESOLVED")}</button>
+        <button disabled={busy} onClick={() => update({ p_status: "RESOLVED" })} className="rounded-full bg-success-solid px-3 py-1.5 font-semibold text-white">{t("complaint.status.RESOLVED")}</button>
       ) : (
         <button disabled={busy} onClick={() => update({ p_status: "IN_REVIEW" })} className="rounded-full border border-ink/10 px-3 py-1.5 font-medium">{t("acomp.reopen")}</button>
       )}

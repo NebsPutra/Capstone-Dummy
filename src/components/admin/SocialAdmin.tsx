@@ -54,7 +54,7 @@ export function UserSocialPanel({ userId, username, canEdit }: { userId: string;
         <p>{t("asocial.friendships")}: <b>{data.friends}</b></p>
         <p>{t("asocial.pendingInOut")}: <b>{data.pending_in} / {data.pending_out}</b></p>
         <p>{t("asocial.blocksMade")}: <b>{data.blocked_by_user}</b></p>
-        <p className={data.blocked_by_others >= 3 ? "text-red-600" : ""}>
+        <p className={data.blocked_by_others >= 3 ? "text-danger" : ""}>
           {t("asocial.blockedByOthers")}: <b>{data.blocked_by_others}</b>
         </p>
       </div>
@@ -137,7 +137,7 @@ export function ReservedUsernames({ canEdit }: { canEdit: boolean }) {
             <span key={n} className="inline-flex items-center gap-1 rounded-full bg-cream-warm px-2.5 py-1 text-xs">
               {n}
               {canEdit && (
-                <button onClick={() => set(n, false)} className="text-ink/65 hover:text-red-600" aria-label={t("asocial.unreserve", { name: n })}>
+                <button onClick={() => set(n, false)} className="text-ink/65 hover:text-danger" aria-label={t("asocial.unreserve", { name: n })}>
                   ✕
                 </button>
               )}

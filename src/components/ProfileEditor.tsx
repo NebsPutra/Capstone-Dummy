@@ -225,7 +225,7 @@ export function ProfileEditor({
         label={t("register.bio")}
         error={err("bio")}
         hint={
-          <span className={bio.length > BIO_MAX ? "text-red-600" : ""}>
+          <span className={bio.length > BIO_MAX ? "text-danger" : ""}>
             {bio.length}/{BIO_MAX}
           </span>
         }
@@ -258,7 +258,7 @@ export function ProfileEditor({
           onChange={setPrimary}
           hasError={Boolean(errors.primary)}
         />
-        {errors.primary && <p className="text-xs text-red-600">{t(errors.primary)}</p>}
+        {errors.primary && <p className="text-xs text-danger">{t(errors.primary)}</p>}
       </div>
 
       {formError && <Alert>{t(formError)}</Alert>}

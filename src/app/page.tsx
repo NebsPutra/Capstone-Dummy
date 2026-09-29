@@ -8,6 +8,7 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
 import { LegalFooter } from "@/components/LegalFooter";
+import { ActivitySlideshow } from "@/components/landing/ActivitySlideshow";
 
 export default function LandingPage() {
   const { t } = useLanguage();
@@ -50,33 +51,36 @@ export default function LandingPage() {
       </header>
 
       {deleted && (
-        <p role="status" className="mx-auto max-w-md rounded-xl bg-green-50 px-4 py-3 text-center text-sm font-medium text-green-700">
+        <p role="status" className="mx-auto max-w-md rounded-xl bg-success-soft px-4 py-3 text-center text-sm font-medium text-success">
           {t("deleteAccount.done")}
         </p>
       )}
-      <section className="mx-auto max-w-3xl px-6 py-20 text-center md:py-28">
-        <h1 className="text-4xl font-extrabold leading-tight tracking-tight md:text-6xl">
-          {t("landing.headline1")}
-          <br />
-          <span className="text-orange-dark">{t("landing.headline2")}</span>
-        </h1>
-        <p className="mx-auto mt-6 max-w-xl text-lg text-ink/70">
-          {t("landing.subheadline")}
-        </p>
-        <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <Link
-            href="/explore"
-            className="w-full rounded-full bg-orange-deep px-7 py-3.5 text-center text-base font-semibold text-white shadow-soft hover:bg-orange-deeper sm:w-auto"
-          >
-            {t("landing.ctaExplore")}
-          </Link>
-          <Link
-            href="/register"
-            className="w-full rounded-full border border-orange/30 bg-surface px-7 py-3.5 text-center text-base font-semibold text-orange-dark hover:bg-cream-warm sm:w-auto"
-          >
-            {t("landing.ctaCreate")}
-          </Link>
+      <section className="mx-auto grid max-w-6xl items-center gap-10 px-6 py-12 md:grid-cols-2 md:gap-12 md:py-20">
+        <div className="text-center md:text-left">
+          <h1 className="text-4xl font-extrabold leading-tight tracking-tight md:text-5xl lg:text-6xl">
+            {t("landing.headline1")}
+            <br />
+            <span className="text-orange-dark">{t("landing.headline2")}</span>
+          </h1>
+          <p className="mx-auto mt-6 max-w-xl text-lg text-ink/70 md:mx-0">
+            {t("landing.subheadline")}
+          </p>
+          <div className="mt-9 flex flex-col items-center gap-3 sm:flex-row sm:justify-center md:justify-start">
+            <Link
+              href="/explore"
+              className="w-full rounded-full bg-orange-deep px-7 py-3.5 text-center text-base font-semibold text-white shadow-soft hover:bg-orange-deeper sm:w-auto"
+            >
+              {t("landing.ctaExplore")}
+            </Link>
+            <Link
+              href="/register"
+              className="w-full rounded-full border border-orange/30 bg-surface px-7 py-3.5 text-center text-base font-semibold text-orange-dark hover:bg-cream-warm sm:w-auto"
+            >
+              {t("landing.ctaCreate")}
+            </Link>
+          </div>
         </div>
+        <ActivitySlideshow className="mx-auto max-w-xl" />
       </section>
 
       <section className="mx-auto max-w-5xl px-6 pb-24">

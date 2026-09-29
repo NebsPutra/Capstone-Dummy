@@ -69,25 +69,25 @@ export interface ComplaintHistory {
 }
 
 export const SEVERITY_TONE: Record<string, string> = {
-  LOW: "bg-stone-100 text-stone-500",
-  MEDIUM: "bg-blue-50 text-blue-700",
-  HIGH: "bg-amber-50 text-amber-700",
-  CRITICAL: "bg-red-50 text-red-700",
-  info: "bg-blue-50 text-blue-700",
-  warning: "bg-amber-50 text-amber-700",
-  critical: "bg-red-50 text-red-700",
+  LOW: "bg-muted-soft text-muted",
+  MEDIUM: "bg-info-soft text-info",
+  HIGH: "bg-warning-soft text-warning",
+  CRITICAL: "bg-danger-soft text-danger",
+  info: "bg-info-soft text-info",
+  warning: "bg-warning-soft text-warning",
+  critical: "bg-danger-soft text-danger",
 };
 
 export const STATUS_TONE: Record<string, string> = {
-  OPEN: "bg-amber-50 text-amber-700",
-  IN_REVIEW: "bg-blue-50 text-blue-700",
+  OPEN: "bg-warning-soft text-warning",
+  IN_REVIEW: "bg-info-soft text-info",
   WAITING_FOR_USER: "bg-orange/10 text-orange-dark",
-  RESOLVED: "bg-green-50 text-green-700",
-  CLOSED: "bg-stone-100 text-stone-500",
-  REJECTED: "bg-stone-100 text-stone-500",
-  active: "bg-green-50 text-green-700",
-  suspended: "bg-red-50 text-red-700",
-  deactivated: "bg-stone-100 text-stone-500",
+  RESOLVED: "bg-success-soft text-success",
+  CLOSED: "bg-muted-soft text-muted",
+  REJECTED: "bg-muted-soft text-muted",
+  active: "bg-success-soft text-success",
+  suspended: "bg-danger-soft text-danger",
+  deactivated: "bg-muted-soft text-muted",
 };
 
 // ---------------------------------------------------------------------------

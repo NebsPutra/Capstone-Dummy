@@ -14,12 +14,12 @@ const DOT: Record<EventStatus, string> = {
 };
 
 const TONE: Record<EventStatus, string> = {
-  open: "bg-green-50 text-green-700",
-  almost_full: "bg-amber-50 text-amber-700",
-  full: "bg-red-50 text-red-700",
-  ongoing: "bg-blue-50 text-blue-700",
-  completed: "bg-stone-100 text-stone-500",
-  cancelled: "bg-stone-100 text-stone-500",
+  open: "bg-success-soft text-success",
+  almost_full: "bg-warning-soft text-warning",
+  full: "bg-danger-soft text-danger",
+  ongoing: "bg-info-soft text-info",
+  completed: "bg-muted-soft text-muted",
+  cancelled: "bg-muted-soft text-muted",
 };
 
 /** Pass the *effective* status (see effectiveStatus in lib/events). */

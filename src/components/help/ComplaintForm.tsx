@@ -218,7 +218,7 @@ export function ComplaintForm({
           setSkipped(s);
         }}
       />
-      {skipped && <p className="text-xs text-amber-700">{t("help.errFiles")}</p>}
+      {skipped && <p className="text-xs text-warning">{t("help.errFiles")}</p>}
       {(relatedEvent || relatedUserId) && (
         <label className="flex cursor-pointer items-start gap-2.5 text-sm">
           <input type="checkbox" checked={anonymous} onChange={(e) => setAnonymous(e.target.checked)} className="mt-1 accent-orange" />

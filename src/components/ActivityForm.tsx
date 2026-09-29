@@ -401,7 +401,7 @@ export function ActivityForm({ event }: { event?: EventRecord }) {
             {locating ? t("location.locating") : t("create.useMyLocation")}
           </button>
         </div>
-        <div id="map" tabIndex={-1} className={`rounded-xl outline-none ${errors.map ? "ring-2 ring-red-400" : ""}`}>
+        <div id="map" tabIndex={-1} className={`rounded-xl outline-none ${errors.map ? "ring-2 ring-danger/60" : ""}`}>
           <MapPicker
             center={mapCenter}
             marker={coords}
@@ -412,7 +412,7 @@ export function ActivityForm({ event }: { event?: EventRecord }) {
           />
         </div>
         {errors.map ? (
-          <p role="alert" className="text-xs text-red-600">
+          <p role="alert" className="text-xs text-danger">
             {errors.map}
           </p>
         ) : (

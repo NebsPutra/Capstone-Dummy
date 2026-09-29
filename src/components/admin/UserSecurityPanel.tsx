@@ -44,7 +44,7 @@ export function UserSecurityPanel({ userId, canManage }: { userId: string; canMa
         <p>{t("asec.pin")}: <b>{data.pin_set ? t("asec.pinSet") : t("asec.pinNotSet")}</b></p>
         <p>
           {t("asec.status")}:{" "}
-          <b className={data.locked_until ? "text-red-600" : ""}>
+          <b className={data.locked_until ? "text-danger" : ""}>
             {data.locked_until ? t("asec.lockedUntil", { time: fmtDateTime(data.locked_until, lang) }) : t("asec.notLocked")}
           </b>
         </p>
@@ -53,11 +53,11 @@ export function UserSecurityPanel({ userId, canManage }: { userId: string; canMa
       {canManage && data.pin_set && (
         <div className="flex flex-wrap gap-2">
           {data.locked_until && (
-            <button disabled={busy} onClick={() => act("unlock")} className="rounded-full bg-green-600 px-3 py-1.5 text-xs font-semibold text-white">
+            <button disabled={busy} onClick={() => act("unlock")} className="rounded-full bg-success-solid px-3 py-1.5 text-xs font-semibold text-white">
               {t("asec.unlock")}
             </button>
           )}
-          <button disabled={busy} onClick={() => act("clear")} className="rounded-full border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600">
+          <button disabled={busy} onClick={() => act("clear")} className="rounded-full border border-danger/25 px-3 py-1.5 text-xs font-semibold text-danger">
             {t("asec.clear")}
           </button>
         </div>
@@ -70,7 +70,7 @@ export function UserSecurityPanel({ userId, canManage }: { userId: string; canMa
           {data.events.map((e, i) => (
             <li key={i} className="flex flex-wrap gap-2">
               <time className="text-xs text-ink/65">{fmtDateTime(e.created_at, lang)}</time>
-              <span className={e.type === "pin_failed" || e.type === "pin_locked" ? "font-medium text-red-600" : "font-medium"}>
+              <span className={e.type === "pin_failed" || e.type === "pin_locked" ? "font-medium text-danger" : "font-medium"}>
                 {td(`security.event.${e.type}`, e.type)}
               </span>
               {e.device && <span className="text-ink/65">{e.device}</span>}

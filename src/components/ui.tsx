@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 export function inputClass(hasError?: boolean) {
   return cn(
     "w-full rounded-xl border bg-surface px-4 py-2.5 text-sm outline-none transition focus:border-orange disabled:bg-cream-warm disabled:opacity-60",
-    hasError ? "border-red-400 bg-red-50/40" : "border-ink/10"
+    hasError ? "border-danger/60 bg-danger-soft/40" : "border-ink/10"
   );
 }
 
@@ -32,7 +32,7 @@ export function FieldShell({
       </label>
       {children}
       {error ? (
-        <p id={`${id}-error`} role="alert" className="mt-1 text-xs text-red-600">
+        <p id={`${id}-error`} role="alert" className="mt-1 text-xs text-danger">
           {error}
         </p>
       ) : hint ? (
@@ -92,9 +92,9 @@ export function Alert({
       role={tone === "error" ? "alert" : "status"}
       className={cn(
         "rounded-xl px-4 py-3 text-sm",
-        tone === "error" && "bg-red-50 text-red-700",
+        tone === "error" && "bg-danger-soft text-danger",
         tone === "info" && "bg-cream-warm text-ink/70",
-        tone === "success" && "bg-green-50 text-green-700"
+        tone === "success" && "bg-success-soft text-success"
       )}
     >
       {children}

@@ -199,7 +199,7 @@ export function Combobox({
           className={cn(
             // 16px text on mobile stops iOS from zooming into the field.
             "w-full rounded-xl border bg-surface py-3 pl-10 pr-10 text-base outline-none transition focus:border-orange disabled:cursor-not-allowed disabled:bg-cream-warm disabled:opacity-60 sm:py-2.5 sm:text-sm",
-            error ? "border-red-400 bg-red-50/40" : "border-ink/10"
+            error ? "border-danger/60 bg-danger-soft/40" : "border-ink/10"
           )}
         />
         {loading ? (
@@ -274,7 +274,7 @@ export function Combobox({
       )}
 
       {error && (
-        <p role="alert" className="mt-1 text-xs text-red-600">
+        <p role="alert" className="mt-1 text-xs text-danger">
           {error}
         </p>
       )}

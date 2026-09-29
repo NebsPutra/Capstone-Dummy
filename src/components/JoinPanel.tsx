@@ -100,7 +100,7 @@ export function JoinPanel({
           <button
             onClick={handleLeave}
             disabled={loading}
-            className="text-sm font-medium text-red-600 disabled:opacity-60"
+            className="text-sm font-medium text-danger disabled:opacity-60"
           >
             {loading
               ? t("join.leaving")

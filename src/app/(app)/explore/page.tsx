@@ -15,6 +15,7 @@ import { distanceKm, jakartaNowStamp, jakartaToday } from "@/lib/utils";
 import { EVENT_LIST_SELECT, type Category, type EventRecord } from "@/types";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import type { TranslationKey } from "@/lib/i18n/translations";
+import { ActivityGridSkeleton } from "@/components/Skeletons";
 
 const TIME_FILTERS = ["today", "tomorrow", "thisWeek", "upcoming", "ongoing"] as const;
 const PRICE_FILTERS = ["free", "paid"] as const;
@@ -210,7 +211,7 @@ export default function ExplorePage() {
       {error ? (
         <Alert>{t(error)}</Alert>
       ) : loading && events.length === 0 ? (
-        <p className="py-12 text-center text-sm text-ink/65">{t("explore.loading")}</p>
+        <ActivityGridSkeleton count={6} />
       ) : visible.length === 0 ? (
         <p className="py-12 text-center text-sm text-ink/65">{t("explore.noResults")}</p>
       ) : (

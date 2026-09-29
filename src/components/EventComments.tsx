@@ -99,7 +99,7 @@ function Composer({
         className="w-full resize-y rounded-xl border border-ink/10 bg-surface px-3 py-2 text-sm outline-none focus:border-orange"
       />
       <div className="flex items-center justify-end gap-2">
-        <span className={cn("mr-auto text-xs", trimmed.length > MAX ? "text-red-600" : "text-ink/65")}>
+        <span className={cn("mr-auto text-xs", trimmed.length > MAX ? "text-danger" : "text-ink/65")}>
           {trimmed.length}/{MAX}
         </span>
         {onCancel && (
@@ -180,13 +180,13 @@ function CommentItem({ c, thread, eventId, reload, isReply }: { c: Comment; thre
               {c.edited && ` · ${t("comments.edited")}`}
             </span>
             {c.status === "hidden" && c.body !== null && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-2 py-0.5 text-[10px] font-semibold text-red-600">
+              <span className="inline-flex items-center gap-1 rounded-full bg-danger-soft px-2 py-0.5 text-[10px] font-semibold text-danger">
                 <EyeOff size={11} /> {t("comments.hidden")}
                 {c.moderation_reason && ` · ${c.moderation_reason === "auto: reports" ? t("comments.autoHidden") : c.moderation_reason}`}
               </span>
             )}
             {moderate && (c.report_count ?? 0) > 0 && (
-              <span className="text-[10px] font-semibold text-red-600">{t("comments.reports", { n: c.report_count ?? 0 })}</span>
+              <span className="text-[10px] font-semibold text-danger">{t("comments.reports", { n: c.report_count ?? 0 })}</span>
             )}
           </div>
 
@@ -263,7 +263,7 @@ function CommentItem({ c, thread, eventId, reload, isReply }: { c: Comment; thre
                             if (window.confirm(t("comments.deleteConfirm"))) act("delete_event_comment", { p_comment: c.id }, "comments.deletedToast");
                             else setMenu(false);
                           }}
-                          className="flex w-full items-center gap-2 px-4 py-2 text-left text-red-600 hover:bg-red-50"
+                          className="flex w-full items-center gap-2 px-4 py-2 text-left text-danger hover:bg-danger-soft"
                         >
                           <Trash2 size={15} /> {t("comments.delete")}
                         </button>

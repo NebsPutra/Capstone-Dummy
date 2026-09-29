@@ -111,10 +111,10 @@ export default function AdminUserDetail({ params }: { params: Promise<{ id: stri
           {canEdit && (
             <div className="flex flex-wrap gap-2 pt-2">
               {p.account_status !== "active" ? (
-                <button disabled={busy} onClick={() => setStatus("active")} className="rounded-full bg-green-600 px-3 py-1.5 text-xs font-semibold text-white">{t("ausers.restore")}</button>
+                <button disabled={busy} onClick={() => setStatus("active")} className="rounded-full bg-success-solid px-3 py-1.5 text-xs font-semibold text-white">{t("ausers.restore")}</button>
               ) : (
                 <>
-                  <button disabled={busy} onClick={() => setStatus("suspended")} className="rounded-full bg-amber-500 px-3 py-1.5 text-xs font-semibold text-white">{t("ausers.suspend")}</button>
+                  <button disabled={busy} onClick={() => setStatus("suspended")} className="rounded-full bg-warning-solid px-3 py-1.5 text-xs font-semibold text-white">{t("ausers.suspend")}</button>
                   <button disabled={busy} onClick={() => setStatus("deactivated")} className="rounded-full border border-ink/10 px-3 py-1.5 text-xs font-semibold">{t("ausers.deactivate")}</button>
                 </>
               )}
@@ -139,14 +139,14 @@ export default function AdminUserDetail({ params }: { params: Promise<{ id: stri
                   ))}
                 </select>
               </label>
-              <p className="pt-2 text-xs font-semibold uppercase text-red-600">{t("ausers.dangerZone")}</p>
+              <p className="pt-2 text-xs font-semibold uppercase text-danger">{t("ausers.dangerZone")}</p>
               <button
                 disabled={busy}
                 onClick={() => {
                   if (window.prompt(t("ausers.anonymizeConfirm")) === "ANONYMIZE")
                     run(() => sb.rpc("admin_anonymize_user", { p_user: id }), "ausers.anonymized");
                 }}
-                className="rounded-full border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600"
+                className="rounded-full border border-danger/25 px-3 py-1.5 text-xs font-semibold text-danger"
               >
                 {t("ausers.anonymize")}
               </button>

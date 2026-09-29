@@ -22,6 +22,12 @@ const config: Config = {
         },
         ink: token("ink"),
         surface: token("surface"), // cards, inputs, panels
+        // Status colors: `text-danger`, `bg-danger-soft`, `bg-danger-solid` (white text), etc.
+        success: { DEFAULT: token("success"), soft: token("success-soft"), solid: token("success-solid") },
+        warning: { DEFAULT: token("warning"), soft: token("warning-soft"), solid: token("warning-solid") },
+        danger: { DEFAULT: token("danger"), soft: token("danger-soft"), solid: token("danger-solid") },
+        info: { DEFAULT: token("info"), soft: token("info-soft"), solid: token("info-solid") },
+        muted: { DEFAULT: token("muted"), soft: token("muted-soft") },
       },
       fontFamily: {
         sans: ["var(--font-plus-jakarta)", "system-ui", "sans-serif"],

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { LocateFixed, MapPin, RefreshCw, Search } from "lucide-react";
+import { LocateFixed, MapPin, RefreshCw } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useUserLocation, type ManualArea, type UserLocation } from "@/lib/location";
 import { effectiveStatus } from "@/lib/events";
@@ -16,6 +16,7 @@ import { ActivityCard } from "./ActivityCard";
 import { EventCodeJump } from "./EventCodeJump";
 import { ManualLocationDialog } from "./ManualLocationDialog";
 import { Alert, PrimaryButton } from "./ui";
+import { ActivityGridSkeleton } from "./Skeletons";
 
 const SECTION_SIZE = 6;
 
@@ -98,18 +99,8 @@ export function NearbyDashboard({
       <LocationBar location={location} onManual={() => setDialogOpen(true)} onGps={switchToGps} />
 
       {location.status === "ready" && (
-        <div className="space-y-1 text-sm text-ink/70">
-          <p className="font-medium text-ink/80">{t("dashboard.radiusNote", { km: DASHBOARD_RADIUS_KM })}</p>
-          <p>
-            {t("dashboard.fartherNote")}{" "}
-            <Link href="/explore" className="inline-flex items-center gap-1 font-semibold text-orange-dark">
-              <Search size={14} /> {t("dashboard.searchLink")}
-            </Link>
-          </p>
-        </div>
+        <p className="text-sm text-ink/70">{t("dashboard.radiusNote", { km: DASHBOARD_RADIUS_KM })}</p>
       )}
-
-      <EventCodeJump />
 
       {location.status === "ready" &&
         (error ? (
@@ -120,7 +111,7 @@ export function NearbyDashboard({
             </button>
           </div>
         ) : !sections || !events ? (
-          <p className="py-10 text-center text-sm text-ink/65">{t("dashboard.loading")}</p>
+          <ActivityGridSkeleton />
         ) : events.length === 0 ? (
           <div className="card space-y-4 p-8 text-center">
             <p className="text-ink/70">{t("dashboard.emptyNearby", { km: DASHBOARD_RADIUS_KM })}</p>
@@ -165,6 +156,8 @@ export function NearbyDashboard({
             )}
           </>
         ))}
+
+      <EventCodeJump />
 
       {dialogOpen && (
         <ManualLocationDialog

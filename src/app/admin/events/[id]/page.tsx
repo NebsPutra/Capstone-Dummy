@@ -74,10 +74,10 @@ export default function AdminEventDetail({ params }: { params: Promise<{ id: str
             <Link href={`/activities/${ev.id}/edit`} className="rounded-full bg-orange-deep px-3 py-1.5 text-xs font-semibold text-white">{t("common.edit")}</Link>
             {ev.status === "cancelled" ? (
               <button onClick={() => window.confirm(t("aevents.restoreConfirm")) && act(() => sb.rpc("admin_restore_event", { p_event: ev.id }), "aevents.restored")}
-                className="rounded-full bg-green-600 px-3 py-1.5 text-xs font-semibold text-white">{t("aevents.restore")}</button>
+                className="rounded-full bg-success-solid px-3 py-1.5 text-xs font-semibold text-white">{t("aevents.restore")}</button>
             ) : (
               <button onClick={() => window.confirm(t("event.cancelConfirm")) && act(() => sb.rpc("cancel_event", { p_event_id: ev.id }), "event.cancelled")}
-                className="rounded-full border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600">{t("event.cancelEvent")}</button>
+                className="rounded-full border border-danger/25 px-3 py-1.5 text-xs font-semibold text-danger">{t("event.cancelEvent")}</button>
             )}
           </>
         }
@@ -122,9 +122,9 @@ export default function AdminEventDetail({ params }: { params: Promise<{ id: str
                 <span className="flex shrink-0 items-center gap-2 text-xs">
                   {td(`participation.${p.status}`, p.status)}
                   {p.status === "pending" && (
-                    <button className="font-semibold text-green-700" onClick={() => act(() => sb.rpc("set_participant_status", { p_participant_id: p.id, p_status: "approved" }), "event.approved")}>✓</button>
+                    <button className="font-semibold text-success" onClick={() => act(() => sb.rpc("set_participant_status", { p_participant_id: p.id, p_status: "approved" }), "event.approved")}>✓</button>
                   )}
-                  <button className="font-semibold text-red-600" title={t("event.remove")}
+                  <button className="font-semibold text-danger" title={t("event.remove")}
                     onClick={() => window.confirm(t("event.removeConfirm", { name: p.participant?.username ?? "" })) && act(() => sb.rpc("remove_participant", { p_participant_id: p.id }), "event.removed")}>✕</button>
                 </span>
               </li>

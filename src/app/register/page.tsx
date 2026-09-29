@@ -238,7 +238,7 @@ function Register() {
           )}
           {step === "done" && (
             <div className="space-y-4 py-4 text-center">
-              <CheckCircle2 size={48} className="mx-auto text-green-600" />
+              <CheckCircle2 size={48} className="mx-auto text-success" />
               <p className="text-sm text-ink/70">{t("register.readySubtitle")}</p>
               <PrimaryButton
                 onClick={() => {
@@ -408,7 +408,7 @@ function AccountStep({
           </span>
         </label>
         {consentError && (
-          <p id="consent-error" role="alert" className="mt-1 text-xs text-red-600">
+          <p id="consent-error" role="alert" className="mt-1 text-xs text-danger">
             {t("consent.required")}
           </p>
         )}
@@ -780,7 +780,7 @@ function ProfileStep({
         label={t("register.bio")}
         error={err("bio")}
         hint={
-          <span className={bio.length > BIO_MAX ? "text-red-600" : ""}>
+          <span className={bio.length > BIO_MAX ? "text-danger" : ""}>
             {bio.length}/{BIO_MAX}
           </span>
         }

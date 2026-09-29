@@ -108,7 +108,7 @@ export function ComplaintThread({
                 className={cn(
                   "rounded-2xl px-4 py-3 text-sm",
                   m.is_internal
-                    ? "border border-dashed border-amber-400/60 bg-amber-50"
+                    ? "border border-dashed border-warning/50 bg-warning-soft"
                     : m.from_staff
                     ? "bg-orange/10"
                     : "bg-cream-warm"
