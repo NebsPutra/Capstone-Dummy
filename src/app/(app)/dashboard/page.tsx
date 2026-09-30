@@ -43,7 +43,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <HeroBanner greeting={<DashboardGreeting nickname={profile?.nickname} />} />
+      <HeroBanner greeting={<DashboardGreeting nickname={profile?.nickname} />} primaryInterestKey={primaryKey} />
       <NearbyDashboard interestKeys={interestKeys} primaryInterestKey={primaryKey} profileArea={profileArea} />
       {profile && profile.age == null && <AgeReminder userId={user!.id} />}
     </div>
