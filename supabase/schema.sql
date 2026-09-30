@@ -37,8 +37,6 @@ create table public.profiles (
   avatar_url text,
   primary_interest_id uuid,
   -- last known coarse location, only ever set from the browser at request time
-  last_lat double precision,
-  last_lng double precision,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );

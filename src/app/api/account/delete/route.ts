@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
       full_name: null, nickname: null, bio: null, whatsapp_number: null, gender: null, age: null,
       avatar_url: null, province_id: null, province: null, city_id: null, city: null,
       kecamatan_id: null, kecamatan: null, kelurahan_id: null, kelurahan: null,
-      area_lat: null, area_lng: null, last_lat: null, last_lng: null, pin_set_at: null,
+      area_lat: null, area_lng: null, pin_set_at: null,
       username: `deleted_${uid.replace(/-/g, "").slice(0, 10)}`,
       account_status: "deactivated",
       status_reason: "self_deleted",
