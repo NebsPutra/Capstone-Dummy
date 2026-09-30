@@ -48,6 +48,9 @@ const DOMAIN_CODES = [
   "MESSAGES_NOT_ALLOWED",
   "MESSAGE_LENGTH",
   "CONVERSATION_NOT_FOUND",
+  "INVALID_STATUS",
+  "INVALID_ROLE",
+  "FIELD_NOT_EDITABLE",
 ] as const;
 const BY_LENGTH = [...DOMAIN_CODES].sort((a, b) => b.length - a.length);
 
@@ -64,7 +67,8 @@ export function friendlyErrorKey(err: ErrorLike, context?: string): TranslationK
 
   // Longest first, so MESSAGES_NOT_ALLOWED isn't read as NOT_ALLOWED.
   const domain = BY_LENGTH.find((c) => message.includes(c));
-  if (domain) return `err.${domain}` as TranslationKey;
+  // satisfies (not as): a code without an err.* translation fails tsc.
+  if (domain) return `err.${domain}` as const satisfies TranslationKey;
 
   if (/failed to fetch|network|load failed/i.test(message) || err?.name === "AuthRetryableFetchError") {
     return "err.network";
