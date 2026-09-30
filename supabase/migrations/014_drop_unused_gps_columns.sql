@@ -8,9 +8,11 @@
 -- (area_lat/area_lng) is stored. Removing the dead columns makes the schema
 -- match the "GPS location is not stored on the server" design.
 --
--- admin_anonymize_user is recreated first (it set these columns to null);
--- the audit diff in 004 uses `to_jsonb(p) - 'last_lat'`, which is a harmless
--- no-op once the key no longer exists, so it needs no change.
+-- my_profile and staff_profiles are `select *` views, so they pin every
+-- column and must be dropped before the column can go, then recreated (they
+-- re-expand `*` to the remaining columns). admin_anonymize_user is recreated
+-- without the columns too. The audit diff in 004 uses `to_jsonb(p) -
+-- 'last_lat'`, a harmless no-op once the key is gone, so it needs no change.
 -- =========================================================
 
 begin;
@@ -33,7 +35,18 @@ begin
 end;
 $$;
 
+-- Views re-expand `select *`, so drop them, remove the columns, recreate them.
+drop view if exists public.my_profile;
+drop view if exists public.staff_profiles;
+
 alter table public.profiles drop column if exists last_lat;
 alter table public.profiles drop column if exists last_lng;
+
+create view public.my_profile as
+  select * from public.profiles where id = auth.uid();
+create view public.staff_profiles as
+  select * from public.profiles where public.is_staff();
+revoke all on public.my_profile, public.staff_profiles from anon;
+grant select on public.my_profile, public.staff_profiles to authenticated;
 
 commit;
