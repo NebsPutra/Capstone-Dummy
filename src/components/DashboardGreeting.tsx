@@ -5,7 +5,7 @@ import { useLanguage } from "@/lib/i18n/LanguageContext";
 import type { Lang, TranslationKey } from "@/lib/i18n/translations";
 
 /** Current hour (0–23) in Asia/Jakarta, whatever the device's time zone. */
-function jakartaHour(now = new Date()): number {
+export function jakartaHour(now = new Date()): number {
   const h = new Intl.DateTimeFormat("en-GB", { hour: "numeric", hourCycle: "h23", timeZone: "Asia/Jakarta" }).format(now);
   return Number(h) % 24;
 }
