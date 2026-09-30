@@ -1,14 +1,20 @@
 "use client";
 
+import { useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
+import { Pause, Play } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
-import { GatherScene, ReadScene, RunScene } from "@/components/landing/Scenes";
+import { cn } from "@/lib/utils";
+import { INTERVAL_MS, REDUCED_MOTION, subscribeReducedMotion } from "@/components/landing/ActivitySlideshow";
+import { GatherScene, ReadScene, RunScene, SchoolScene } from "@/components/landing/Scenes";
 
-// Landing illustration that best matches the user's main hobby.
-function sceneFor(interestKey: string | null) {
-  if (interestKey === "reading") return <ReadScene />;
-  if (interestKey === "running" || interestKey === "walking" || interestKey === "fitness") return <RunScene />;
-  return <GatherScene />;
+const SCENES = [<RunScene key="run" />, <ReadScene key="read" />, <SchoolScene key="school" />, <GatherScene key="gather" />];
+
+// Start on the scene that best matches the user's main hobby.
+function startScene(interestKey: string | null) {
+  if (interestKey === "reading") return 1;
+  if (interestKey === "running" || interestKey === "walking" || interestKey === "fitness") return 0;
+  return 3;
 }
 
 /**
@@ -23,11 +29,45 @@ export function HeroBanner({
   primaryInterestKey: string | null;
 }) {
   const { t } = useLanguage();
-    return (
+  const [active, setActive] = useState(() => startScene(primaryInterestKey));
+  const [choice, setChoice] = useState<"play" | "pause" | null>(null); // explicit button press wins
+  const reducedMotion = useSyncExternalStore(
+    subscribeReducedMotion,
+    () => window.matchMedia(REDUCED_MOTION).matches,
+    () => false
+  );
+  const playing = choice ? choice === "play" : !reducedMotion;
+
+  useEffect(() => {
+    if (!playing) return;
+    const id = window.setTimeout(() => setActive((i) => (i + 1) % SCENES.length), INTERVAL_MS);
+    return () => window.clearTimeout(id);
+  }, [active, playing]);
+
+  return (
     <section className="relative overflow-hidden rounded-3xl bg-orange-deep p-6 text-white shadow-lift md:p-8">
-      {/* Wide crop of the 4:3 scene, centred on the people. */}
-      <div className="absolute inset-y-4 right-4 hidden w-[44%] items-center overflow-hidden rounded-2xl sm:flex">
-        <div className="aspect-[4/3] w-full shrink-0 translate-y-[4%]">{sceneFor(primaryInterestKey)}</div>
+      {/* Wide crop of the 4:3 scenes, centred on the people; cross-fades like the landing slideshow. */}
+      <div className="absolute inset-y-4 right-4 z-10 hidden w-[44%] overflow-hidden rounded-2xl bg-cream sm:block">
+        {SCENES.map((scene, i) => (
+          <div
+            key={i}
+            aria-hidden
+            className={cn(
+              "absolute inset-0 flex items-center transition-opacity duration-700 ease-out",
+              i === active ? "opacity-100" : "opacity-0"
+            )}
+          >
+            <div className="aspect-[4/3] w-full shrink-0 translate-y-[4%]">{scene}</div>
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={() => setChoice(playing ? "pause" : "play")}
+          aria-label={playing ? t("landing.slidePause") : t("landing.slidePlay")}
+          className="absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-white/85 text-ink/70 shadow-soft hover:bg-white hover:text-ink"
+        >
+          {playing ? <Pause size={14} /> : <Play size={14} />}
+        </button>
       </div>
 
       <div className="relative sm:pr-[48%]">

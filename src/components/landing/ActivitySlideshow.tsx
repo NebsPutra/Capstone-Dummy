@@ -13,10 +13,11 @@ const SLIDES = [
   { Scene: GatherScene, key: "slide4" },
 ] as const;
 
-const INTERVAL_MS = 4500;
-const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
+// Also used by the dashboard banner (HeroBanner).
+export const INTERVAL_MS = 4000;
+export const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
 
-function subscribeReducedMotion(onChange: () => void) {
+export function subscribeReducedMotion(onChange: () => void) {
   const mq = window.matchMedia(REDUCED_MOTION);
   mq.addEventListener("change", onChange);
   return () => mq.removeEventListener("change", onChange);
