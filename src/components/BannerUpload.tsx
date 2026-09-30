@@ -20,13 +20,11 @@ const MAX_RAW_BYTES = 15 * 1024 * 1024;
 export function BannerUpload({
   value,
   onChange,
-  categoryKey,
   emoji,
   title,
 }: {
   value: string | null;
   onChange: (url: string | null) => void;
-  categoryKey?: string | null;
   emoji?: string | null;
   title: string;
 }) {
@@ -181,7 +179,7 @@ export function BannerUpload({
       ) : (
         <div className="space-y-2">
           <div className="overflow-hidden rounded-xl">
-            <EventCover bannerUrl={value} categoryKey={categoryKey} emoji={emoji} title={title} className="aspect-video" />
+            <EventCover bannerUrl={value} emoji={emoji} title={title} className="aspect-video" />
           </div>
           {!value && <p className="text-xs text-ink/65">{t("banner.default")}</p>}
           <div className="flex flex-wrap gap-2">

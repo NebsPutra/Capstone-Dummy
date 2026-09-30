@@ -22,7 +22,7 @@ const DESCRIPTION =
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "Komunitas — Find Activities. Meet People. Build Community.",
+  title: "Komunitas | Find Activities. Meet People. Build Community.",
   description: DESCRIPTION,
   applicationName: "Komunitas",
   keywords: [
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "Komunitas",
     url: "/",
-    title: "Komunitas — Find Activities. Meet People. Build Community.",
+    title: "Komunitas | Find Activities. Meet People. Build Community.",
     description: DESCRIPTION,
     locale: "id_ID",
     alternateLocale: ["en_US"],

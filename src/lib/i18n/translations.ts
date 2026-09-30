@@ -44,15 +44,15 @@ const enBase = {
   "landing.ctaCreate": "Create an Activity",
   "landing.login": "Sign in",
   "landing.signup": "Sign up",
-  "landing.feature1Title": "Discover Nearby Activities",
-  "landing.feature1Desc": "Find activities happening around you.",
-  "landing.feature2Title": "Meet People With Similar Interests",
-  "landing.feature2Desc": "Connect through hobbies and activities.",
-  "landing.feature3Title": "Create Your Own Activity",
+  "landing.feature1Title": "Set your area",
+  "landing.feature1Desc": "Pick your kelurahan once and see what's on near you first.",
+  "landing.feature2Title": "Join in",
+  "landing.feature2Desc": "Join open activities right away, or send a request when the organizer approves each person.",
+  "landing.feature3Title": "Host your own",
   "landing.feature3Desc":
-    "Organize your own running group, book club, cycling session, or gathering.",
-  "landing.feature4Title": "Build Local Communities",
-  "landing.feature4Desc": "Share your activities, invite friends and keep meeting the people you click with.",
+    "Start a running group, book club, cycling session or badminton match. Public, or private by code and link.",
+  "landing.feature4Title": "Keep in touch",
+  "landing.feature4Desc": "Add friends, comment on activities and send direct messages.",
   "landing.slidesLabel": "Activities on Komunitas",
   "landing.slidePause": "Pause slideshow",
   "landing.slidePlay": "Play slideshow",
@@ -185,7 +185,7 @@ const enBase = {
   "register.readySubtitle": "Taking you to your dashboard...",
   "register.goDashboard": "Go to Dashboard",
   "register.incompleteTitle": "Your profile setup is incomplete.",
-  "register.incompleteDesc": "Pick up where you left off — your account is already created.",
+  "register.incompleteDesc": "Pick up where you left off. Your account is already created.",
   "register.continueRegistration": "Continue Registration",
 
   // Enumerations (DB value -> label)
@@ -234,7 +234,7 @@ const enBase = {
   "category.other": "Other",
 
   // Location
-  "location.loadFailed": "Failed to load — tap to retry",
+  "location.loadFailed": "Couldn't load. Tap to retry.",
   "location.currentlySaved": "Currently saved: {value}. Select below to change.",
   "location.gpsUnavailable": "Location access is unavailable.",
   "location.permissionDenied":
@@ -301,7 +301,7 @@ const enBase = {
 
   // Explore
   "explore.title": "Join / Explore",
-  "explore.subtitle": "Search activities by name, area, or event code — at any distance.",
+  "explore.subtitle": "Search activities by name, area or event code, at any distance.",
   "explore.searchPlaceholder": "Search activities, places, event codes...",
   "explore.nearby": "Nearest first",
   "explore.today": "Today",
@@ -347,8 +347,8 @@ const enBase = {
   "create.showWhatsappPublicly": "Show WhatsApp number publicly",
   "create.privacyJoin": "Privacy & Join Settings",
   "create.visibility": "Visibility",
-  "create.public": "Public — appears on dashboard, explore & recommendations",
-  "create.private": "Private — accessible only via code, link, or QR",
+  "create.public": "Public: shown on the dashboard, Explore and recommendations",
+  "create.private": "Private: only reachable by code, link or QR",
   "create.joinPermission": "Join permission",
   "create.anyoneCanJoin": "Anyone can join",
   "create.approvalRequired": "Organizer approval required",
@@ -420,7 +420,7 @@ const enBase = {
   "join.requested": "Your request has been sent to the organizer.",
   "join.owner": "You're the organizer of this activity.",
   "join.pending": "Your request is waiting for the organizer's approval.",
-  "join.approved": "You're registered for this activity ✅",
+  "join.approved": "You're registered for this activity.",
   "join.rejected": "Your request to join was not approved.",
   "join.leave": "Leave activity",
   "join.cancelRequest": "Cancel request",
@@ -439,7 +439,7 @@ const enBase = {
   "share.copyLink": "Copy invite link",
   "share.copied": "Copied!",
   "share.whatsapp": "Share via WhatsApp",
-  "share.message": "Join \"{title}\" on Komunitas — {url}",
+  "share.message": "Join \"{title}\" on Komunitas: {url}",
   "share.hint":
     "Anyone with this link, QR code or event code can open the activity, even if it's private or far away.",
 
@@ -572,15 +572,15 @@ const idBase: Record<keyof typeof enBase, string> = {
   "landing.ctaCreate": "Buat Aktivitas",
   "landing.login": "Masuk",
   "landing.signup": "Daftar",
-  "landing.feature1Title": "Temukan Aktivitas Terdekat",
-  "landing.feature1Desc": "Temukan aktivitas yang berlangsung di sekitarmu.",
-  "landing.feature2Title": "Temui Orang dengan Minat Serupa",
-  "landing.feature2Desc": "Terhubung lewat hobi dan aktivitas bersama.",
-  "landing.feature3Title": "Buat Aktivitasmu Sendiri",
+  "landing.feature1Title": "Atur wilayahmu",
+  "landing.feature1Desc": "Pilih kelurahanmu sekali, lalu lihat aktivitas di dekatmu lebih dulu.",
+  "landing.feature2Title": "Ikut bergabung",
+  "landing.feature2Desc": "Langsung ikut aktivitas terbuka, atau kirim permintaan jika penyelenggara menyetujui tiap peserta.",
+  "landing.feature3Title": "Buat aktivitasmu",
   "landing.feature3Desc":
-    "Atur kelompok lari, klub buku, sesi bersepeda, atau kumpul-kumpulmu sendiri.",
-  "landing.feature4Title": "Bangun Komunitas Lokal",
-  "landing.feature4Desc": "Bagikan aktivitasmu, ajak teman, dan terus bertemu orang-orang yang cocok denganmu.",
+    "Atur kelompok lari, klub buku, sesi bersepeda, atau main badminton. Publik, atau privat lewat kode dan tautan.",
+  "landing.feature4Title": "Tetap terhubung",
+  "landing.feature4Desc": "Tambah teman, beri komentar di aktivitas, dan kirim pesan langsung.",
   "landing.slidesLabel": "Aktivitas di Komunitas",
   "landing.slidePause": "Jeda slideshow",
   "landing.slidePlay": "Putar slideshow",
@@ -713,7 +713,7 @@ const idBase: Record<keyof typeof enBase, string> = {
   "register.readySubtitle": "Mengarahkan ke dasbor...",
   "register.goDashboard": "Ke Dasbor",
   "register.incompleteTitle": "Pengaturan profil kamu belum selesai.",
-  "register.incompleteDesc": "Lanjutkan dari langkah terakhir — akun kamu sudah dibuat.",
+  "register.incompleteDesc": "Lanjutkan dari langkah terakhir. Akun kamu sudah dibuat.",
   "register.continueRegistration": "Lanjutkan Pendaftaran",
 
   // Enumerations
@@ -762,7 +762,7 @@ const idBase: Record<keyof typeof enBase, string> = {
   "category.other": "Lainnya",
 
   // Location
-  "location.loadFailed": "Gagal memuat — ketuk untuk mencoba lagi",
+  "location.loadFailed": "Gagal memuat. Ketuk untuk mencoba lagi.",
   "location.currentlySaved": "Tersimpan: {value}. Pilih di bawah untuk mengubah.",
   "location.gpsUnavailable": "Akses lokasi tidak tersedia.",
   "location.permissionDenied":
@@ -829,7 +829,7 @@ const idBase: Record<keyof typeof enBase, string> = {
 
   // Explore
   "explore.title": "Gabung / Jelajahi",
-  "explore.subtitle": "Cari aktivitas berdasarkan nama, area, atau kode acara — di jarak berapa pun.",
+  "explore.subtitle": "Cari aktivitas berdasarkan nama, area, atau kode acara, di jarak berapa pun.",
   "explore.searchPlaceholder": "Cari aktivitas, tempat, kode acara...",
   "explore.nearby": "Terdekat dulu",
   "explore.today": "Hari ini",
@@ -875,8 +875,8 @@ const idBase: Record<keyof typeof enBase, string> = {
   "create.showWhatsappPublicly": "Tampilkan nomor WhatsApp secara publik",
   "create.privacyJoin": "Pengaturan Privasi & Bergabung",
   "create.visibility": "Visibilitas",
-  "create.public": "Publik — muncul di dasbor, jelajahi & rekomendasi",
-  "create.private": "Privat — hanya bisa diakses lewat kode, tautan, atau QR",
+  "create.public": "Publik: muncul di dasbor, Jelajahi, dan rekomendasi",
+  "create.private": "Privat: hanya bisa diakses lewat kode, tautan, atau QR",
   "create.joinPermission": "Izin bergabung",
   "create.anyoneCanJoin": "Siapa saja bisa bergabung",
   "create.approvalRequired": "Perlu persetujuan penyelenggara",
@@ -948,7 +948,7 @@ const idBase: Record<keyof typeof enBase, string> = {
   "join.requested": "Permintaanmu telah dikirim ke penyelenggara.",
   "join.owner": "Kamu adalah penyelenggara aktivitas ini.",
   "join.pending": "Permintaanmu sedang menunggu persetujuan penyelenggara.",
-  "join.approved": "Kamu sudah terdaftar di aktivitas ini ✅",
+  "join.approved": "Kamu sudah terdaftar di aktivitas ini.",
   "join.rejected": "Permintaanmu untuk bergabung tidak disetujui.",
   "join.leave": "Keluar dari aktivitas",
   "join.cancelRequest": "Batalkan permintaan",
@@ -967,7 +967,7 @@ const idBase: Record<keyof typeof enBase, string> = {
   "share.copyLink": "Salin tautan undangan",
   "share.copied": "Tersalin!",
   "share.whatsapp": "Bagikan via WhatsApp",
-  "share.message": "Ikuti \"{title}\" di Komunitas — {url}",
+  "share.message": "Ikuti \"{title}\" di Komunitas: {url}",
   "share.hint":
     "Siapa pun yang memiliki tautan, kode QR, atau kode acara ini dapat membuka aktivitasnya, meskipun privat atau lokasinya jauh.",
 

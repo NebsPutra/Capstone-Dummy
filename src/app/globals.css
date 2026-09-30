@@ -61,8 +61,7 @@ body {
 }
 
 .ambient-gradient {
-  background: radial-gradient(circle at 15% 10%, rgba(249, 115, 22, 0.1), transparent 45%),
-    radial-gradient(circle at 85% 30%, rgba(194, 65, 12, 0.08), transparent 40%), rgb(var(--cream));
+  background: rgb(var(--cream));
 }
 
 .card {

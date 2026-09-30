@@ -44,7 +44,7 @@ export function Sidebar({ isAdmin = false, unreadMessages = 0 }: { isAdmin?: boo
   return (
     <aside
       className={cn(
-        "hidden shrink-0 border-r border-ink/5 bg-surface/60 backdrop-blur-sm transition-all duration-200 md:flex md:flex-col",
+        "hidden shrink-0 border-r border-ink/5 bg-surface transition-all duration-200 md:flex md:flex-col",
         collapsed ? "w-[76px]" : "w-64"
       )}
     >

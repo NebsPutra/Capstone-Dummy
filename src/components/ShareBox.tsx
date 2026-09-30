@@ -63,7 +63,7 @@ export function ShareBox({
             href={whatsappHref}
             target="_blank"
             rel="noreferrer"
-            className="flex w-full items-center justify-center gap-2 rounded-full bg-[#25D366] py-2.5 text-sm font-medium text-white hover:opacity-90"
+            className="flex w-full items-center justify-center gap-2 rounded-full bg-[#1DA851] py-2.5 text-sm font-medium text-white hover:bg-[#178C43]"
           >
             {t("share.whatsapp")}
           </a>

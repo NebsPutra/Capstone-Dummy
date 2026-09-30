@@ -10,11 +10,7 @@ import { useLanguage } from "@/lib/i18n/LanguageContext";
 export function HeroBanner({ greeting }: { greeting: React.ReactNode }) {
   const { t } = useLanguage();
   return (
-    <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-orange via-orange/90 to-amber-400 p-6 text-white shadow-lift md:p-8">
-      <span aria-hidden className="absolute -right-16 -top-20 h-64 w-64 rounded-full bg-white/15" />
-      <span aria-hidden className="absolute -bottom-24 right-40 h-56 w-56 rounded-[45%] bg-amber-200/25" />
-      <span aria-hidden className="absolute -left-10 bottom-0 h-24 w-24 rounded-full bg-white/10" />
-
+    <section className="relative overflow-hidden rounded-3xl bg-orange-deep p-6 text-white shadow-lift md:p-8">
       <div className="relative">
         <div className="space-y-3">
           <div className="text-white/90 [&_h1]:text-white [&_p]:text-white/80">{greeting}</div>

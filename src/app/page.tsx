@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { MapPin, Users, PlusCircle, Repeat } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -19,10 +18,10 @@ export default function LandingPage() {
   }, []);
 
   const FEATURES = [
-    { icon: MapPin, title: t("landing.feature1Title"), desc: t("landing.feature1Desc") },
-    { icon: Users, title: t("landing.feature2Title"), desc: t("landing.feature2Desc") },
-    { icon: PlusCircle, title: t("landing.feature3Title"), desc: t("landing.feature3Desc") },
-    { icon: Repeat, title: t("landing.feature4Title"), desc: t("landing.feature4Desc") },
+    { title: t("landing.feature1Title"), desc: t("landing.feature1Desc") },
+    { title: t("landing.feature2Title"), desc: t("landing.feature2Desc") },
+    { title: t("landing.feature3Title"), desc: t("landing.feature3Desc") },
+    { title: t("landing.feature4Title"), desc: t("landing.feature4Desc") },
   ];
 
   return (
@@ -84,17 +83,15 @@ export default function LandingPage() {
       </section>
 
       <section className="mx-auto max-w-5xl px-6 pb-24">
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {FEATURES.map(({ icon: Icon, title, desc }) => (
-            <div key={title} className="card p-6">
-              <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-orange/10 text-orange-dark">
-                <Icon size={22} />
-              </div>
-              <h3 className="font-semibold">{title}</h3>
+        <ol className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {FEATURES.map(({ title, desc }, i) => (
+            <li key={title} className="border-t border-ink/10 pt-4">
+              <span className="text-sm font-semibold tabular-nums text-orange-dark">0{i + 1}</span>
+              <h3 className="mt-2 font-semibold">{title}</h3>
               <p className="mt-1.5 text-sm text-ink/70">{desc}</p>
-            </div>
+            </li>
           ))}
-        </div>
+        </ol>
       </section>
       <LegalFooter className="px-6 pb-10" />
     </main>

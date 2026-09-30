@@ -30,7 +30,6 @@ export function ActivityCard({
       <div className="relative overflow-hidden">
         <EventCover
           bannerUrl={event.banner_url}
-          categoryKey={event.category?.key}
           emoji={event.category?.emoji}
           title={event.title}
           className="aspect-[16/7] transition duration-300 group-hover:scale-[1.03]"

@@ -210,7 +210,7 @@ export function AdminShell({ rank, role, children }: { rank: number; role: strin
               <span
                 className={cn(
                   "hidden items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold sm:inline-flex",
-                  role === "super_admin" ? "bg-gradient-to-r from-orange to-amber-400 text-white" : "bg-cream-warm text-ink/70"
+                  role === "super_admin" ? "bg-orange-deep text-white" : "bg-cream-warm text-ink/70"
                 )}
               >
                 {role === "super_admin" ? <Crown size={13} /> : <ShieldCheck size={13} />}

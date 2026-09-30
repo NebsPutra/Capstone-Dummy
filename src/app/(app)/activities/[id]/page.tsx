@@ -85,7 +85,6 @@ export default async function EventDetailsPage({
       <div className="card overflow-hidden">
         <EventCover
           bannerUrl={event.banner_url}
-          categoryKey={event.category?.key}
           emoji={event.category?.emoji}
           title={event.title}
           className="aspect-video max-h-80"

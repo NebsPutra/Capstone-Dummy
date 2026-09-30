@@ -368,7 +368,6 @@ export function ActivityForm({ event }: { event?: EventRecord }) {
         <BannerUpload
           value={bannerUrl}
           onChange={setBannerUrl}
-          categoryKey={categories.find((c) => c.id === categoryId)?.key}
           emoji={categories.find((c) => c.id === categoryId)?.emoji}
           title={title || "…"}
         />
