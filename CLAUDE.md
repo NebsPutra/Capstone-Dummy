@@ -10,6 +10,7 @@ Next.js 16 (App Router) · React 19 · TypeScript · Tailwind 3 · Supabase (Pos
 - `npm run lint` runs ESLint 9 (flat config in `eslint.config.mjs`). There should be 0 errors. `react-hooks/set-state-in-effect` is set to warn on purpose, because existing effects rely on it.
 - `npx tsc --noEmit` runs the type check
 - `npm run build` does a production build. Run it before any deploy.
+- `npm test` runs the Vitest unit tests for the pure logic in `src/lib` (`*.test.ts`). `npm run test:watch` watches.
 
 ## Deploying (git-triggered: pushing to `main` deploys to production)
 - The Vercel project `alexios3/capstone-dummy` is connected to GitHub. **Every push to `main` goes live** at https://komunitasa.vercel.app automatically.
