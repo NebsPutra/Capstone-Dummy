@@ -39,7 +39,6 @@ function ForgotPin() {
 
   const [step, setStep] = useState<Step>("identify");
   const [identifier, setIdentifier] = useState(params.get("id") ?? "");
-  const [masked, setMasked] = useState("");
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
@@ -48,7 +47,7 @@ function ForgotPin() {
 
   async function post(path: string, body: object) {
     const res = await fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
-    return (await res.json().catch(() => ({}))) as { ok?: boolean; masked?: string; reason?: string };
+    return (await res.json().catch(() => ({}))) as { ok?: boolean; reason?: string };
   }
 
   async function guard(fn: () => Promise<void>) {
@@ -69,14 +68,12 @@ function ForgotPin() {
     const r = await post("/api/auth/pin-recovery/start", { identifier: identifier.trim() });
     if (!r.ok) {
       setError(
-        r.reason === "not_found" ? "forgotPin.notFound"
-          : r.reason === "rate_limited" ? "auth.tooManyRequests"
+        r.reason === "rate_limited" ? "auth.tooManyRequests"
           : r.reason === "unavailable" ? "pinLogin.unavailable"
           : "auth.emailSendFailed"
       );
       return false;
     }
-    setMasked(r.masked ?? "");
     cooldown.start();
     return true;
   }
@@ -170,7 +167,7 @@ function ForgotPin() {
         >
           <div className="text-center">
             <p className="font-semibold">{t("auth.codeSent")}</p>
-            <p className="mt-1 text-sm text-ink/70">{t("auth.codeSentTo", { email: masked })}</p>
+            <p className="mt-1 text-sm text-ink/70">{t("auth.codeSentToEmail")}</p>
           </div>
           <OtpInput
             value={code}

@@ -97,6 +97,7 @@ const enBase = {
   // Auth — verification code
   "auth.codeSent": "We sent a verification code to your email.",
   "auth.codeSentTo": "Enter the 6-digit code we sent to {email}. It expires in a few minutes.",
+  "auth.codeSentToEmail": "If an account exists, we've sent a 6-digit code to its email. It expires in a few minutes.",
   "auth.code": "Verification code",
   "auth.codeDigit": "Digit {n}",
   "auth.verify": "Verify",
@@ -625,6 +626,7 @@ const idBase: Record<keyof typeof enBase, string> = {
   // Auth — verification code
   "auth.codeSent": "Kami telah mengirim kode verifikasi ke email kamu.",
   "auth.codeSentTo": "Masukkan 6 digit kode yang kami kirim ke {email}. Kode berlaku beberapa menit.",
+  "auth.codeSentToEmail": "Jika akunnya ada, kami sudah mengirim kode 6 digit ke emailnya. Kode berlaku beberapa menit.",
   "auth.code": "Kode verifikasi",
   "auth.codeDigit": "Digit {n}",
   "auth.verify": "Verifikasi",

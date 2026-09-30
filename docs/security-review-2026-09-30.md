@@ -16,8 +16,8 @@ Three **low-severity hardening gaps** were found. One (missing HTTP security hea
 | # | Finding | Severity | Status |
 |---|---------|----------|--------|
 | 1 | No HTTP security headers (CSP, X-Frame-Options, HSTS, …) | Low–Medium | **Fixed** |
-| 2 | Account enumeration on PIN-recovery start | Low | Open (recommendation below) |
-| 3 | Thin app-level rate limiting on the recovery route | Low | Open (recommendation below) |
+| 2 | Account enumeration on PIN-recovery start | Low | **Fixed** |
+| 3 | Thin app-level rate limiting on the recovery route | Low | **Fixed** |
 
 ---
 
@@ -75,17 +75,17 @@ Migration `007` revokes broad `select` on `profiles` and re-grants only `id, use
 
 **Known limitation (documented in the config):** `script-src` keeps `'unsafe-inline'` because Next's App Router emits inline bootstrap scripts and the theme-flash guard is inline. A future hardening step is a nonce-based CSP generated in middleware, which would let `'unsafe-inline'` be dropped. In development only, the policy also allows `'unsafe-eval'` and a `ws://localhost:*` connection so Next's hot-reload and React's dev tooling work; **production stays strict** (no `'unsafe-eval'`, no `ws:`). Verified: production build serves the strict header; the dev relaxations apply only under `next dev`.
 
-### 4.2 — Account enumeration on PIN-recovery start *(Low)* — OPEN
+### 4.2 — Account enumeration on PIN-recovery start *(Low)* — FIXED
 
 `POST /api/auth/pin-recovery/start` returns `404 { reason: "not_found" }` when the submitted email/username has no account, and `200` when it does. An attacker can therefore probe which emails or usernames are registered.
 
-**Recommendation:** always respond `200` with a generic message ("if an account exists, a code has been sent"), regardless of whether the identifier resolved. This removes the oracle at a small UX cost (the user is not told the address was unrecognized). The same neutral-response principle already applies well elsewhere in the login flow.
+**Fix (this review):** the route now returns `200 { ok: true }` for any well-formed identifier and only actually sends a code when the account exists, so the response no longer reveals which accounts are registered. The forgot-PIN screen shows a neutral "if an account exists, we've sent a code to its email" message instead of the masked address.
 
-### 4.3 — Thin app-level rate limiting on the recovery route *(Low)* — OPEN
+### 4.3 — Thin app-level rate limiting on the recovery route *(Low)* — FIXED
 
 `verify_login_pin` has its own per-network throttle, which is good. The PIN-recovery **start** route, however, relies entirely on Supabase's built-in OTP send limits. There is no additional per-IP throttle in the application layer, so the route's abuse ceiling is whatever Supabase permits.
 
-**Recommendation:** add a lightweight per-IP / per-identifier rate limit (for example a short-window counter keyed on `clientHash(req)`, mirroring the pattern already used for PIN login) to the recovery start route. Low priority given Supabase's own limits, but it closes the gap fully.
+**Fix (this review):** migration `013_recovery_rate_limit.sql` adds `rate_limit_recovery(p_client)`, a service-role function that caps recovery requests at 5 per network per 15 minutes, reusing the same hashed-network `security_events` counter as PIN login. The route calls it before sending and returns `429` when the limit is hit. (Until the migration is applied the route still works, just without the extra throttle.)
 
 ---
 
@@ -99,8 +99,8 @@ Migration `007` revokes broad `select` on `profiles` and re-grants only `id, use
 
 ## 6. Recommended next steps
 
-1. **Done —** ship the security headers (finding 4.1). Verify them on production after deploy (e.g. `curl -I https://komunitasa.vercel.app`).
-2. Make PIN-recovery start return a neutral `200` (finding 4.2).
-3. Add a per-IP throttle to the recovery start route (finding 4.3).
+1. **Done —** security headers (4.1), neutral PIN-recovery response (4.2), and recovery rate limit (4.3) are all applied.
+2. **Run migration `013_recovery_rate_limit.sql`** by hand in the Supabase SQL editor to activate the recovery throttle.
+3. After deploy, verify the headers on production (e.g. `curl -I https://komunitasa.vercel.app`).
 4. Run `npm audit` and review Supabase dashboard auth/storage settings (out of scope here).
 5. Optional, later: nonce-based CSP to drop `'unsafe-inline'` from `script-src`.
