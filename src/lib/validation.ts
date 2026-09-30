@@ -2,6 +2,13 @@ export const BIO_MAX = 160;
 export const PASSWORD_MIN = 8;
 export const MAX_PARTICIPANTS_LIMIT = 1000;
 export const FEE_MAX = 100_000_000;
+// Keep in sync with the profiles_age_range check (migration 012).
+export const AGE_MIN = 13;
+export const AGE_MAX = 100;
+
+export function isValidAge(n: number): boolean {
+  return Number.isInteger(n) && n >= AGE_MIN && n <= AGE_MAX;
+}
 
 export function normalizeEmail(email: string): string {
   return email.trim().toLowerCase();

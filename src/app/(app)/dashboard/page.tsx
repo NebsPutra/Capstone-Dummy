@@ -3,6 +3,7 @@ import { getServerT } from "@/lib/i18n/server";
 import { DashboardGreeting } from "@/components/DashboardGreeting";
 import { NearbyDashboard } from "@/components/NearbyDashboard";
 import { HeroBanner } from "@/components/HeroBanner";
+import { AgeReminder } from "@/components/AgeReminder";
 import type { ManualArea } from "@/lib/location";
 
 type KeyRow = { key: string } | { key: string }[] | null;
@@ -18,7 +19,7 @@ export default async function DashboardPage() {
   const [{ data: profile }, { data: interestRows }] = await Promise.all([
     supabase
       .from("my_profile")
-      .select("nickname, full_name, area_lat, area_lng, kelurahan, kecamatan, city, primary_interest:interests(key)")
+      .select("nickname, full_name, age, area_lat, area_lng, kelurahan, kecamatan, city, primary_interest:interests(key)")
       .eq("id", user!.id)
       .single(),
     supabase.from("user_interests").select("interest:interests(key)").eq("user_id", user!.id),
@@ -44,6 +45,7 @@ export default async function DashboardPage() {
     <div className="space-y-6">
       <HeroBanner greeting={<DashboardGreeting nickname={profile?.nickname} />} />
       <NearbyDashboard interestKeys={interestKeys} primaryInterestKey={primaryKey} profileArea={profileArea} />
+      {profile && profile.age == null && <AgeReminder userId={user!.id} />}
     </div>
   );
 }

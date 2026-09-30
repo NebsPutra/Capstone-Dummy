@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { friendlyErrorKey } from "@/lib/errors";
-import { BIO_MAX, normalizeWhatsapp } from "@/lib/validation";
+import { AGE_MAX, AGE_MIN, BIO_MAX, isValidAge, normalizeWhatsapp } from "@/lib/validation";
 import { geocodeArea } from "@/lib/wilayah";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import type { TranslationKey } from "@/lib/i18n/translations";
@@ -18,6 +18,7 @@ type Field =
   | "fullName"
   | "nickname"
   | "gender"
+  | "age"
   | "whatsapp"
   | "city"
   | "kecamatan"
@@ -28,6 +29,7 @@ const FIELD_ORDER: Field[] = [
   "fullName",
   "nickname",
   "gender",
+  "age",
   "whatsapp",
   "city",
   "kecamatan",
@@ -56,6 +58,7 @@ export function ProfileEditor({
   const [fullName, setFullName] = useState(profile.full_name ?? "");
   const [nickname, setNickname] = useState(profile.nickname ?? "");
   const [gender, setGender] = useState<Gender | "">(profile.gender ?? "");
+  const [age, setAge] = useState(profile.age?.toString() ?? "");
   const [whatsapp, setWhatsapp] = useState(profile.whatsapp_number ?? "");
   const [bio, setBio] = useState(profile.bio ?? "");
   const [location, setLocation] = useState<LocationValue>({
@@ -79,6 +82,7 @@ export function ProfileEditor({
     if (!fullName.trim()) e.fullName = "register.errFullName";
     if (!nickname.trim()) e.nickname = "register.errNickname";
     // Optional, but must be valid when given.
+    if (age.trim() && !isValidAge(Number(age))) e.age = "profile.errAge";
     if (whatsapp.trim() && !normalizeWhatsapp(whatsapp)) e.whatsapp = "register.errWhatsapp";
     // Legacy profiles saved area names only; keep them until the user
     // picks a structured location, then require all three levels.
@@ -119,6 +123,7 @@ export function ProfileEditor({
           full_name: fullName.trim(),
           nickname: nickname.trim(),
           gender: (gender || null) as Gender | null,
+          age: age.trim() ? Number(age) : null,
           whatsapp_number: normalizeWhatsapp(whatsapp),
           bio: bio.trim() || null,
           ...(location.cityId
@@ -201,6 +206,18 @@ export function ProfileEditor({
               </option>
             ))}
           </select>
+        </FieldShell>
+        <FieldShell id="age" label={t("profile.age")} error={err("age")} hint={t("profile.ageHint")}>
+          <input
+            id="age"
+            type="number"
+            inputMode="numeric"
+            min={AGE_MIN}
+            max={AGE_MAX}
+            value={age}
+            onChange={(e) => setAge(e.target.value)}
+            className={inputClass(Boolean(errors.age))}
+          />
         </FieldShell>
         <FieldShell id="whatsapp" label={t("register.whatsapp")} error={err("whatsapp")} hint={t("register.whatsappHint")}>
           <input
