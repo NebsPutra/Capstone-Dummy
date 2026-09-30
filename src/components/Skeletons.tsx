@@ -86,7 +86,24 @@ export function ListPageSkeleton({ rows = 5 }: { rows?: number }) {
   );
 }
 
-/** Pages made of activity sections (dashboard, my activities). */
+/** Dashboard: banner-sized block + one activity section, so the page doesn't jump when it loads. */
+export function DashboardSkeleton() {
+  return (
+    <Loading className="space-y-8">
+      <div aria-hidden className="skeleton h-56 rounded-3xl md:h-60" />
+      <div className="space-y-4">
+        <div aria-hidden className="skeleton h-6 w-44" />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 3 }, (_, i) => (
+            <ActivityCardSkeleton key={i} />
+          ))}
+        </div>
+      </div>
+    </Loading>
+  );
+}
+
+/** Pages made of activity sections (my activities). */
 export function ActivityPageSkeleton() {
   return (
     <Loading className="space-y-8">

@@ -1,6 +1,52 @@
 "use client";
 
+import { useLayoutEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
+
+/**
+ * Modal built on the native <dialog>: showModal() gives a focus trap, Escape
+ * to close, the top layer (so page transforms can't trap it) and focus
+ * returns to the opener on close. Mount it to open, unmount to close.
+ * A child with data-autofocus gets focus first.
+ */
+export function Modal({
+  onClose,
+  labelledBy,
+  className,
+  children,
+}: {
+  onClose: () => void;
+  labelledBy: string;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  const ref = useRef<HTMLDialogElement>(null);
+  // Layout effect: the cleanup's close() must run while the dialog is still attached.
+  useLayoutEffect(() => {
+    const dialog = ref.current!;
+    dialog.showModal();
+    dialog.querySelector<HTMLElement>("[data-autofocus]")?.focus();
+    return () => dialog.close();
+  }, []);
+
+  return (
+    <dialog
+      ref={ref}
+      aria-labelledby={labelledBy}
+      onCancel={(e) => {
+        e.preventDefault(); // Escape: let the parent unmount us
+        onClose();
+      }}
+      className="m-0 h-full max-h-none w-full max-w-none border-0 bg-transparent p-0 text-ink backdrop:bg-transparent"
+    >
+      <div className="flex h-full w-full items-end justify-center bg-ink/40 sm:items-center sm:p-4" onClick={onClose}>
+        <div className={className} onClick={(e) => e.stopPropagation()}>
+          {children}
+        </div>
+      </div>
+    </dialog>
+  );
+}
 
 export function inputClass(hasError?: boolean) {
   return cn(

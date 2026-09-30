@@ -1,5 +1,5 @@
-import { ActivityPageSkeleton } from "@/components/Skeletons";
+import { DashboardSkeleton } from "@/components/Skeletons";
 
 export default function Loading() {
-  return <ActivityPageSkeleton />;
+  return <DashboardSkeleton />;
 }

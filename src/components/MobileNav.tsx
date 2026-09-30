@@ -27,6 +27,7 @@ export function MobileNav({ unreadMessages = 0 }: { unreadMessages?: number }) {
           <Link
             key={href}
             href={href}
+            aria-current={active ? "page" : undefined}
             className={cn(
               "flex min-w-0 flex-1 flex-col items-center gap-0.5 px-1 py-1 text-[10px] font-medium",
               active ? "text-orange-dark" : "text-ink/65"

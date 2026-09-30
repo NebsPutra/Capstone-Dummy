@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useSyncExternalStore } from "react";
-import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
@@ -10,7 +9,7 @@ import { useLanguage } from "@/lib/i18n/LanguageContext";
 import type { TranslationKey } from "@/lib/i18n/translations";
 import { AGE_MAX, AGE_MIN, isValidAge } from "@/lib/validation";
 import { useToast } from "./Toast";
-import { Alert, FieldShell, PrimaryButton, inputClass } from "./ui";
+import { Alert, FieldShell, Modal, PrimaryButton, inputClass } from "./ui";
 
 const DISMISS_KEY = "komunitas-age-reminder-dismissed";
 
@@ -27,7 +26,7 @@ export function AgeReminder({ userId }: { userId: string }) {
   const router = useRouter();
   const toast = useToast();
   const { t } = useLanguage();
-  // Server snapshot "dismissed" keeps the portal out of SSR; the client reads sessionStorage.
+  // Server snapshot "dismissed" keeps the dialog out of SSR; the client reads sessionStorage.
   const dismissed = useSyncExternalStore(() => () => {}, wasDismissed, () => true);
   const [closed, setClosed] = useState(false);
   const [age, setAge] = useState("");
@@ -58,19 +57,9 @@ export function AgeReminder({ userId }: { userId: string }) {
     router.refresh();
   }
 
-  return createPortal(
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="age-reminder-title"
-      className="fixed inset-0 z-[900] flex items-end justify-center bg-ink/40 p-0 sm:items-center sm:p-4"
-      onClick={later}
-    >
-      <form
-        onSubmit={save}
-        className="card w-full max-w-sm space-y-4 rounded-b-none p-6 sm:rounded-b-2xl"
-        onClick={(e) => e.stopPropagation()}
-      >
+  return (
+    <Modal onClose={later} labelledBy="age-reminder-title" className="card w-full max-w-sm rounded-b-none sm:rounded-b-2xl">
+      <form onSubmit={save} className="space-y-4 p-6">
         <div className="flex items-start justify-between gap-4">
           <div>
             <h2 id="age-reminder-title" className="text-lg font-semibold">
@@ -90,7 +79,7 @@ export function AgeReminder({ userId }: { userId: string }) {
             inputMode="numeric"
             min={AGE_MIN}
             max={AGE_MAX}
-            autoFocus
+            data-autofocus
             value={age}
             onChange={(e) => setAge(e.target.value)}
             className={inputClass(Boolean(error))}
@@ -108,7 +97,6 @@ export function AgeReminder({ userId }: { userId: string }) {
           </PrimaryButton>
         </div>
       </form>
-    </div>,
-    document.body
+    </Modal>
   );
 }

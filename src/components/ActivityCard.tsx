@@ -17,7 +17,7 @@ export function ActivityCard({
   /** Shown for recommendations that match the user's primary interest. */
   highlight?: string;
 }) {
-  const { lang, td } = useLanguage();
+  const { lang, t, td } = useLanguage();
   const status = effectiveStatus(event);
 
   return (
@@ -65,9 +65,10 @@ export function ActivityCard({
         </div>
         <div className="flex items-center justify-between pt-1">
           <div className="flex items-center gap-1.5 text-sm text-ink/70">
-            <Users size={15} />
+            <Users size={15} aria-hidden />
             <span>
               {event.participant_count ?? 0}/{event.max_participants}
+              <span className="sr-only"> {t("event.participants")}</span>
             </span>
           </div>
           <span className="text-sm font-medium">{formatFee(event.fee, lang)}</span>
