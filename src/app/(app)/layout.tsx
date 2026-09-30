@@ -48,10 +48,12 @@ export default async function AppLayout({
     supabase.rpc("unread_conversation_count"),
   ]);
 
+  const isAdmin = ["moderator", "admin", "super_admin"].includes(profile?.role ?? "");
+
   return (
     <div className="ambient-gradient flex min-h-screen">
       <SkipLink />
-      <Sidebar isAdmin={["moderator", "admin", "super_admin"].includes(profile?.role ?? "")} unreadMessages={(unreadMessages as number | null) ?? 0} />
+      <Sidebar isAdmin={isAdmin} unreadMessages={(unreadMessages as number | null) ?? 0} />
       <div className="flex min-h-screen min-w-0 flex-1 flex-col">
         <Header
           name={profile?.nickname || profile?.full_name}
@@ -63,7 +65,7 @@ export default async function AppLayout({
           <LegalFooter className="mt-12" />
         </main>
       </div>
-      <MobileNav unreadMessages={(unreadMessages as number | null) ?? 0} />
+      <MobileNav isAdmin={isAdmin} unreadMessages={(unreadMessages as number | null) ?? 0} />
     </div>
   );
 }
