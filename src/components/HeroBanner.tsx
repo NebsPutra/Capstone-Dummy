@@ -45,19 +45,19 @@ export function HeroBanner({
   }, [active, playing]);
 
   return (
-    <section className="relative overflow-hidden rounded-3xl bg-orange-deep p-6 text-white shadow-lift md:p-8">
-      {/* Wide crop of the 4:3 scenes, centred on the people; cross-fades like the landing slideshow. */}
-      <div className="absolute inset-y-4 right-4 z-10 hidden w-[44%] overflow-hidden rounded-2xl bg-cream sm:block">
+    <section className="relative overflow-hidden rounded-3xl bg-orange-deep p-6 text-white shadow-lift md:min-h-[15rem] md:p-8">
+      {/* Full 4:3 scenes (the frame keeps their ratio, so nothing is cropped); cross-fades like the landing slideshow. */}
+      <div className="absolute inset-y-4 right-4 z-10 hidden aspect-[4/3] overflow-hidden rounded-2xl bg-cream sm:block">
         {SCENES.map((scene, i) => (
           <div
             key={i}
             aria-hidden
             className={cn(
-              "absolute inset-0 flex items-center transition-opacity duration-700 ease-out",
+              "absolute inset-0 transition-opacity duration-700 ease-out",
               i === active ? "opacity-100" : "opacity-0"
             )}
           >
-            <div className="aspect-[4/3] w-full shrink-0 translate-y-[4%]">{scene}</div>
+            {scene}
           </div>
         ))}
         <button
