@@ -1,10 +1,16 @@
 import { cn } from "@/lib/utils";
 
-// Six people sitting in a circle around one activity, on a 48x48 grid.
-const PEOPLE = [0, 60, 120, 180, 240, 300].map((deg) => {
-  const r = (deg * Math.PI) / 180;
-  return [24 + 12 * Math.cos(r), 24 + 12 * Math.sin(r)];
-});
+// Six people sitting in a circle (radius 12, every 60°) around one activity,
+// on a 48x48 grid. Literal values, not Math.cos/sin: server and browser can
+// differ in the last digit, which causes a hydration mismatch.
+const PEOPLE = [
+  [36, 24],
+  [30, 34.4],
+  [18, 34.4],
+  [12, 24],
+  [18, 13.6],
+  [30, 13.6],
+];
 
 /**
  * The mark's shapes without the tile, in a 48x48 box. Shared by LogoMark,
