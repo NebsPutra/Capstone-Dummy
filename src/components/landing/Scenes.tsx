@@ -4,6 +4,8 @@
 // `transform` attributes. Colors are fixed so each scene reads as a picture in
 // light and dark mode.
 
+import { markShapes } from "@/components/Logo";
+
 const INK = "#292524";
 const SKIN = ["#F1C27D", "#C68642", "#E0AC69", "#8D5524"];
 
@@ -314,15 +316,13 @@ export function GatherScene() {
       <path d="M0 210q120-40 240-10t240-10v170H0z" fill="#C7E9B8" />
       <Tree x={50} y={226} s={1.2} />
       <Tree x={430} y={220} s={1} c="#86C59A" />
-      {/* brand pin */}
+      {/* brand mark */}
       <g transform="translate(240 40)">
         <g className="ks-bob-slow">
           <rect x="-34" y="0" width="68" height="68" rx="20" fill="url(#ks-tile)" />
-          <path d="M0 57s-16-14-16-26.5a16 16 0 0 1 32 0C16 43 0 57 0 57z" fill="#FFF8ED" />
-          <circle cx="-8" cy="31" r="3.8" fill="#F97316" />
-          <circle cx="0" cy="25" r="4" fill="#EA580C" />
-          <circle cx="8" cy="31" r="3.8" fill="#C2410C" />
-          <path d="M-10 40c2.8-3 6.1-4.4 10-4.4s7.2 1.4 10 4.4" stroke="#EA580C" strokeWidth="3.4" strokeLinecap="round" fill="none" />
+          <g transform="translate(-34 0) scale(1.4167)">
+            {markShapes()}
+          </g>
         </g>
       </g>
       <ellipse cx="240" cy="300" rx="190" ry="42" fill="#FCA5A5" opacity=".55" />
