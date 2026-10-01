@@ -36,8 +36,9 @@ const enBase = {
   "nav.toggleSidebar": "Toggle sidebar",
 
   // Landing
-  "landing.headline1": "Find Activities. Meet People.",
-  "landing.headline2": "Build Community.",
+  "landing.headline1": "Find Activities.",
+  "landing.headline2": "Meet People.",
+  "landing.headline3": "Build Community.",
   "landing.subheadline":
     "Discover and create social activities around you based on your interests and location.",
   "landing.ctaExplore": "Explore Activities",
@@ -565,8 +566,9 @@ const idBase: Record<keyof typeof enBase, string> = {
   "nav.toggleSidebar": "Buka/tutup sidebar",
 
   // Landing
-  "landing.headline1": "Temukan Aktivitas. Temui Orang Baru.",
-  "landing.headline2": "Bangun Komunitas.",
+  "landing.headline1": "Temukan Aktivitas.",
+  "landing.headline2": "Temui Orang Baru.",
+  "landing.headline3": "Bangun Komunitas.",
   "landing.subheadline":
     "Temukan dan buat aktivitas sosial di sekitarmu berdasarkan minat dan lokasimu.",
   "landing.ctaExplore": "Jelajahi Aktivitas",

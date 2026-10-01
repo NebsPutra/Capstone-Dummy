@@ -56,10 +56,10 @@ export default function LandingPage() {
       )}
       <section className="mx-auto grid max-w-6xl items-center gap-10 px-6 py-12 md:grid-cols-2 md:gap-12 md:py-20">
         <div className="text-center md:text-left">
-          <h1 className="text-4xl font-extrabold leading-tight tracking-tight md:text-5xl lg:text-6xl">
-            {t("landing.headline1")}
-            <br />
-            <span className="text-orange-dark">{t("landing.headline2")}</span>
+          <h1 className="text-4xl font-extrabold leading-tight tracking-tight md:text-5xl">
+            <span className="block">{t("landing.headline1")}</span>
+            <span className="block">{t("landing.headline2")}</span>
+            <span className="block text-orange-dark">{t("landing.headline3")}</span>
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-lg text-ink/70 md:mx-0">
             {t("landing.subheadline")}
@@ -83,15 +83,14 @@ export default function LandingPage() {
       </section>
 
       <section className="mx-auto max-w-5xl px-6 pb-24">
-        <ol className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {FEATURES.map(({ title, desc }, i) => (
+        <ul className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {FEATURES.map(({ title, desc }) => (
             <li key={title} className="border-t border-ink/10 pt-4">
-              <span className="text-sm font-semibold tabular-nums text-orange-dark">0{i + 1}</span>
-              <h3 className="mt-2 font-semibold">{title}</h3>
+              <h3 className="font-semibold">{title}</h3>
               <p className="mt-1.5 text-sm text-ink/70">{desc}</p>
             </li>
           ))}
-        </ol>
+        </ul>
       </section>
       <LegalFooter className="px-6 pb-10" />
     </main>

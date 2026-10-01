@@ -68,7 +68,7 @@ export function ManualLocationDialog({
           onClick={() => onSelect(profileArea)}
           className="w-full rounded-xl border border-orange/30 bg-orange/5 px-4 py-3 text-left text-sm font-medium text-orange-dark hover:bg-orange/10"
         >
-          {t("location.useProfileArea")} — {profileArea.label}
+          {t("location.useProfileArea")}: {profileArea.label}
         </button>
       )}
 
