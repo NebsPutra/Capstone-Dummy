@@ -7,8 +7,10 @@ import { useLanguage } from "@/lib/i18n/LanguageContext";
 import type { TranslationKey } from "@/lib/i18n/translations";
 import { jakartaHour } from "@/components/DashboardGreeting";
 import { cn } from "@/lib/utils";
-import { INTERVAL_MS, REDUCED_MOTION, subscribeReducedMotion } from "@/components/landing/ActivitySlideshow";
+import { useReducedMotion } from "@/lib/reducedMotion";
 import { GatherScene, ReadScene, RunScene, SchoolScene } from "@/components/landing/Scenes";
+
+const INTERVAL_MS = 4000;
 
 const SCENES = [<RunScene key="run" />, <ReadScene key="read" />, <SchoolScene key="school" />, <GatherScene key="gather" />];
 
@@ -52,11 +54,7 @@ export function HeroBanner({
   const { t } = useLanguage();
   const [active, setActive] = useState(() => startScene(primaryInterestKey));
   const [choice, setChoice] = useState<"play" | "pause" | null>(null); // explicit button press wins
-  const reducedMotion = useSyncExternalStore(
-    subscribeReducedMotion,
-    () => window.matchMedia(REDUCED_MOTION).matches,
-    () => false
-  );
+  const reducedMotion = useReducedMotion();
   const playing = choice ? choice === "play" : !reducedMotion;
   // Server snapshot null: the hour is only known on the client (avoids a hydration mismatch).
   const hour = useSyncExternalStore(subscribeMinute, () => jakartaHour(), () => null);
