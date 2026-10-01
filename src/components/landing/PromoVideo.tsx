@@ -15,16 +15,30 @@ export function PromoVideo() {
   const { t } = useLanguage();
   const ref = useRef<HTMLVideoElement>(null);
   const reducedMotion = useReducedMotion();
-  const [choice, setChoice] = useState<"play" | "pause" | null>(null); // explicit button press wins
-  const playing = choice ? choice === "play" : !reducedMotion;
+  const [playing, setPlaying] = useState(false); // mirrors the element via onPlay/onPause
+  const [userPaused, setUserPaused] = useState(false);
 
+  // Autoplay unless the user paused or asked for less motion. Browsers refuse
+  // autoplay in background tabs (and e.g. iOS Low Power Mode), so retry when
+  // the tab becomes visible instead of giving up.
   useEffect(() => {
     const video = ref.current;
+    if (!video || reducedMotion || userPaused) return;
+    const tryPlay = () => {
+      if (document.visibilityState === "visible") video.play().catch(() => {});
+    };
+    tryPlay();
+    document.addEventListener("visibilitychange", tryPlay);
+    return () => document.removeEventListener("visibilitychange", tryPlay);
+  }, [reducedMotion, userPaused]);
+
+  const toggle = () => {
+    const video = ref.current;
     if (!video) return;
-    // Browsers can still refuse autoplay (e.g. iOS Low Power Mode): show the play button then.
-    if (playing) video.play().catch(() => setChoice("pause"));
-    else video.pause();
-  }, [playing]);
+    setUserPaused(playing);
+    if (playing) video.pause();
+    else video.play().catch(() => {});
+  };
 
   return (
     <div className="w-full">
@@ -36,13 +50,15 @@ export function PromoVideo() {
         loop
         playsInline
         preload="metadata"
+        onPlay={() => setPlaying(true)}
+        onPause={() => setPlaying(false)}
         aria-label={t("landing.videoLabel")}
         className="aspect-video w-full rounded-3xl bg-cream-warm object-cover shadow-lift ring-1 ring-ink/5"
       />
       <div className="mt-3 flex justify-center md:justify-start">
         <button
           type="button"
-          onClick={() => setChoice(playing ? "pause" : "play")}
+          onClick={toggle}
           aria-label={playing ? t("landing.videoPause") : t("landing.videoPlay")}
           className="flex h-10 w-10 items-center justify-center rounded-full border border-ink/15 text-ink/70 hover:bg-surface hover:text-ink"
         >
