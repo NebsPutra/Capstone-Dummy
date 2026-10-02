@@ -21,6 +21,7 @@ import { onboardingStep, personalInfoComplete, safeNext } from "@/lib/onboarding
 import { GENDERS, type Gender, type Interest, type Profile } from "@/types";
 import { AuthShell, PasswordInput, ResendButton, useCooldown } from "@/components/AuthShell";
 import { OtpInput, OTP_LENGTH } from "@/components/OtpInput";
+import { CodeHelpDialog } from "@/components/CodeHelpDialog";
 import { EMPTY_LOCATION, LocationSelect, type LocationValue } from "@/components/LocationSelect";
 import { Alert, FieldShell, PrimaryButton, focusFirstError, inputClass } from "@/components/ui";
 import { InterestPicker, PrimaryInterestSelect } from "@/components/InterestPicker";
@@ -457,11 +458,21 @@ function VerifyStep({
   const [resending, setResending] = useState(false);
   const [error, setError] = useState<TranslationKey | null>(null);
   const [info, setInfo] = useState<TranslationKey | null>(null);
+  const [helpOpen, setHelpOpen] = useState(false);
+  const typedRef = useRef(false);
 
   // signUp just sent the first code.
   useEffect(() => {
     cooldown.start();
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Still no code after a minute (often a full inbox): offer help once, unprompted.
+  useEffect(() => {
+    const id = setTimeout(() => {
+      if (!typedRef.current) setHelpOpen(true);
+    }, 60_000);
+    return () => clearTimeout(id);
   }, []);
 
   async function verify(token = code) {
@@ -487,9 +498,11 @@ function VerifyStep({
     setResending(false);
     if (resendError) {
       const key = friendlyErrorKey(resendError, "resend signup");
+      if (key === "err.generic") setHelpOpen(true); // sending failed: show the likely causes
       return setError(key === "err.generic" ? "auth.emailSendFailed" : key);
     }
     cooldown.start();
+    setHelpOpen(false);
     setInfo("auth.codeResent");
   }
 
@@ -510,6 +523,7 @@ function VerifyStep({
         value={code}
         onChange={(v) => {
           setCode(v);
+          if (v) typedRef.current = true;
           if (error) setError(null);
         }}
         onComplete={(v) => verify(v)}
@@ -530,7 +544,23 @@ function VerifyStep({
           {t("auth.useAnotherEmail")}
         </button>
       </div>
-      <p className="text-center text-xs text-ink/65">{t("auth.checkSpam")}</p>
+      <button
+        type="button"
+        onClick={() => setHelpOpen(true)}
+        className="mx-auto block text-sm font-medium text-orange-dark hover:underline"
+      >
+        {t("auth.help.link")}
+      </button>
+
+      <CodeHelpDialog
+        open={helpOpen}
+        onClose={() => setHelpOpen(false)}
+        email={email}
+        resendSeconds={cooldown.seconds}
+        resending={resending}
+        onResend={resend}
+        onUseAnotherEmail={onUseAnotherEmail}
+      />
     </form>
   );
 }

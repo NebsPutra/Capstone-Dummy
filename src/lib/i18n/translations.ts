@@ -221,7 +221,13 @@ const enBase = {
   "auth.passwordWeak": "Password must be at least 8 characters and include a letter and a number.",
   "auth.passwordMismatch": "Passwords don't match.",
   "auth.tooManyRequests": "Too many attempts. Please wait a minute and try again.",
-  "auth.emailSendFailed": "We couldn't send the email right now. Please try again in a moment.",
+  "auth.emailSendFailed": "We couldn't send the code. Check the address is right and your inbox isn't full, then try again.",
+  "auth.help.link": "Didn't get the code?",
+  "auth.help.title": "Didn't get the code?",
+  "auth.help.intro": "Codes usually arrive within a minute. If yours hasn't, try these:",
+  "auth.help.full": "Your inbox may be full. Delete a few emails to make space, then tap Resend code.",
+  "auth.help.spam": "Look in Spam, Junk or Promotions.",
+  "auth.help.address": "Check the address is right: {email}",
   "auth.samePassword": "Your new password must be different from the old one.",
 
   // Registration
@@ -831,7 +837,13 @@ const idBase: Record<keyof typeof enBase, string> = {
   "auth.passwordWeak": "Kata sandi minimal 8 karakter serta berisi huruf dan angka.",
   "auth.passwordMismatch": "Kata sandi tidak cocok.",
   "auth.tooManyRequests": "Terlalu banyak percobaan. Tunggu sebentar lalu coba lagi.",
-  "auth.emailSendFailed": "Kami tidak dapat mengirim email saat ini. Silakan coba lagi sebentar lagi.",
+  "auth.emailSendFailed": "Kami tidak dapat mengirim kode. Pastikan alamatnya benar dan kotak masukmu tidak penuh, lalu coba lagi.",
+  "auth.help.link": "Belum dapat kodenya?",
+  "auth.help.title": "Belum dapat kodenya?",
+  "auth.help.intro": "Kode biasanya sampai dalam satu menit. Kalau belum, coba ini:",
+  "auth.help.full": "Kotak masukmu mungkin penuh. Hapus beberapa email agar ada ruang, lalu ketuk Kirim ulang kode.",
+  "auth.help.spam": "Cek folder Spam, Junk, atau Promosi.",
+  "auth.help.address": "Pastikan alamatnya benar: {email}",
   "auth.samePassword": "Kata sandi baru harus berbeda dari kata sandi lama.",
 
   // Registration
