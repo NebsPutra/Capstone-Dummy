@@ -84,7 +84,14 @@ export default function AdminEventDetail({ params }: { params: Promise<{ id: str
       />
       <div className="grid gap-4 lg:grid-cols-3">
         <section className="card overflow-hidden lg:col-span-2">
-          <EventCover bannerUrl={ev.banner_url} emoji={ev.category?.emoji} title={ev.title} className="aspect-[16/6]" />
+          <EventCover
+            bannerUrl={ev.banner_url}
+            title={ev.title}
+            seed={ev.id}
+            categoryKey={ev.category?.key}
+            date={ev.event_date}
+            className="aspect-[16/6]"
+          />
           <div className="grid grid-cols-2 gap-3 p-5 text-sm sm:grid-cols-3">
             <p><span className="block text-xs text-ink/65">{t("event.date")}</span>{formatDate(ev.event_date, lang)}</p>
             <p><span className="block text-xs text-ink/65">{t("event.time")}</span>{formatTimeRange(ev.start_time, ev.end_time)}</p>
