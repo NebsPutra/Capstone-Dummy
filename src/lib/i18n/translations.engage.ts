@@ -116,6 +116,8 @@ export const enEngage = {
   "notifPrefs.friend_accepted": "Accepted friend requests",
   "notifPrefs.new_message": "New messages",
   "notifPrefs.always": "Security alerts, account notices, support replies and join decisions are always sent.",
+  "email.notif.open": "Open Komunitas",
+  "email.notif.footer": "You're getting this email because you have notifications on for this. To stop these emails, turn this type off in Settings → Notifications.",
 
   // Admin
   "admin.nav.moderation": "Moderation",
@@ -273,6 +275,8 @@ export const idEngage: Record<keyof typeof enEngage, string> = {
   "notifPrefs.friend_accepted": "Permintaan pertemanan diterima",
   "notifPrefs.new_message": "Pesan baru",
   "notifPrefs.always": "Peringatan keamanan, pemberitahuan akun, balasan dukungan, dan keputusan bergabung selalu dikirim.",
+  "email.notif.open": "Buka Komunitas",
+  "email.notif.footer": "Kamu menerima email ini karena notifikasi untuk jenis ini aktif. Untuk berhenti menerimanya, matikan jenis ini di Pengaturan → Notifikasi.",
 
   "admin.nav.moderation": "Moderasi",
   "amod.title": "Moderasi",

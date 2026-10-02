@@ -82,10 +82,19 @@ ADMIN_NOTIFY_EMAIL=bennedictusputra@gmail.com
 
 # PIN sign-in (server-only, bypasses RLS: never expose or prefix with NEXT_PUBLIC_)
 SUPABASE_SERVICE_ROLE_KEY=...
+
+# Email alerts for messages/comments (shared secret for the Supabase webhook below)
+NOTIFY_WEBHOOK_SECRET=any-long-random-string
 ```
 
 Without the SMTP variables complaints still work; the email is marked as failed and shows up
 as an alert in the admin dashboard.
+
+**Email alerts for new messages, comments and replies:** in Supabase, go to **Database → Webhooks →
+Create a new hook**: table `notifications`, event **Insert**, type **HTTP Request**, method `POST`,
+URL `https://komunitasa.vercel.app/api/notifications/email`, and an HTTP header
+`x-webhook-secret` set to the same value as `NOTIFY_WEBHOOK_SECRET`. Each person gets at most one
+email per type every 15 minutes. Muting a type in Settings → Notifications stops its emails too.
 
 ## 4. Install and run
 
