@@ -78,7 +78,7 @@ export default async function GroupPage({ params }: { params: Promise<{ id: stri
             {g.i_am_member ? t("groups.noActivitiesMember") : t("groups.noActivities")}
           </p>
         ) : (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="activity-grid">
             {upcoming.map((e) => (
               <ActivityCard key={e.id} event={e} />
             ))}

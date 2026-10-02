@@ -60,7 +60,7 @@ export function UpcomingActivities() {
         <ActivityGridSkeleton count={3} />
       ) : (
         <>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="activity-grid">
             {events.slice(0, shown).map((e) => (
               <ActivityCard key={e.id} event={e} />
             ))}

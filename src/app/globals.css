@@ -81,6 +81,14 @@ body {
   border-radius: 0.375rem;
 }
 
+/* Activity card grids: cards keep a readable width (~17-22rem) and wide
+   screens fit more per row, instead of 3 stretched columns. */
+.activity-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+}
+
 /* Loading placeholders */
 .skeleton {
   border-radius: 0.75rem;

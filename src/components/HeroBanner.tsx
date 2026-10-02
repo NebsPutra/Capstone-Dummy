@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useSyncExternalStore } from "react";
-import Link from "next/link";
 import { Lightbulb, Pause, Play, RefreshCw } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import type { TranslationKey } from "@/lib/i18n/translations";
@@ -41,8 +40,9 @@ function startScene(interestKey: string | null) {
 }
 
 /**
- * Dashboard hero: greeting + the two main actions. Kept compact so activity
- * cards stay near the top of the page.
+ * Dashboard hero: greeting, fact of the day and a small illustration. Kept
+ * slim so activity cards start near the top; Explore and Create are already
+ * in the sidebar and the bottom bar, so they aren't repeated here.
  */
 export function HeroBanner({
   greeting,
@@ -70,9 +70,9 @@ export function HeroBanner({
   return (
     <section
       style={{ backgroundColor: shadeFor(hour) }}
-      className="relative overflow-hidden rounded-3xl p-6 text-white shadow-lift transition-colors duration-1000 md:flex md:min-h-[15rem] md:items-center md:p-8">
+      className="relative overflow-hidden rounded-3xl p-5 text-white shadow-lift transition-colors duration-1000 md:flex md:items-center md:px-7 md:py-6">
       {/* Full 4:3 scenes (the frame keeps their ratio, so nothing is cropped); cross-fades like the landing slideshow. */}
-      <div className="absolute inset-y-4 right-4 z-10 hidden aspect-[4/3] overflow-hidden rounded-2xl bg-cream sm:block">
+      <div className="absolute inset-y-3 right-3 z-10 hidden aspect-[4/3] overflow-hidden rounded-2xl bg-cream sm:block">
         {SCENES.map((scene, i) => (
           <div
             key={i}
@@ -95,24 +95,10 @@ export function HeroBanner({
         </button>
       </div>
 
-      <div className="relative w-full sm:pr-[48%]">
-        <div className="space-y-3 md:space-y-5">
-          <div className="text-white/90 [&_h1]:text-white [&_p]:text-white/80 md:[&_h1]:text-4xl md:[&_p]:mt-2 md:[&_p]:text-lg">{greeting}</div>
-          <div className="flex flex-wrap gap-2 pt-1">
-            <Link
-              href="/explore"
-              className="rounded-full bg-white px-5 py-2.5 text-sm font-semibold md:px-6 md:py-3 md:text-base text-orange-deep shadow-soft transition hover:-translate-y-0.5 hover:shadow-lift active:scale-[0.97]"
-            >
-              {t("hero.explore")}
-            </Link>
-            <Link
-              href="/create"
-              className="rounded-full border border-white/60 px-5 py-2.5 text-sm font-semibold md:px-6 md:py-3 md:text-base text-white transition hover:-translate-y-0.5 hover:bg-white/10 active:scale-[0.97]"
-            >
-              {t("hero.create")}
-            </Link>
-          </div>
-          <div className="flex items-start gap-2 border-t border-white/15 pt-3 text-sm text-white/85">
+      <div className="relative w-full sm:pr-60">
+        <div className="space-y-3">
+          <div className="text-white/90 [&_h1]:text-white [&_p]:text-white/80 md:[&_h1]:text-3xl md:[&_p]:mt-1">{greeting}</div>
+          <div className="flex items-start gap-2 border-t border-white/15 pt-3 text-xs text-white/85 md:text-sm">
             <Lightbulb size={16} className="mt-0.5 shrink-0" aria-hidden />
             <p aria-live="polite" className="flex-1">
               <span className="font-semibold text-white">{t("fact.label")}</span> {t(FACTS[fact])}

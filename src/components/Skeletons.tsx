@@ -48,7 +48,7 @@ export function ActivityCardSkeleton() {
 
 export function ActivityGridSkeleton({ count = 3, className }: { count?: number; className?: string }) {
   return (
-    <Loading className={cn("grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3", className)}>
+    <Loading className={cn("activity-grid", className)}>
       {Array.from({ length: count }, (_, i) => (
         <ActivityCardSkeleton key={i} />
       ))}
@@ -93,7 +93,7 @@ export function DashboardSkeleton() {
       <div aria-hidden className="skeleton h-56 rounded-3xl md:h-60" />
       <div className="space-y-4">
         <div aria-hidden className="skeleton h-6 w-44" />
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="activity-grid">
           {Array.from({ length: 3 }, (_, i) => (
             <ActivityCardSkeleton key={i} />
           ))}
@@ -110,7 +110,7 @@ export function ActivityPageSkeleton() {
       <PageHeaderSkeleton />
       <div className="space-y-4">
         <div aria-hidden className="skeleton h-6 w-44" />
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="activity-grid">
           {Array.from({ length: 3 }, (_, i) => (
             <ActivityCardSkeleton key={i} />
           ))}

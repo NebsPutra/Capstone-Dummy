@@ -103,10 +103,27 @@ export function NearbyDashboard({
 
   return (
     <div className="space-y-8">
-      <LocationBar location={location} onManual={() => setDialogOpen(true)} onGps={switchToGps} />
-
-      {location.status === "ready" && (
-        <p className="text-sm text-ink/70">{t("dashboard.radiusNote", { km: DASHBOARD_RADIUS_KM })}</p>
+      {location.status === "ready" ? (
+        // Known location: one quiet line instead of a card (the card stays for states that need action).
+        <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-ink/70">
+          <MapPin size={16} className="shrink-0 text-orange-dark" aria-hidden />
+          <span>
+            {t("dashboard.within", {
+              km: DASHBOARD_RADIUS_KM,
+              place: location.source === "manual" && location.label ? location.label : t("dashboard.yourLocation"),
+            })}
+          </span>
+          <span aria-hidden className="text-ink/30">·</span>
+          <button type="button" onClick={switchToGps} className="font-semibold text-orange-dark hover:underline">
+            {location.source === "gps" ? t("location.refresh") : t("location.useGps")}
+          </button>
+          <span aria-hidden className="text-ink/30">·</span>
+          <button type="button" onClick={() => setDialogOpen(true)} className="font-semibold text-orange-dark hover:underline">
+            {t("location.changeArea")}
+          </button>
+        </p>
+      ) : (
+        <LocationBar location={location} onManual={() => setDialogOpen(true)} onGps={switchToGps} />
       )}
 
       {location.status === "ready" &&
@@ -198,7 +215,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   return (
     <section>
       <h2 className="mb-4 text-lg font-semibold">{title}</h2>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">{children}</div>
+      <div className="activity-grid">{children}</div>
     </section>
   );
 }
