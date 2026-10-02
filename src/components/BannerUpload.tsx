@@ -20,13 +20,16 @@ const MAX_RAW_BYTES = 15 * 1024 * 1024;
 export function BannerUpload({
   value,
   onChange,
-  emoji,
   title,
+  categoryKey,
+  date,
 }: {
   value: string | null;
   onChange: (url: string | null) => void;
-  emoji?: string | null;
   title: string;
+  /** For the generated poster preview when there's no banner. */
+  categoryKey?: string | null;
+  date?: string | null;
 }) {
   const { t } = useLanguage();
   const fileRef = useRef<HTMLInputElement>(null);
@@ -179,7 +182,14 @@ export function BannerUpload({
       ) : (
         <div className="space-y-2">
           <div className="overflow-hidden rounded-xl">
-            <EventCover bannerUrl={value} emoji={emoji} title={title} className="aspect-video" />
+            <EventCover
+              bannerUrl={value}
+              title={title}
+              seed={title}
+              categoryKey={categoryKey}
+              date={date}
+              className="aspect-video"
+            />
           </div>
           {!value && <p className="text-xs text-ink/65">{t("banner.default")}</p>}
           <div className="flex flex-wrap gap-2">

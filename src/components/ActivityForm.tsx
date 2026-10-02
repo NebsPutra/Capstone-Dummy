@@ -457,8 +457,9 @@ export function ActivityForm({
         <BannerUpload
           value={bannerUrl}
           onChange={setBannerUrl}
-          emoji={categories.find((c) => c.id === categoryId)?.emoji}
           title={title || "…"}
+          categoryKey={categories.find((c) => c.id === categoryId)?.key}
+          date={date || null}
         />
       </Card>
 

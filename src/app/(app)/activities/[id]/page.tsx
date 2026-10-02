@@ -141,8 +141,10 @@ export default async function EventDetailsPage({
       <div className="card overflow-hidden">
         <EventCover
           bannerUrl={event.banner_url}
-          emoji={event.category?.emoji}
           title={event.title}
+          seed={event.id}
+          categoryKey={event.category?.key}
+          date={event.event_date}
           className="aspect-video max-h-80"
         />
         <div className="space-y-4 p-6">
@@ -299,6 +301,8 @@ export default async function EventDetailsPage({
                     bannerUrl: event.banner_url,
                     categoryLabel: event.category ? td(`category.${event.category.key}`, event.category.label) : null,
                     emoji: event.category?.emoji ?? null,
+                    id: event.id,
+                    categoryKey: event.category?.key ?? null,
                   }}
                 />
               )}

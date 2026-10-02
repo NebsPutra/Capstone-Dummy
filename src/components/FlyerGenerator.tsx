@@ -9,6 +9,7 @@ import type { Lang } from "@/lib/i18n/translations";
 import { cn, formatFee, formatTimeRange } from "@/lib/utils";
 import { LogoMark } from "./Logo";
 import { Alert } from "./ui";
+import { EventCover } from "./EventCover";
 
 // ---------------------------------------------------------------------------
 // Flyer templates. Rendered as plain DOM at the final pixel size, previewed
@@ -46,6 +47,9 @@ export interface FlyerEvent {
   bannerUrl: string | null;
   categoryLabel: string | null;
   emoji: string | null;
+  /** For the generated poster when there's no banner (same one as on the activity card). */
+  id: string;
+  categoryKey: string | null;
 }
 
 function longDate(date: string, lang: Lang) {
@@ -189,18 +193,8 @@ function Flyer({
           />
         </>
       ) : (
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            background: "linear-gradient(135deg, rgba(255,248,237,0.28), rgba(255,248,237,0.06))",
-          }}
-        >
-          <span style={{ fontSize: 180, lineHeight: 1 }}>{ev.emoji ?? "✨"}</span>
-        </div>
+        // No banner: the activity's generated poster (no date ticket: the flyer prints the date).
+        <EventCover title={ev.title} seed={ev.id} categoryKey={ev.categoryKey} className="absolute inset-0 h-full" />
       )}
     </div>
   );
