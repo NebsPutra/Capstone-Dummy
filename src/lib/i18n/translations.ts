@@ -121,7 +121,10 @@ const enBase = {
   "explore.clearFilters": "Clear filters",
   "explore.createInstead": "Create an activity",
   "event.beFirst": "Be the first to join!",
-  "landing.upcomingTitle": "Happening soon",
+  "landing.upcomingTitle": "Upcoming activities",
+  "landing.upcomingCount": "{n} activities from anywhere, soonest first.",
+  "landing.upcomingCountOne": "1 activity from anywhere.",
+  "landing.showMore": "Show more ({n} left)",
   "landing.seeAll": "See all activities",
   // Skill level labels
   "level.beginner": "Beginner-friendly",
@@ -728,7 +731,10 @@ const idBase: Record<keyof typeof enBase, string> = {
   "explore.clearFilters": "Hapus filter",
   "explore.createInstead": "Buat aktivitas",
   "event.beFirst": "Jadilah yang pertama ikut!",
-  "landing.upcomingTitle": "Segera berlangsung",
+  "landing.upcomingTitle": "Aktivitas mendatang",
+  "landing.upcomingCount": "{n} aktivitas dari mana saja, yang paling dekat waktunya duluan.",
+  "landing.upcomingCountOne": "1 aktivitas dari mana saja.",
+  "landing.showMore": "Tampilkan lagi ({n} lagi)",
   "landing.seeAll": "Lihat semua aktivitas",
   // Label level
   "level.beginner": "Ramah pemula",
