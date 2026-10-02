@@ -8,6 +8,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
 import { LegalFooter } from "@/components/LegalFooter";
 import { PromoVideo } from "@/components/landing/PromoVideo";
+import { UpcomingActivities } from "@/components/landing/UpcomingActivities";
 
 export default function LandingPage() {
   const { t } = useLanguage();
@@ -84,6 +85,8 @@ export default function LandingPage() {
           <PromoVideo />
         </div>
       </section>
+
+      <UpcomingActivities />
 
       <section className="mx-auto max-w-5xl px-6 pb-24 pt-16">
         <ul className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">

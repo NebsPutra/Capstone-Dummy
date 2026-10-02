@@ -5,7 +5,7 @@ import Link from "next/link";
 import { LocateFixed, MapPin, RefreshCw } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useUserLocation, type ManualArea, type UserLocation } from "@/lib/location";
-import { effectiveStatus } from "@/lib/events";
+import { effectiveStatus, weekendDates } from "@/lib/events";
 import { categoryKeysFor, INTEREST_CATEGORY_KEYS } from "@/lib/interests";
 import { friendlyErrorKey } from "@/lib/errors";
 import { DASHBOARD_RADIUS_KM, distanceKm, eventStamp } from "@/lib/utils";
@@ -91,7 +91,14 @@ export function NearbyDashboard({
       .sort((a, b) => Number(b.primary) - Number(a.primary) || byDate(a.e, b.e))
       .slice(0, SECTION_SIZE);
 
-    return { nearby, ongoing, upcoming, recommended };
+    const weekend = new Set(weekendDates());
+    const thisWeekend = events
+      .filter((e) => weekend.has(e.event_date) && effectiveStatus(e) !== "ongoing")
+      .sort(byDate)
+      .slice(0, SECTION_SIZE);
+    const beginner = events.filter((e) => e.skill_level === "beginner").sort(byDate).slice(0, SECTION_SIZE);
+
+    return { nearby, ongoing, upcoming, recommended, thisWeekend, beginner };
   }, [events, interestKeys, primaryInterestKey]);
 
   return (
@@ -147,6 +154,20 @@ export function NearbyDashboard({
                 <ActivityCard key={e.id} event={e} />
               ))}
             </Section>
+            {sections.thisWeekend.length > 0 && (
+              <Section title={t("dashboard.thisWeekend")}>
+                {sections.thisWeekend.map((e) => (
+                  <ActivityCard key={e.id} event={e} />
+                ))}
+              </Section>
+            )}
+            {sections.beginner.length > 0 && (
+              <Section title={t("level.beginner")}>
+                {sections.beginner.map((e) => (
+                  <ActivityCard key={e.id} event={e} />
+                ))}
+              </Section>
+            )}
             {sections.upcoming.length > 0 && (
               <Section title={t("dashboard.upcoming")}>
                 {sections.upcoming.map((e) => (

@@ -5,7 +5,7 @@ import { Pencil } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getServerT } from "@/lib/i18n/server";
 import { getEventForViewer } from "@/lib/eventAccess";
-import { effectiveStatus } from "@/lib/events";
+import { effectiveStatus, isJoinable } from "@/lib/events";
 import { formatDate, formatFee, formatTimeRange } from "@/lib/utils";
 import { whatsappDigits } from "@/lib/validation";
 import { StatusBadge } from "@/components/StatusBadge";
@@ -138,7 +138,17 @@ export default async function EventDetailsPage({
             <Info label={t("event.date")} value={formatDate(event.event_date, lang)} />
             <Info label={t("event.time")} value={formatTimeRange(event.start_time, event.end_time)} />
             <Info label={t("event.fee")} value={formatFee(event.fee, lang)} />
-            <Info label={t("event.participants")} value={`${event.participant_count ?? 0}/${event.max_participants}`} />
+            <Info
+              label={t("event.participants")}
+              value={
+                <>
+                  {event.participant_count ?? 0}/{event.max_participants}
+                  {!event.participant_count && isJoinable(status) && (
+                    <span className="block text-xs font-medium text-orange-dark">{t("event.beFirst")}</span>
+                  )}
+                </>
+              }
+            />
             <Info label={t("event.code")} value={event.event_code} />
             {!guest && (
               <Info

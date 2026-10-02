@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { Search } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { ActivityCard } from "@/components/ActivityCard";
@@ -52,6 +53,16 @@ export default function ExplorePage() {
   const [error, setError] = useState<TranslationKey | null>(null);
 
   const coords = location.status === "ready" ? { lat: location.lat, lng: location.lng } : null;
+  const hasFilters = Boolean(query || activeCategory || timeFilter || priceFilter || beginnerOnly || maxDistance || nearestFirst);
+  function clearFilters() {
+    setQuery("");
+    setActiveCategory(null);
+    setTimeFilter(null);
+    setPriceFilter(null);
+    setBeginnerOnly(false);
+    setMaxDistance(null);
+    setNearestFirst(false);
+  }
 
   useEffect(() => {
     supabase
@@ -219,7 +230,26 @@ export default function ExplorePage() {
       ) : loading && events.length === 0 ? (
         <ActivityGridSkeleton count={6} />
       ) : visible.length === 0 ? (
-        <p className="py-12 text-center text-sm text-ink/65">{t("explore.noResults")}</p>
+        <div className="card space-y-3 px-6 py-10 text-center">
+          <p className="text-sm text-ink/70">{t("explore.noResults")}</p>
+          <div className="flex flex-wrap justify-center gap-2">
+            {hasFilters && (
+              <button
+                type="button"
+                onClick={clearFilters}
+                className="rounded-full border border-ink/10 bg-surface px-5 py-2 text-sm font-semibold hover:bg-cream-warm"
+              >
+                {t("explore.clearFilters")}
+              </button>
+            )}
+            <Link
+              href="/create"
+              className="rounded-full bg-orange-deep px-5 py-2 text-sm font-semibold text-white hover:bg-orange-deeper"
+            >
+              {t("explore.createInstead")}
+            </Link>
+          </div>
+        </div>
       ) : (
         <>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

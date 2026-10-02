@@ -34,6 +34,8 @@ const enBase = {
   "nav.settings": "Settings",
   "nav.admin": "Admin",
   "nav.toggleSidebar": "Toggle sidebar",
+  "nav.groups": "Groups",
+  "nav.players": "Find players",
 
   // Landing
   "landing.headline1": "Find Activities.",
@@ -58,6 +60,12 @@ const enBase = {
   "landing.videoLabel": "Komunitas promo video",
   "landing.videoPause": "Pause video",
   "landing.videoPlay": "Play video",
+  "dashboard.thisWeekend": "This weekend",
+  "explore.clearFilters": "Clear filters",
+  "explore.createInstead": "Create an activity",
+  "event.beFirst": "Be the first to join!",
+  "landing.upcomingTitle": "Happening soon",
+  "landing.seeAll": "See all activities",
   // Skill level labels
   "level.beginner": "Beginner-friendly",
   "level.all": "All levels",
@@ -576,6 +584,8 @@ const idBase: Record<keyof typeof enBase, string> = {
   "nav.settings": "Pengaturan",
   "nav.admin": "Admin",
   "nav.toggleSidebar": "Buka/tutup sidebar",
+  "nav.groups": "Grup",
+  "nav.players": "Cari pemain",
 
   // Landing
   "landing.headline1": "Temukan Aktivitas.",
@@ -600,6 +610,12 @@ const idBase: Record<keyof typeof enBase, string> = {
   "landing.videoLabel": "Video promo Komunitas",
   "landing.videoPause": "Jeda video",
   "landing.videoPlay": "Putar video",
+  "dashboard.thisWeekend": "Akhir pekan ini",
+  "explore.clearFilters": "Hapus filter",
+  "explore.createInstead": "Buat aktivitas",
+  "event.beFirst": "Jadilah yang pertama ikut!",
+  "landing.upcomingTitle": "Segera berlangsung",
+  "landing.seeAll": "Lihat semua aktivitas",
   // Label level
   "level.beginner": "Ramah pemula",
   "level.all": "Semua level",

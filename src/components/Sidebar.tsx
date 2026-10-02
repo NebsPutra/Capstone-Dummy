@@ -3,21 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  Home,
-  PlusCircle,
-  Search,
-  CalendarDays,
-  Users,
-  Bell,
-  User,
-  Settings,
-  ChevronLeft,
-  ChevronRight,
-  ShieldCheck,
-  LifeBuoy,
-  MessageCircle,
-} from "lucide-react";
+import { Home, PlusCircle, Search, CalendarDays, Users, Bell, User, Settings, ChevronLeft, ChevronRight, ShieldCheck, LifeBuoy, MessageCircle, UsersRound, Megaphone } from "lucide-react";
 import { Logo } from "./Logo";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
@@ -28,6 +14,8 @@ const NAV: { href: string; key: TranslationKey; icon: typeof Home }[] = [
   { href: "/create", key: "nav.create", icon: PlusCircle },
   { href: "/explore", key: "nav.explore", icon: Search },
   { href: "/my-activities", key: "nav.myActivities", icon: CalendarDays },
+  { href: "/groups", key: "nav.groups", icon: UsersRound },
+  { href: "/players", key: "nav.players", icon: Megaphone },
   { href: "/community", key: "nav.community", icon: Users },
   { href: "/messages", key: "nav.messages", icon: MessageCircle },
   { href: "/notifications", key: "nav.notifications", icon: Bell },

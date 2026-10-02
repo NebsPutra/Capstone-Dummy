@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, PlusCircle, Search, CalendarDays, MessageCircle, User, Users, Bell, Settings, LifeBuoy, ShieldCheck } from "lucide-react";
+import { Home, Plus, PlusCircle, Search, CalendarDays, MessageCircle, User, Users, UsersRound, Megaphone, Bell, Settings, LifeBuoy, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import type { TranslationKey } from "@/lib/i18n/translations";
@@ -12,6 +12,8 @@ const NAV: { href: string; key: TranslationKey; icon: typeof Home }[] = [
   { href: "/explore", key: "nav.explore", icon: Search },
   { href: "/create", key: "nav.create", icon: PlusCircle },
   { href: "/my-activities", key: "nav.myActivities", icon: CalendarDays },
+  { href: "/groups", key: "nav.groups", icon: UsersRound },
+  { href: "/players", key: "nav.players", icon: Megaphone },
   { href: "/messages", key: "nav.messages", icon: MessageCircle },
   { href: "/profile", key: "nav.profile", icon: User },
   { href: "/community", key: "nav.community", icon: Users },
@@ -38,6 +40,13 @@ export function MobileNav({ isAdmin = false, unreadMessages = 0 }: { isAdmin?: b
               active ? "text-orange-dark" : "text-ink/65"
             )}
           >
+            {href === "/create" ? (
+              // The main action: an orange button, third item so it sits mid-screen. (Not raised
+              // above the bar: the bar scrolls sideways, which would clip it.)
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-orange-deep text-white shadow-soft">
+                <Plus size={22} strokeWidth={2.5} />
+              </span>
+            ) : (
             <span className="relative">
               <Icon size={20} />
               {href === "/messages" && unreadMessages > 0 && (
@@ -46,6 +55,7 @@ export function MobileNav({ isAdmin = false, unreadMessages = 0 }: { isAdmin?: b
                 </span>
               )}
             </span>
+            )}
             <span className="max-w-full truncate">{t(key)}</span>
           </Link>
         );

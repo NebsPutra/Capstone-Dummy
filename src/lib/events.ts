@@ -42,3 +42,15 @@ export function spotsLeftToShow(
   const left = event.max_participants - (event.participant_count ?? 0);
   return isJoinable(status) && left > 0 && left <= 5 ? left : null;
 }
+
+/** The coming weekend's dates (YYYY-MM-DD): Sat + Sun, or just Sun when today is Sunday. */
+export function weekendDates(today: string = jakartaToday()): string[] {
+  const d = new Date(`${today}T00:00:00Z`);
+  const day = d.getUTCDay(); // 0 = Sunday, 6 = Saturday
+  if (day === 0) return [today];
+  const sat = new Date(d);
+  sat.setUTCDate(d.getUTCDate() + (6 - day));
+  const sun = new Date(sat);
+  sun.setUTCDate(sat.getUTCDate() + 1);
+  return [sat.toISOString().slice(0, 10), sun.toISOString().slice(0, 10)];
+}
