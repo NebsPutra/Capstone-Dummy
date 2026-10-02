@@ -121,9 +121,12 @@ export function ActivityForm({
         setCategories((data ?? []).filter((c: Category & { is_active?: boolean }) => c.is_active !== false || c.id === event?.category_id))
       );
 
-    supabase.rpc("groups_list").then(({ data }) =>
-      setMyGroups(((data ?? []) as { id: string; name: string; i_am_member: boolean }[]).filter((g) => g.i_am_member))
-    );
+    supabase.rpc("groups_list").then(({ data }) => {
+      const mine = ((data ?? []) as { id: string; name: string; i_am_member: boolean }[]).filter((g) => g.i_am_member);
+      setMyGroups(mine);
+      // A ?group= link for a group you're not in: drop it instead of failing on save.
+      setGroupId((id) => (id && !mine.some((g) => g.id === id) ? "" : id));
+    });
 
     if (isEdit) return;
     // Pre-fill the PIC with the organizer's own details.

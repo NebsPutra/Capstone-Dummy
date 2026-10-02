@@ -25,7 +25,18 @@ export function postLoginPath(p: Partial<Profile> | null | undefined, next: stri
   return p?.role === "admin" ? "/admin" : safeNext(next);
 }
 
-/** Only allow same-origin relative redirects (avoid open redirects). */
+/**
+ * Only allow same-origin relative redirects (avoid open redirects). Resolved
+ * with the URL parser, because browsers read "/\evil.com" or "/<tab>/evil.com"
+ * as "//evil.com": a prefix check alone lets those through.
+ */
 export function safeNext(next: string | null | undefined, fallback = "/dashboard"): string {
-  return next && next.startsWith("/") && !next.startsWith("//") ? next : fallback;
+  if (!next || !next.startsWith("/")) return fallback;
+  try {
+    const base = "https://komunitas.invalid";
+    const url = new URL(next, base);
+    return url.origin === base ? url.pathname + url.search + url.hash : fallback;
+  } catch {
+    return fallback;
+  }
 }

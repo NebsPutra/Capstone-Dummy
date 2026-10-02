@@ -21,6 +21,8 @@ const PROTECTED_PREFIXES = [
   "/help",
   "/u",
   "/messages",
+  "/groups",
+  "/players",
   "/account-suspended",
 ];
 
