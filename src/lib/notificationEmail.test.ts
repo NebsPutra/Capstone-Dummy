@@ -13,6 +13,15 @@ describe("notificationEmail", () => {
     expect(e.action.href).toBe(`${origin}/messages/abc`);
   });
 
+  it("emails friend and join requests", () => {
+    expect(notificationEmail({ type: "friend_request", params: { name: "Dika", username: "dika" } }, origin)!.paragraphs[0]).toBe(
+      "Dika (@dika) sent you a friend request."
+    );
+    expect(notificationEmail({ type: "join_request", params: { title: "Morning Run" } }, origin)!.paragraphs[0]).toBe(
+      "New join request for Morning Run."
+    );
+  });
+
   it("skips types that aren't emailed", () => {
     expect(notificationEmail({ type: "security_alert" }, origin)).toBeNull();
   });

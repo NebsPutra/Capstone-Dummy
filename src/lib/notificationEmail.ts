@@ -1,7 +1,7 @@
 import { translate, type TranslationKey } from "@/lib/i18n/translations";
 
 /** Notification types that also go out by email (the rest stay in-app only). */
-export const EMAIL_TYPES = ["new_message", "event_comment", "comment_reply"] as const;
+export const EMAIL_TYPES = ["new_message", "event_comment", "comment_reply", "friend_request", "join_request"] as const;
 
 /** At most one email per type per person in this window, so a live chat doesn't flood the inbox. */
 export const EMAIL_THROTTLE_MINUTES = 15;
