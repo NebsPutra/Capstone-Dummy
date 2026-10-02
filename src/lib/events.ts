@@ -54,3 +54,12 @@ export function weekendDates(today: string = jakartaToday()): string[] {
   sun.setUTCDate(sat.getUTCDate() + 1);
   return [sat.toISOString().slice(0, 10), sun.toISOString().slice(0, 10)];
 }
+
+/** Dates of a weekly series starting on `first` (YYYY-MM-DD): `weeks` dates, 7 days apart. */
+export function weeklyDates(first: string, weeks: number): string[] {
+  return Array.from({ length: Math.max(1, weeks) }, (_, i) => {
+    const d = new Date(`${first}T00:00:00Z`);
+    d.setUTCDate(d.getUTCDate() + 7 * i);
+    return d.toISOString().slice(0, 10);
+  });
+}

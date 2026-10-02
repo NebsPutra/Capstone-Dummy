@@ -82,12 +82,15 @@ export interface EventRecord {
   latitude: number;
   longitude: number;
   pic_name: string;
-  pic_whatsapp: string;
   pic_contact_instructions: string | null;
   whatsapp_public: boolean;
   privacy: EventPrivacy;
   join_permission: JoinPermission;
   skill_level: SkillLevel;
+  /** Weekly series this date belongs to (migration 017), else null. */
+  series_id: string | null;
+  /** Group the activity belongs to (migration 019), else null. Members only: not readable by guests. */
+  group_id?: string | null;
   status: EventStatus;
   /** Approved participants, maintained by a DB trigger. */
   participant_count: number;
@@ -115,4 +118,4 @@ export const EVENT_LIST_SELECT = "*, category:categories(*)";
  * EventRecords without those fields, so never render them for guests.
  */
 export const PUBLIC_EVENT_SELECT: string =
-  "id, event_code, category_id, title, description, banner_url, event_date, start_time, end_time, max_participants, fee, location_name, address, latitude, longitude, privacy, join_permission, status, participant_count, skill_level, created_at, category:categories(*)";
+  "id, event_code, category_id, title, description, banner_url, event_date, start_time, end_time, max_participants, fee, location_name, address, latitude, longitude, privacy, join_permission, status, participant_count, skill_level, series_id, created_at, category:categories(*)";

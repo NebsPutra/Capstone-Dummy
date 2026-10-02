@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getServerT } from "@/lib/i18n/server";
 import { getEventForViewer } from "@/lib/eventAccess";
 import { effectiveStatus, isJoinable } from "@/lib/events";
-import { formatDate, formatFee, formatTimeRange } from "@/lib/utils";
+import { formatDate, formatFee, formatTimeRange, jakartaToday } from "@/lib/utils";
 import { whatsappDigits } from "@/lib/validation";
 import { StatusBadge } from "@/components/StatusBadge";
 import { ActivityTags } from "@/components/ActivityTags";
@@ -104,7 +104,31 @@ export default async function EventDetailsPage({
     participants = (data ?? []) as unknown as ParticipantRow[];
   }
 
-  const showWhatsapp = event.whatsapp_public || isOwner || myParticipation?.status === "approved";
+  // Group name for "Part of …" (groups are members-only: not for guests).
+  const group =
+    !guest && event.group_id
+      ? ((await supabase.rpc("group_get", { p_group: event.group_id })).data as { id: string; name: string } | null)
+      : null;
+
+  // The other dates of a weekly series (each date has its own seats).
+  const seriesDates = event.series_id
+    ? (
+        (
+          await supabase
+            .from("events")
+            .select("id, event_date, start_time")
+            .eq("series_id", event.series_id)
+            .neq("status", "cancelled")
+            .order("event_date")
+        ).data ?? []
+      ).filter((d) => d.event_date >= jakartaToday() || d.id === event.id)
+    : [];
+
+  // RLS on event_contacts returns the number only to the organizer, approved
+  // participants, staff, or anyone when the organizer made it public.
+  const contact = guest
+    ? null
+    : (await supabase.from("event_contacts").select("pic_whatsapp").eq("event_id", event.id).maybeSingle()).data;
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
@@ -133,6 +157,11 @@ export default async function EventDetailsPage({
             <StatusBadge status={status} />
           </div>
           <ActivityTags event={event} showAllLevels />
+          {group && (
+            <Link href={`/groups/${group.id}`} className="inline-block text-sm font-semibold text-orange-dark hover:underline">
+              {t("groups.partOf", { name: group.name })}
+            </Link>
+          )}
 
           <div className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-3">
             <Info label={t("event.date")} value={formatDate(event.event_date, lang)} />
@@ -166,6 +195,33 @@ export default async function EventDetailsPage({
             )}
           </div>
 
+          {seriesDates.length > 1 && (
+            <div>
+              <h2 className="mb-2 text-sm font-semibold">{t("series.otherDates")}</h2>
+              <ul className="flex gap-2 overflow-x-auto pb-1">
+                {seriesDates.map((d) => (
+                  <li key={d.id} className="shrink-0">
+                    {d.id === event.id ? (
+                      <span
+                        aria-current="date"
+                        className="block rounded-full bg-orange-deep px-3.5 py-1.5 text-sm font-semibold text-white"
+                      >
+                        {formatDate(d.event_date, lang)}
+                      </span>
+                    ) : (
+                      <Link
+                        href={`/activities/${d.id}`}
+                        className="block rounded-full border border-ink/10 bg-surface px-3.5 py-1.5 text-sm font-medium hover:bg-cream-warm"
+                      >
+                        {formatDate(d.event_date, lang)}
+                      </Link>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           {event.description && (
             <div>
               <h2 className="mb-1 text-sm font-semibold">{t("event.about")}</h2>
@@ -198,16 +254,16 @@ export default async function EventDetailsPage({
               <p className="text-sm text-ink/70">
                 {t("event.pic")}: {event.pic_name}
               </p>
-              {showWhatsapp && (
+              {contact && (
                 <p className="text-sm text-ink/70">
                   {t("event.whatsapp")}:{" "}
                   <a
-                    href={`https://wa.me/${whatsappDigits(event.pic_whatsapp)}`}
+                    href={`https://wa.me/${whatsappDigits(contact.pic_whatsapp)}`}
                     target="_blank"
                     rel="noreferrer"
                     className="font-medium text-orange-dark"
                   >
-                    {event.pic_whatsapp}
+                    {contact.pic_whatsapp}
                   </a>
                 </p>
               )}

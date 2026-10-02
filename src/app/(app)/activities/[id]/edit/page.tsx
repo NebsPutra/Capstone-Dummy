@@ -14,9 +14,10 @@ export default async function EditActivityPage({ params }: { params: Promise<{ i
     data: { user },
   } = await supabase.auth.getUser();
 
-  const [{ data }, { data: me }] = await Promise.all([
+  const [{ data }, { data: me }, { data: contact }] = await Promise.all([
     supabase.from("events").select("*").eq("id", id).maybeSingle(),
     supabase.from("my_profile").select("role").eq("id", user!.id).single(),
+    supabase.from("event_contacts").select("pic_whatsapp").eq("event_id", id).maybeSingle(),
   ]);
   const event = data as EventRecord | null;
   const isAdmin = me?.role === "admin" || me?.role === "super_admin";
@@ -40,7 +41,7 @@ export default async function EditActivityPage({ params }: { params: Promise<{ i
           </Link>
         </div>
       ) : (
-        <ActivityForm event={event} />
+        <ActivityForm event={event} contactWhatsapp={contact?.pic_whatsapp} />
       )}
     </div>
   );

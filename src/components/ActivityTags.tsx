@@ -5,15 +5,15 @@ import { toFee } from "@/lib/utils";
 import type { EventRecord } from "@/types";
 
 /**
- * Labels that tell newcomers whether an activity is for them: skill level and
- * "Free". Cards skip "All levels" (the default) to stay short; the details
+ * Labels that tell newcomers whether an activity is for them: skill level,
+ * "Free" and "Every week". Cards skip "All levels" (the default) to stay short; the details
  * page passes showAllLevels.
  */
 export function ActivityTags({
   event,
   showAllLevels = false,
 }: {
-  event: Pick<EventRecord, "skill_level" | "fee">;
+  event: Pick<EventRecord, "skill_level" | "fee" | "series_id">;
   showAllLevels?: boolean;
 }) {
   const { t } = useLanguage();
@@ -23,6 +23,7 @@ export function ActivityTags({
   if (level === "experienced") tags.push({ label: t("level.experienced"), tone: "bg-muted-soft text-ink/75" });
   if (level === "all" && showAllLevels) tags.push({ label: t("level.all"), tone: "bg-muted-soft text-ink/75" });
   if (toFee(event.fee) === 0) tags.push({ label: t("explore.free"), tone: "bg-orange/10 text-orange-dark" });
+  if (event.series_id) tags.push({ label: t("series.weekly"), tone: "bg-info-soft text-info" });
   if (tags.length === 0) return null;
 
   return (

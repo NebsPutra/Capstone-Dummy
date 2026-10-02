@@ -10,6 +10,7 @@ import type { TranslationKey } from "@/lib/i18n/translations";
 import { friendlyErrorKey } from "@/lib/errors";
 import { FEE_MAX, MAX_PARTICIPANTS_LIMIT, normalizeWhatsapp } from "@/lib/validation";
 import { formatFee, jakartaNowStamp, jakartaToday, toFee } from "@/lib/utils";
+import { weeklyDates } from "@/lib/events";
 import type { Category, EventPrivacy, EventRecord, JoinPermission, SkillLevel } from "@/types";
 import { RupiahInput } from "./RupiahInput";
 import { BannerUpload } from "./BannerUpload";
@@ -50,7 +51,20 @@ const FIELD_ORDER: Field[] = [
 ];
 
 /** Create + edit share one form. `event` switches it to edit mode. */
-export function ActivityForm({ event }: { event?: EventRecord }) {
+export function ActivityForm({
+  event,
+  contactWhatsapp,
+  fromRequest,
+  groupId: initialGroupId,
+}: {
+  event?: EventRecord;
+  /** The organizer's WhatsApp, stored in event_contacts (migration 016), when editing. */
+  contactWhatsapp?: string | null;
+  /** Creating from a "Find players" request: prefill, then close it and notify the interested players. */
+  fromRequest?: { id: string; title: string; categoryId: string };
+  /** Creating from a group page: preselect that group. */
+  groupId?: string;
+}) {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
   const toast = useToast();
@@ -60,8 +74,8 @@ export function ActivityForm({ event }: { event?: EventRecord }) {
 
   const [categories, setCategories] = useState<Category[]>([]);
 
-  const [title, setTitle] = useState(event?.title ?? "");
-  const [categoryId, setCategoryId] = useState(event?.category_id ?? "");
+  const [title, setTitle] = useState(event?.title ?? fromRequest?.title ?? "");
+  const [categoryId, setCategoryId] = useState(event?.category_id ?? fromRequest?.categoryId ?? "");
   const [description, setDescription] = useState(event?.description ?? "");
   const [date, setDate] = useState(event?.event_date ?? "");
   const [startTime, setStartTime] = useState(event?.start_time.slice(0, 5) ?? "");
@@ -81,12 +95,17 @@ export function ActivityForm({ event }: { event?: EventRecord }) {
   const [locating, setLocating] = useState(false);
 
   const [picName, setPicName] = useState(event?.pic_name ?? "");
-  const [picWhatsapp, setPicWhatsapp] = useState(event?.pic_whatsapp ?? "");
+  const [picWhatsapp, setPicWhatsapp] = useState(contactWhatsapp ?? "");
   const [picInstructions, setPicInstructions] = useState(event?.pic_contact_instructions ?? "");
   const [whatsappPublic, setWhatsappPublic] = useState(event?.whatsapp_public ?? false);
   const [privacy, setPrivacy] = useState<EventPrivacy>(event?.privacy ?? "public");
   const [joinPermission, setJoinPermission] = useState<JoinPermission>(event?.join_permission ?? "open");
   const [skillLevel, setSkillLevel] = useState<SkillLevel>(event?.skill_level ?? "all");
+  // New activities only: 1 = just once, otherwise weekly for that many weeks.
+  const [repeatWeeks, setRepeatWeeks] = useState(1);
+  // Groups the user belongs to (migration 019); an activity can belong to one.
+  const [myGroups, setMyGroups] = useState<{ id: string; name: string }[]>([]);
+  const [groupId, setGroupId] = useState(event?.group_id ?? initialGroupId ?? "");
 
   const [errors, setErrors] = useState<Partial<Record<Field, string>>>({});
   const [formError, setFormError] = useState<TranslationKey | null>(null);
@@ -101,6 +120,10 @@ export function ActivityForm({ event }: { event?: EventRecord }) {
       .then(({ data }) =>
         setCategories((data ?? []).filter((c: Category & { is_active?: boolean }) => c.is_active !== false || c.id === event?.category_id))
       );
+
+    supabase.rpc("groups_list").then(({ data }) =>
+      setMyGroups(((data ?? []) as { id: string; name: string; i_am_member: boolean }[]).filter((g) => g.i_am_member))
+    );
 
     if (isEdit) return;
     // Pre-fill the PIC with the organizer's own details.
@@ -217,17 +240,26 @@ export function ActivityForm({ event }: { event?: EventRecord }) {
         latitude: coords!.lat,
         longitude: coords!.lng,
         pic_name: picName.trim(),
-        pic_whatsapp: normalizeWhatsapp(picWhatsapp)!,
         pic_contact_instructions: picInstructions.trim() || null,
         whatsapp_public: whatsappPublic,
         privacy,
         join_permission: joinPermission,
         skill_level: skillLevel,
+        group_id: groupId || null,
       };
+
+      // The WhatsApp number lives in event_contacts, readable only by the
+      // organizer, approved participants, or everyone when shown publicly.
+      const saveContact = (eventId: string) =>
+        supabase
+          .from("event_contacts")
+          .upsert({ event_id: eventId, pic_whatsapp: normalizeWhatsapp(picWhatsapp)! });
 
       if (event) {
         const { error } = await supabase.from("events").update(payload).eq("id", event.id);
         if (error) return setFormError(friendlyErrorKey(error, "update event"));
+        const { error: contactError } = await saveContact(event.id);
+        if (contactError) return setFormError(friendlyErrorKey(contactError, "save contact"));
         toast(t("edit.success"));
         router.push(`/activities/${event.id}`);
         router.refresh();
@@ -236,14 +268,26 @@ export function ActivityForm({ event }: { event?: EventRecord }) {
           data: { user },
         } = await supabase.auth.getUser();
         if (!user) return setFormError("err.NOT_AUTHENTICATED");
-        const { data, error } = await supabase
-          .from("events")
-          .insert({ ...payload, creator_id: user.id })
-          .select("id")
-          .single();
-        if (error || !data) return setFormError(friendlyErrorKey(error, "create event"));
-        toast(t("create.success"));
-        router.push(`/activities/${data.id}`);
+        // A weekly series is one row per date (own seats and participants),
+        // linked by series_id (migration 017).
+        const seriesId = repeatWeeks > 1 ? crypto.randomUUID() : null;
+        const rows = weeklyDates(date, repeatWeeks).map((d) => ({
+          ...payload,
+          event_date: d,
+          creator_id: user.id,
+          ...(seriesId ? { series_id: seriesId } : {}),
+        }));
+        const { data: created, error } = await supabase.from("events").insert(rows).select("id, event_date");
+        if (error || !created?.length) return setFormError(friendlyErrorKey(error, "create event"));
+        const data = [...created].sort((x, y) => x.event_date.localeCompare(y.event_date));
+        // The activities exist either way: on a contact error, say so and let the organizer fix it via Edit.
+        const results = await Promise.all(data.map((row) => saveContact(row.id)));
+        if (results.some((r) => r.error)) toast(t("create.contactFailed"), "error");
+        else toast(t("create.success"));
+        if (fromRequest) {
+          await supabase.rpc("play_request_close", { p_request: fromRequest.id, p_event: data[0].id });
+        }
+        router.push(`/activities/${data[0].id}`);
       }
     } finally {
       busy.current = false;
@@ -334,6 +378,23 @@ export function ActivityForm({ event }: { event?: EventRecord }) {
             />
           </FieldShell>
         </div>
+        {!isEdit && (
+          <FieldShell id="repeat" label={t("create.repeat")}>
+            <select
+              id="repeat"
+              value={repeatWeeks}
+              onChange={(e) => setRepeatWeeks(Number(e.target.value))}
+              className={inputClass()}
+            >
+              <option value={1}>{t("create.repeatOnce")}</option>
+              {[4, 8, 12].map((n) => (
+                <option key={n} value={n}>
+                  {t("create.repeatWeekly", { n })}
+                </option>
+              ))}
+            </select>
+          </FieldShell>
+        )}
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <FieldShell id="maxParticipants" label={t("create.maxParticipants")} error={errors.maxParticipants}>
             <input
@@ -364,6 +425,18 @@ export function ActivityForm({ event }: { event?: EventRecord }) {
             />
           </FieldShell>
         </div>
+        {myGroups.length > 0 && (
+          <FieldShell id="group" label={t("create.group")}>
+            <select id="group" value={groupId} onChange={(e) => setGroupId(e.target.value)} className={inputClass()}>
+              <option value="">{t("create.noGroup")}</option>
+              {myGroups.map((g) => (
+                <option key={g.id} value={g.id}>
+                  {g.name}
+                </option>
+              ))}
+            </select>
+          </FieldShell>
+        )}
         <RadioRow
           label={t("create.skillLevel")}
           name="skillLevel"

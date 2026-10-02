@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { relativeDay, spotsLeftToShow, weekendDates } from "./events";
+import { relativeDay, spotsLeftToShow, weekendDates, weeklyDates } from "./events";
 
 describe("relativeDay", () => {
   it("labels today and tomorrow, including across a month end", () => {
@@ -25,5 +25,12 @@ describe("weekendDates", () => {
     expect(weekendDates("2026-10-03")).toEqual(["2026-10-03", "2026-10-04"]); // Saturday
     expect(weekendDates("2026-10-04")).toEqual(["2026-10-04"]); // Sunday
     expect(weekendDates("2026-10-30")).toEqual(["2026-10-31", "2026-11-01"]); // across a month end
+  });
+});
+
+describe("weeklyDates", () => {
+  it("repeats every 7 days, across month ends", () => {
+    expect(weeklyDates("2026-10-24", 3)).toEqual(["2026-10-24", "2026-10-31", "2026-11-07"]);
+    expect(weeklyDates("2026-10-24", 1)).toEqual(["2026-10-24"]);
   });
 });
