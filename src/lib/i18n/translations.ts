@@ -58,6 +58,25 @@ const enBase = {
   "landing.videoLabel": "Komunitas promo video",
   "landing.videoPause": "Pause video",
   "landing.videoPlay": "Play video",
+  // Skill level labels
+  "level.beginner": "Beginner-friendly",
+  "level.all": "All levels",
+  "level.experienced": "Experienced",
+  "create.skillLevel": "Who is it for?",
+  "create.levelBeginner": "Beginner-friendly: no experience needed",
+  "create.levelAll": "All levels welcome",
+  "create.levelExperienced": "Experienced: some skill expected",
+  // Activity cards
+  "card.today": "Today",
+  "card.tomorrow": "Tomorrow",
+  "card.spotLeft": "1 spot left",
+  "card.spotsLeft": "{n} spots left",
+  // Logged-out visitors
+  "guest.joinTitle": "Want to join?",
+  "guest.joinBody": "Create a free account to join, ask questions in the comments and see who's going.",
+  "guest.joinCta": "Sign up to join",
+  "guest.haveAccount": "Already have an account?",
+  "guest.contactHidden": "Sign in to see how to contact the organizer.",
   "landing.slidePlay": "Play slideshow",
 
   // Auth — shared
@@ -581,6 +600,25 @@ const idBase: Record<keyof typeof enBase, string> = {
   "landing.videoLabel": "Video promo Komunitas",
   "landing.videoPause": "Jeda video",
   "landing.videoPlay": "Putar video",
+  // Label level
+  "level.beginner": "Ramah pemula",
+  "level.all": "Semua level",
+  "level.experienced": "Berpengalaman",
+  "create.skillLevel": "Cocok untuk siapa?",
+  "create.levelBeginner": "Ramah pemula: tidak perlu pengalaman",
+  "create.levelAll": "Semua level boleh ikut",
+  "create.levelExperienced": "Berpengalaman: perlu sedikit keahlian",
+  // Kartu aktivitas
+  "card.today": "Hari ini",
+  "card.tomorrow": "Besok",
+  "card.spotLeft": "Sisa 1 tempat",
+  "card.spotsLeft": "Sisa {n} tempat",
+  // Pengunjung yang belum masuk
+  "guest.joinTitle": "Mau ikut?",
+  "guest.joinBody": "Buat akun gratis untuk ikut, bertanya di komentar, dan lihat siapa saja yang ikut.",
+  "guest.joinCta": "Daftar untuk ikut",
+  "guest.haveAccount": "Sudah punya akun?",
+  "guest.contactHidden": "Masuk untuk melihat cara menghubungi penyelenggara.",
   "landing.slidePlay": "Putar slideshow",
 
   // Auth — shared

@@ -10,7 +10,7 @@ import type { TranslationKey } from "@/lib/i18n/translations";
 import { friendlyErrorKey } from "@/lib/errors";
 import { FEE_MAX, MAX_PARTICIPANTS_LIMIT, normalizeWhatsapp } from "@/lib/validation";
 import { formatFee, jakartaNowStamp, jakartaToday, toFee } from "@/lib/utils";
-import type { Category, EventPrivacy, EventRecord, JoinPermission } from "@/types";
+import type { Category, EventPrivacy, EventRecord, JoinPermission, SkillLevel } from "@/types";
 import { RupiahInput } from "./RupiahInput";
 import { BannerUpload } from "./BannerUpload";
 import { useToast } from "./Toast";
@@ -86,6 +86,7 @@ export function ActivityForm({ event }: { event?: EventRecord }) {
   const [whatsappPublic, setWhatsappPublic] = useState(event?.whatsapp_public ?? false);
   const [privacy, setPrivacy] = useState<EventPrivacy>(event?.privacy ?? "public");
   const [joinPermission, setJoinPermission] = useState<JoinPermission>(event?.join_permission ?? "open");
+  const [skillLevel, setSkillLevel] = useState<SkillLevel>(event?.skill_level ?? "all");
 
   const [errors, setErrors] = useState<Partial<Record<Field, string>>>({});
   const [formError, setFormError] = useState<TranslationKey | null>(null);
@@ -221,6 +222,7 @@ export function ActivityForm({ event }: { event?: EventRecord }) {
         whatsapp_public: whatsappPublic,
         privacy,
         join_permission: joinPermission,
+        skill_level: skillLevel,
       };
 
       if (event) {
@@ -362,6 +364,17 @@ export function ActivityForm({ event }: { event?: EventRecord }) {
             />
           </FieldShell>
         </div>
+        <RadioRow
+          label={t("create.skillLevel")}
+          name="skillLevel"
+          options={[
+            { value: "beginner", label: t("create.levelBeginner") },
+            { value: "all", label: t("create.levelAll") },
+            { value: "experienced", label: t("create.levelExperienced") },
+          ]}
+          value={skillLevel}
+          onChange={(v) => setSkillLevel(v as SkillLevel)}
+        />
       </Card>
 
       <Card title={t("banner.label")}>

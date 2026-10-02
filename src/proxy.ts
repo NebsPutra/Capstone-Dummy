@@ -1,5 +1,6 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { isGuestPath } from "@/lib/guest";
 
 // Pages that require a signed-in user. Unauthenticated visitors are sent to
 // /login?next=<original path> so invite links (/join/…, /event/code/…)
@@ -54,9 +55,10 @@ export async function proxy(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const { pathname, search } = request.nextUrl;
-  const isProtected = PROTECTED_PREFIXES.some(
-    (p) => pathname === p || pathname.startsWith(`${p}/`)
-  );
+  // Guest paths (Explore, activity details, invite links) render a read-only
+  // view for logged-out visitors; see src/lib/guest.ts.
+  const isProtected =
+    !isGuestPath(pathname) && PROTECTED_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 
   if (!user && isProtected) {
     const url = request.nextUrl.clone();

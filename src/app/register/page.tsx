@@ -17,7 +17,7 @@ import {
   normalizeWhatsapp,
 } from "@/lib/validation";
 import { geocodeArea } from "@/lib/wilayah";
-import { onboardingStep, personalInfoComplete } from "@/lib/onboarding";
+import { onboardingStep, personalInfoComplete, safeNext } from "@/lib/onboarding";
 import { GENDERS, type Gender, type Interest, type Profile } from "@/types";
 import { AuthShell, PasswordInput, ResendButton, useCooldown } from "@/components/AuthShell";
 import { OtpInput, OTP_LENGTH } from "@/components/OtpInput";
@@ -81,7 +81,7 @@ function Register() {
 
       const next = onboardingStep(profile);
       if (next === "done") {
-        router.replace("/dashboard");
+        router.replace(safeNext(params.get("next")));
         return;
       }
       setUserId(user.id);
@@ -230,7 +230,7 @@ function Register() {
               onDone={() => {
                 setStep("done");
                 setTimeout(() => {
-                  router.replace("/dashboard");
+                  router.replace(safeNext(params.get("next")));
                   router.refresh();
                 }, 1500);
               }}
@@ -242,7 +242,7 @@ function Register() {
               <p className="text-sm text-ink/70">{t("register.readySubtitle")}</p>
               <PrimaryButton
                 onClick={() => {
-                  router.replace("/dashboard");
+                  router.replace(safeNext(params.get("next")));
                   router.refresh();
                 }}
               >

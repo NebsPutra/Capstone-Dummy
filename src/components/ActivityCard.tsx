@@ -4,8 +4,9 @@ import Link from "next/link";
 import { Star, Users } from "lucide-react";
 import { StatusBadge } from "./StatusBadge";
 import { EventCover } from "./EventCover";
-import { formatDate, formatDistance, formatFee, formatTimeRange } from "@/lib/utils";
-import { effectiveStatus } from "@/lib/events";
+import { ActivityTags } from "./ActivityTags";
+import { formatDate, formatDistance, formatFee, formatTimeRange, toFee } from "@/lib/utils";
+import { effectiveStatus, relativeDay, spotsLeftToShow } from "@/lib/events";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import type { EventRecord } from "@/types";
 
@@ -19,6 +20,8 @@ export function ActivityCard({
 }) {
   const { lang, t, td } = useLanguage();
   const status = effectiveStatus(event);
+  const day = relativeDay(event.event_date);
+  const spotsLeft = spotsLeftToShow(event, status);
 
   return (
     <Link
@@ -50,8 +53,11 @@ export function ActivityCard({
             {td(`category.${event.category.key}`, event.category.label)}
           </p>
         )}
+        <ActivityTags event={event} />
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-ink/70">
-          <span>{formatDate(event.event_date, lang)}</span>
+          <span className={day ? "font-semibold text-ink" : undefined}>
+            {day ? t(`card.${day}`) : formatDate(event.event_date, lang)}
+          </span>
           <span>·</span>
           <span>{formatTimeRange(event.start_time, event.end_time)}</span>
         </div>
@@ -64,14 +70,21 @@ export function ActivityCard({
           )}
         </div>
         <div className="flex items-center justify-between pt-1">
-          <div className="flex items-center gap-1.5 text-sm text-ink/70">
-            <Users size={15} aria-hidden />
-            <span>
-              {event.participant_count ?? 0}/{event.max_participants}
-              <span className="sr-only"> {t("event.participants")}</span>
+          {spotsLeft ? (
+            <span className="text-sm font-semibold text-orange-dark">
+              {spotsLeft === 1 ? t("card.spotLeft") : t("card.spotsLeft", { n: spotsLeft })}
             </span>
-          </div>
-          <span className="text-sm font-medium">{formatFee(event.fee, lang)}</span>
+          ) : (
+            <div className="flex items-center gap-1.5 text-sm text-ink/70">
+              <Users size={15} aria-hidden />
+              <span>
+                {event.participant_count ?? 0}/{event.max_participants}
+                <span className="sr-only"> {t("event.participants")}</span>
+              </span>
+            </div>
+          )}
+          {/* Free is already a tag above. */}
+          {toFee(event.fee) > 0 && <span className="text-sm font-medium">{formatFee(event.fee, lang)}</span>}
         </div>
       </div>
     </Link>

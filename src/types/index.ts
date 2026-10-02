@@ -5,6 +5,7 @@ export type UserRole = "admin" | "participant";
 export type Gender = "male" | "female";
 export type EventPrivacy = "public" | "private";
 export type JoinPermission = "open" | "approval_required";
+export type SkillLevel = "beginner" | "all" | "experienced";
 /** Stored `events.status` (Postgres enum `event_status`). */
 export type EventStatus =
   | "open"
@@ -86,6 +87,7 @@ export interface EventRecord {
   whatsapp_public: boolean;
   privacy: EventPrivacy;
   join_permission: JoinPermission;
+  skill_level: SkillLevel;
   status: EventStatus;
   /** Approved participants, maintained by a DB trigger. */
   participant_count: number;
@@ -106,3 +108,11 @@ export interface EventParticipant {
 
 /** Columns selected for event lists (cards, dashboard, explore). */
 export const EVENT_LIST_SELECT = "*, category:categories(*)";
+
+/**
+ * The columns logged-out visitors may read (column grants in migration 015).
+ * No organizer contact, share token or creator: rows selected with this are
+ * EventRecords without those fields, so never render them for guests.
+ */
+export const PUBLIC_EVENT_SELECT: string =
+  "id, event_code, category_id, title, description, banner_url, event_date, start_time, end_time, max_participants, fee, location_name, address, latitude, longitude, privacy, join_permission, status, participant_count, skill_level, created_at, category:categories(*)";

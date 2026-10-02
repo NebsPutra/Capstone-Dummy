@@ -40,3 +40,13 @@ export async function resolveInvite(supabase: ServerClient, token: string): Prom
   }
   return (data as EventRecord | null) ?? null;
 }
+
+/**
+ * Invite link opened by a logged-out visitor: public activities open their
+ * read-only page; private ones (or unknown codes) go to sign-in first and
+ * come back here afterwards.
+ */
+export async function guestInviteRedirect(supabase: ServerClient, token: string, path: string): Promise<string> {
+  const { data: id } = await supabase.rpc("public_event_id", { token: token.trim().toUpperCase() });
+  return id ? `/activities/${id}` : `/login?next=${encodeURIComponent(path)}`;
+}

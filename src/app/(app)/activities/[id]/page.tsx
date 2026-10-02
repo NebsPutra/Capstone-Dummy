@@ -1,5 +1,6 @@
+import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { Pencil } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getServerT } from "@/lib/i18n/server";
@@ -8,6 +9,7 @@ import { effectiveStatus } from "@/lib/events";
 import { formatDate, formatFee, formatTimeRange } from "@/lib/utils";
 import { whatsappDigits } from "@/lib/validation";
 import { StatusBadge } from "@/components/StatusBadge";
+import { ActivityTags } from "@/components/ActivityTags";
 import { JoinPanel } from "@/components/JoinPanel";
 import { OwnerPanel, type ParticipantRow } from "@/components/OwnerPanel";
 import { ShareBox } from "@/components/ShareBox";
@@ -17,7 +19,26 @@ import { EventCover } from "@/components/EventCover";
 import { FlyerGenerator } from "@/components/FlyerGenerator";
 import { ROLE_RANK } from "@/lib/admin";
 import { LifeBuoy } from "lucide-react";
-import type { EventParticipant } from "@/types";
+import { PUBLIC_EVENT_SELECT, type EventParticipant, type EventRecord } from "@/types";
+
+/** Shared links (WhatsApp, etc.) preview the activity's own title, text and banner. */
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("events")
+    .select("title, description, banner_url")
+    .eq("id", id)
+    .eq("privacy", "public")
+    .maybeSingle();
+  if (!data) return {};
+  const description = data.description?.slice(0, 160) ?? undefined;
+  return {
+    title: `${data.title} | Komunitas`,
+    description,
+    openGraph: { title: data.title, description, ...(data.banner_url ? { images: [data.banner_url] } : {}) },
+  };
+}
 
 export default async function EventDetailsPage({
   params,
@@ -34,11 +55,22 @@ export default async function EventDetailsPage({
     data: { user },
   } = await supabase.auth.getUser();
 
-  const access = await getEventForViewer(supabase, id, token);
+  // Logged-out visitors get a read-only view of public activities (guest-safe
+  // columns only: no organizer contact, share token or participant list).
+  const guest = !user;
+  let access: { event: EventRecord; viaInvite: boolean } | null;
+  if (guest) {
+    const { data } = await supabase.from("events").select(PUBLIC_EVENT_SELECT).eq("id", id).maybeSingle();
+    if (!data) redirect(`/login?next=${encodeURIComponent(`/activities/${id}${token ? `?t=${token}` : ""}`)}`);
+    access = { event: data as unknown as EventRecord, viaInvite: false };
+  } else {
+    access = await getEventForViewer(supabase, id, token);
+  }
   if (!access) notFound();
   const { event, viaInvite } = access;
 
-  const isOwner = user?.id === event.creator_id;
+  // `!!user`: guests have no user and no creator_id column, and undefined === undefined.
+  const isOwner = !!user && user.id === event.creator_id;
   const status = effectiveStatus(event);
 
   // Flyers are for the organizer and for admins (not moderators or attendees).
@@ -100,6 +132,7 @@ export default async function EventDetailsPage({
             </div>
             <StatusBadge status={status} />
           </div>
+          <ActivityTags event={event} showAllLevels />
 
           <div className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-3">
             <Info label={t("event.date")} value={formatDate(event.event_date, lang)} />
@@ -107,18 +140,20 @@ export default async function EventDetailsPage({
             <Info label={t("event.fee")} value={formatFee(event.fee, lang)} />
             <Info label={t("event.participants")} value={`${event.participant_count ?? 0}/${event.max_participants}`} />
             <Info label={t("event.code")} value={event.event_code} />
-            <Info
-              label={t("event.organizer")}
-              value={
-                event.organizer ? (
-                  <Link href={`/u/${event.organizer.username}`} className="text-orange-dark hover:underline">
-                    {event.organizer.nickname || `@${event.organizer.username}`}
-                  </Link>
-                ) : (
-                  "—"
-                )
-              }
-            />
+            {!guest && (
+              <Info
+                label={t("event.organizer")}
+                value={
+                  event.organizer ? (
+                    <Link href={`/u/${event.organizer.username}`} className="text-orange-dark hover:underline">
+                      {event.organizer.nickname || `@${event.organizer.username}`}
+                    </Link>
+                  ) : (
+                    "—"
+                  )
+                }
+              />
+            )}
           </div>
 
           {event.description && (
@@ -145,28 +180,32 @@ export default async function EventDetailsPage({
             </a>
           </div>
 
-          <div className="rounded-xl bg-cream-warm p-4">
-            <h2 className="mb-1 text-sm font-semibold">{t("event.picTitle")}</h2>
-            <p className="text-sm text-ink/70">
-              {t("event.pic")}: {event.pic_name}
-            </p>
-            {showWhatsapp && (
+          {guest ? (
+            <p className="rounded-xl bg-cream-warm p-4 text-sm text-ink/70">{t("guest.contactHidden")}</p>
+          ) : (
+            <div className="rounded-xl bg-cream-warm p-4">
+              <h2 className="mb-1 text-sm font-semibold">{t("event.picTitle")}</h2>
               <p className="text-sm text-ink/70">
-                {t("event.whatsapp")}:{" "}
-                <a
-                  href={`https://wa.me/${whatsappDigits(event.pic_whatsapp)}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="font-medium text-orange-dark"
-                >
-                  {event.pic_whatsapp}
-                </a>
+                {t("event.pic")}: {event.pic_name}
               </p>
-            )}
-            {event.pic_contact_instructions && (
-              <p className="mt-1 text-sm text-ink/70">{event.pic_contact_instructions}</p>
-            )}
-          </div>
+              {showWhatsapp && (
+                <p className="text-sm text-ink/70">
+                  {t("event.whatsapp")}:{" "}
+                  <a
+                    href={`https://wa.me/${whatsappDigits(event.pic_whatsapp)}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-medium text-orange-dark"
+                  >
+                    {event.pic_whatsapp}
+                  </a>
+                </p>
+              )}
+              {event.pic_contact_instructions && (
+                <p className="mt-1 text-sm text-ink/70">{event.pic_contact_instructions}</p>
+              )}
+            </div>
+          )}
 
           {(canEdit || canMakeFlyer) && (
             <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
@@ -202,35 +241,48 @@ export default async function EventDetailsPage({
         </div>
       </div>
 
-      <JoinPanel
-        eventId={event.id}
-        inviteToken={viaInvite ? token ?? null : null}
-        joinPermission={event.join_permission}
-        status={status}
-        isOwner={isOwner}
-        myParticipation={myParticipation}
-      />
-
-      {isOwner && (
-        <OwnerPanel
-          eventId={event.id}
-          status={status}
-          maxParticipants={event.max_participants}
-          approvedCount={event.participant_count}
-          participants={participants}
+      {guest ? (
+        <GuestJoinCard
+          nextPath={`/activities/${event.id}`}
+          title={t("guest.joinTitle")}
+          body={t("guest.joinBody")}
+          cta={t("guest.joinCta")}
+          haveAccount={t("guest.haveAccount")}
+          signIn={t("landing.login")}
         />
+      ) : (
+        <>
+          <JoinPanel
+            eventId={event.id}
+            inviteToken={viaInvite ? token ?? null : null}
+            joinPermission={event.join_permission}
+            status={status}
+            isOwner={isOwner}
+            myParticipation={myParticipation}
+          />
+
+          {isOwner && (
+            <OwnerPanel
+              eventId={event.id}
+              status={status}
+              maxParticipants={event.max_participants}
+              approvedCount={event.participant_count}
+              participants={participants}
+            />
+          )}
+
+          <EventComments eventId={event.id} isOwner={isOwner} />
+
+          <ShareBox shareToken={event.share_token} eventCode={event.event_code} title={event.title} />
+
+          <Link
+            href={`/help?event=${event.id}`}
+            className="flex items-center justify-center gap-1.5 text-sm font-medium text-ink/65 hover:text-orange-dark"
+          >
+            <LifeBuoy size={15} /> {t("help.reportEvent")}
+          </Link>
+        </>
       )}
-
-      <EventComments eventId={event.id} isOwner={isOwner} />
-
-      <ShareBox shareToken={event.share_token} eventCode={event.event_code} title={event.title} />
-
-      <Link
-        href={`/help?event=${event.id}`}
-        className="flex items-center justify-center gap-1.5 text-sm font-medium text-ink/65 hover:text-orange-dark"
-      >
-        <LifeBuoy size={15} /> {t("help.reportEvent")}
-      </Link>
     </div>
   );
 }
@@ -240,6 +292,43 @@ function Info({ label, value }: { label: string; value: React.ReactNode }) {
     <div>
       <p className="text-xs uppercase tracking-wide text-ink/65">{label}</p>
       <p className="font-medium">{value}</p>
+    </div>
+  );
+}
+
+/** Logged-out visitors: sign up (or in) and come straight back to this activity. */
+function GuestJoinCard({
+  nextPath,
+  title,
+  body,
+  cta,
+  haveAccount,
+  signIn,
+}: {
+  nextPath: string;
+  title: string;
+  body: string;
+  cta: string;
+  haveAccount: string;
+  signIn: string;
+}) {
+  const next = `?next=${encodeURIComponent(nextPath)}`;
+  return (
+    <div className="card space-y-3 p-6 text-center">
+      <h2 className="text-lg font-bold">{title}</h2>
+      <p className="mx-auto max-w-md text-sm text-ink/70">{body}</p>
+      <Link
+        href={`/register${next}`}
+        className="inline-block rounded-full bg-orange-deep px-7 py-3 text-sm font-semibold text-white shadow-soft hover:bg-orange-deeper"
+      >
+        {cta}
+      </Link>
+      <p className="text-sm text-ink/70">
+        {haveAccount}{" "}
+        <Link href={`/login${next}`} className="font-semibold text-orange-dark hover:underline">
+          {signIn}
+        </Link>
+      </p>
     </div>
   );
 }

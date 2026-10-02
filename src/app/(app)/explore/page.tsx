@@ -12,7 +12,7 @@ import { useUserLocation } from "@/lib/location";
 import { effectiveStatus } from "@/lib/events";
 import { friendlyErrorKey } from "@/lib/errors";
 import { distanceKm, jakartaNowStamp, jakartaToday } from "@/lib/utils";
-import { EVENT_LIST_SELECT, type Category, type EventRecord } from "@/types";
+import { PUBLIC_EVENT_SELECT, type Category, type EventRecord } from "@/types";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import type { TranslationKey } from "@/lib/i18n/translations";
 import { ActivityGridSkeleton } from "@/components/Skeletons";
@@ -40,6 +40,7 @@ export default function ExplorePage() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [timeFilter, setTimeFilter] = useState<TimeFilter | null>(null);
   const [priceFilter, setPriceFilter] = useState<PriceFilter | null>(null);
+  const [beginnerOnly, setBeginnerOnly] = useState(false);
   const [maxDistance, setMaxDistance] = useState<number | null>(null);
   const [nearestFirst, setNearestFirst] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -70,7 +71,7 @@ export default function ExplorePage() {
   // Reset paging whenever the server-side filters change.
   useEffect(() => {
     setPage(0);
-  }, [debounced, activeCategory, timeFilter, priceFilter]);
+  }, [debounced, activeCategory, timeFilter, priceFilter, beginnerOnly]);
 
   useEffect(() => {
     let cancelled = false;
@@ -82,7 +83,8 @@ export default function ExplorePage() {
 
       let q = supabase
         .from("events")
-        .select(EVENT_LIST_SELECT)
+        // Guest-safe columns: Explore is open to logged-out visitors too.
+        .select(PUBLIC_EVENT_SELECT)
         .eq("privacy", "public")
         .neq("status", "cancelled")
         .order("event_date", { ascending: true })
@@ -110,6 +112,7 @@ export default function ExplorePage() {
 
       if (priceFilter === "free") q = q.eq("fee", 0);
       if (priceFilter === "paid") q = q.gt("fee", 0);
+      if (beginnerOnly) q = q.eq("skill_level", "beginner");
 
       const from = page * PAGE_SIZE;
       const { data, error: loadError } = await q.range(from, from + PAGE_SIZE - 1);
@@ -119,7 +122,7 @@ export default function ExplorePage() {
         setLoading(false);
         return;
       }
-      const rows = (data ?? []) as EventRecord[];
+      const rows = (data ?? []) as unknown as EventRecord[]; // guest-safe subset, see PUBLIC_EVENT_SELECT
       setHasMore(rows.length === PAGE_SIZE);
       setEvents((prev) => (page === 0 ? rows : [...prev, ...rows]));
       setLoading(false);
@@ -128,7 +131,7 @@ export default function ExplorePage() {
     return () => {
       cancelled = true;
     };
-  }, [supabase, debounced, activeCategory, timeFilter, priceFilter, page]);
+  }, [supabase, debounced, activeCategory, timeFilter, priceFilter, beginnerOnly, page]);
 
   const visible = useMemo(() => {
     let list = events
@@ -185,6 +188,9 @@ export default function ExplorePage() {
             {t(`explore.${key}`)}
           </Chip>
         ))}
+        <Chip active={beginnerOnly} onClick={() => setBeginnerOnly((v) => !v)}>
+          {t("level.beginner")}
+        </Chip>
         <span className="mx-1 h-4 w-px bg-ink/10" />
         <Chip active={nearestFirst} disabled={!coords} onClick={() => setNearestFirst((v) => !v)}>
           {t("explore.nearby")}

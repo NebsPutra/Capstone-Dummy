@@ -1,5 +1,5 @@
 import type { EventRecord, EventStatus } from "@/types";
-import { eventStamp, jakartaNowStamp } from "@/lib/utils";
+import { eventStamp, jakartaNowStamp, jakartaToday } from "@/lib/utils";
 
 /**
  * The status to show and act on. The stored `status` only tracks capacity
@@ -23,4 +23,22 @@ export function effectiveStatus(
 /** Joins close when the event starts (mirrors join_event()). */
 export function isJoinable(status: EventStatus): boolean {
   return status === "open" || status === "almost_full";
+}
+
+/** "today" / "tomorrow" for an event date (Asia/Jakarta), otherwise null. */
+export function relativeDay(eventDate: string, today: string = jakartaToday()): "today" | "tomorrow" | null {
+  if (eventDate === today) return "today";
+  // Next calendar day, computed on the date itself (no time zone involved).
+  const next = new Date(`${today}T00:00:00Z`);
+  next.setUTCDate(next.getUTCDate() + 1);
+  return eventDate === next.toISOString().slice(0, 10) ? "tomorrow" : null;
+}
+
+/** Spots left, shown as urgency only when 1–5 remain and joining is still possible. */
+export function spotsLeftToShow(
+  event: Pick<EventRecord, "max_participants" | "participant_count">,
+  status: EventStatus
+): number | null {
+  const left = event.max_participants - (event.participant_count ?? 0);
+  return isJoinable(status) && left > 0 && left <= 5 ? left : null;
 }

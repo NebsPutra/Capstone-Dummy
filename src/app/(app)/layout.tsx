@@ -7,6 +7,8 @@ import { MobileNav } from "@/components/MobileNav";
 import { Header } from "@/components/Header";
 import { LegalFooter } from "@/components/LegalFooter";
 import { SkipLink } from "@/components/SkipLink";
+import { GuestShell } from "@/components/GuestShell";
+import { isGuestPath } from "@/lib/guest";
 
 export default async function AppLayout({
   children,
@@ -18,8 +20,11 @@ export default async function AppLayout({
     data: { user },
   } = await supabase.auth.getUser();
 
+  const pathname = (await headers()).get("x-pathname") ?? "";
   if (!user) {
-    redirect("/login");
+    // Logged-out visitors may browse public activities (read-only).
+    if (isGuestPath(pathname)) return <GuestShell pathname={pathname}>{children}</GuestShell>;
+    redirect(`/login?next=${encodeURIComponent(pathname || "/dashboard")}`);
   }
 
   const { data: profile } = await supabase
@@ -37,7 +42,6 @@ export default async function AppLayout({
   }
 
   // Suspended/deactivated accounts can only reach Help & Support.
-  const pathname = (await headers()).get("x-pathname") ?? "";
   const status = (profile as { account_status?: string } | null)?.account_status;
   if (status && status !== "active" && !pathname.startsWith("/help")) {
     redirect("/account-suspended");
