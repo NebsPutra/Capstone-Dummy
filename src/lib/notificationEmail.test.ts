@@ -22,6 +22,12 @@ describe("notificationEmail", () => {
     );
   });
 
+  it("emails players when the activity from their Find players request is created", () => {
+    const e = notificationEmail({ type: "play_request_ready", params: { title: "Badminton doubles" }, link: "/activities/abc" }, origin)!;
+    expect(e.paragraphs[0]).toBe("Badminton doubles: the activity is on! Tap to join.");
+    expect(e.action.href).toBe(`${origin}/activities/abc`);
+  });
+
   it("skips types that aren't emailed", () => {
     expect(notificationEmail({ type: "security_alert" }, origin)).toBeNull();
   });
