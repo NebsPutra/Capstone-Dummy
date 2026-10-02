@@ -36,6 +36,7 @@ const enBase = {
   "nav.toggleSidebar": "Toggle sidebar",
   "nav.groups": "Groups",
   "nav.players": "Find players",
+  "nav.more": "More",
 
   // Landing
   "landing.headline1": "Find Activities.",
@@ -642,6 +643,7 @@ const idBase: Record<keyof typeof enBase, string> = {
   "nav.toggleSidebar": "Buka/tutup sidebar",
   "nav.groups": "Grup",
   "nav.players": "Cari pemain",
+  "nav.more": "Lainnya",
 
   // Landing
   "landing.headline1": "Temukan Aktivitas.",
