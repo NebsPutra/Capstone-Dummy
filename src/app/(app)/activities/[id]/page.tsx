@@ -186,6 +186,8 @@ export default async function EventDetailsPage({
           seed={event.id}
           categoryKey={event.category?.key}
           date={event.event_date}
+          sizes="(max-width: 768px) 100vw, 768px"
+          eager
           className="aspect-video max-h-80"
         />
         <div className="space-y-4 p-6">

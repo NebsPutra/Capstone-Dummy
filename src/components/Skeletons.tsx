@@ -15,8 +15,9 @@ function Loading({ children, className }: { children: React.ReactNode; className
   const { t } = useLanguage();
   return (
     <div role="status" aria-live="polite" className={className}>
-      <span className="sr-only">{t("common.loading")}</span>
       {children}
+      {/* Last, so space-y-* doesn't push the first visible child down. */}
+      <span className="sr-only">{t("common.loading")}</span>
     </div>
   );
 }
@@ -69,7 +70,7 @@ export function PageHeaderSkeleton() {
 /** Generic list page (notifications, messages, community, help…). */
 export function ListPageSkeleton({ rows = 5 }: { rows?: number }) {
   return (
-    <Loading className="space-y-6">
+    <Loading className="min-h-screen space-y-6">
       <PageHeaderSkeleton />
       <div className="space-y-3">
         {Array.from({ length: rows }, (_, i) => (
@@ -89,7 +90,7 @@ export function ListPageSkeleton({ rows = 5 }: { rows?: number }) {
 /** Dashboard: banner-sized block + one activity section, so the page doesn't jump when it loads. */
 export function DashboardSkeleton() {
   return (
-    <Loading className="space-y-8">
+    <Loading className="min-h-screen space-y-8">
       <div aria-hidden className="skeleton h-56 rounded-3xl md:h-60" />
       <div className="space-y-4">
         <div aria-hidden className="skeleton h-6 w-44" />
@@ -106,7 +107,7 @@ export function DashboardSkeleton() {
 /** Pages made of activity sections (my activities). */
 export function ActivityPageSkeleton() {
   return (
-    <Loading className="space-y-8">
+    <Loading className="min-h-screen space-y-8">
       <PageHeaderSkeleton />
       <div className="space-y-4">
         <div aria-hidden className="skeleton h-6 w-44" />
@@ -123,7 +124,7 @@ export function ActivityPageSkeleton() {
 /** Mirrors the activity detail page: cover, title, fact grid, description. */
 export function ActivityDetailSkeleton() {
   return (
-    <Loading className="mx-auto max-w-3xl space-y-6">
+    <Loading className="min-h-screen mx-auto max-w-3xl space-y-6">
       <div aria-hidden className="card overflow-hidden">
         <div className="skeleton aspect-video max-h-80 rounded-none" />
         <div className="space-y-5 p-6">

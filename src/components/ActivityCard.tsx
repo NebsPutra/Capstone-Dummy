@@ -15,12 +15,15 @@ export function ActivityCard({
   event,
   highlight,
   friends,
+  eager,
 }: {
   event: EventRecord;
   /** Shown for recommendations that match the user's primary interest. */
   highlight?: string;
   /** Friends going (useFriendsGoing): social proof under the labels. */
   friends?: FriendsGoing;
+  /** First cards on a page: load the banner now (see EventCover). */
+  eager?: boolean;
 }) {
   const { lang, t, td } = useLanguage();
   const status = effectiveStatus(event);
@@ -39,6 +42,7 @@ export function ActivityCard({
           bannerUrl={event.banner_url}
           title={event.title}
           seed={event.id}
+          eager={eager}
           categoryKey={event.category?.key}
           date={event.event_date}
           className="aspect-[16/7] transition duration-300 group-hover:scale-[1.03]"

@@ -16,8 +16,12 @@ export function useFriendsGoing(eventIds: string[]): Record<string, FriendsGoing
   useEffect(() => {
     if (!key) return;
     let cancelled = false;
-    supabase.rpc("friends_going", { p_events: key.split(",") }).then(({ data }) => {
-      if (!cancelled && data) setMap(data as Record<string, FriendsGoing>);
+    // Logged-out visitors: no request (it would be refused and log a console error).
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session || cancelled) return;
+      supabase.rpc("friends_going", { p_events: key.split(",") }).then(({ data }) => {
+        if (!cancelled && data) setMap(data as Record<string, FriendsGoing>);
+      });
     });
     return () => {
       cancelled = true;

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import {
   Bike,
   BookOpenText,
@@ -50,7 +51,7 @@ function hash(s: string): number {
 
 /**
  * Activity cover. With a banner: the banner shown whole (object-contain) over a
- * blurred copy of itself. Without one: a generated poster made from the
+ * blurred copy of itself (both resized by next/image). Without one: a generated poster made from the
  * activity itself (category colours and icon, a pattern and tilt picked from
  * its id and a date ticket), so every activity looks
  * different. Images are lazy-loaded.
@@ -62,6 +63,8 @@ export function EventCover({
   seed,
   categoryKey,
   date,
+  sizes = "(max-width: 768px) 100vw, 400px",
+  eager,
 }: {
   bannerUrl?: string | null;
   /** Kept for callers that still pass it; the poster uses the category icon instead. */
@@ -73,23 +76,19 @@ export function EventCover({
   categoryKey?: string | null;
   /** YYYY-MM-DD: shown as a date ticket on the poster. (Always light: fixed dark text, not the ink token.) */
   date?: string | null;
+  /** Rendered width hint for the image optimizer (cards ~400px; pass more for big covers). */
+  sizes?: string;
+  /** Above the fold (first cards, page hero): load now, not lazily. */
+  eager?: boolean;
 }) {
   const { lang } = useLanguage();
 
   if (bannerUrl) {
     return (
       <div className={cn("relative w-full overflow-hidden bg-cream-warm", className)}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={bannerUrl}
-          alt=""
-          aria-hidden
-          loading="lazy"
-          decoding="async"
-          className="absolute inset-0 h-full w-full scale-110 object-cover opacity-70 blur-2xl"
-        />
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={bannerUrl} alt={title} loading="lazy" decoding="async" className="relative h-full w-full object-contain" />
+        {/* Resized and re-encoded by Next's image optimizer: uploads can be large originals. */}
+        <Image src={bannerUrl} alt="" aria-hidden fill sizes="48px" className="scale-110 object-cover opacity-70 blur-2xl" />
+        <Image src={bannerUrl} alt={title} fill sizes={sizes} loading={eager ? "eager" : "lazy"} fetchPriority={eager ? "high" : undefined} className="object-contain" />
       </div>
     );
   }

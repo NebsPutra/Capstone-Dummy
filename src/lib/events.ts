@@ -83,3 +83,10 @@ export function activityWindows(
     ratingOpen: t >= end && t <= end + 14 * 24 * hour,
   };
 }
+
+/**
+ * Explore's page size. Lives here (not in the "use client" ExplorePage) because
+ * the server page needs the number: importing a value from a client module into
+ * a server component gives a client reference, not the value.
+ */
+export const EXPLORE_PAGE_SIZE = 30;
