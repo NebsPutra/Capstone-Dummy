@@ -314,12 +314,12 @@ function sectionSlide(pres, grad, num, title, sub) {
     const f = [
       [fa.FaCompass, T("Nearby dashboard", "Dasbor terdekat"), T("Activities within 20 km, matched to your hobbies", "Aktivitas dalam 20 km, sesuai hobimu")],
       [fa.FaSearch, T("Explore & search", "Jelajahi & cari"), T("Any distance; search by name, place or event code", "Jarak berapa pun; cari nama, tempat, atau kode")],
-      [fa.FaCalendarAlt, T("My activities", "Aktivitas saya"), T("What you organize and what you've joined", "Yang kamu selenggarakan dan yang kamu ikuti")],
+      [fa.FaCalendarAlt, T("My activities", "Aktivitas saya"), T("What you organize and join, with check-in and ratings", "Yang kamu selenggarakan dan ikuti, dengan check-in dan penilaian")],
       [fa.FaQrcode, T("Share & invite", "Bagikan & undang"), T("Link, WhatsApp, QR code and flyer generator", "Tautan, WhatsApp, kode QR, dan pembuat flyer")],
       [fa.FaComments, T("Comments", "Komentar"), T("Questions and replies on each activity, with reporting", "Tanya jawab di tiap aktivitas, bisa dilaporkan")],
       [fa.FaEnvelopeOpenText, T("Private messages", "Pesan pribadi"), T("Realtime 1:1 chat, mute, archive and block", "Chat 1:1 langsung, bisukan, arsipkan, blokir")],
-      [fa.FaUserFriends, T("Community", "Komunitas"), T("Public profiles, usernames, friends, social links", "Profil publik, username, teman, tautan sosial")],
-      [fa.FaBell, T("Notifications", "Notifikasi"), T("Approvals, replies and updates, with preferences", "Persetujuan, balasan, dan pembaruan, bisa diatur")],
+      [fa.FaUserFriends, T("Community", "Komunitas"), T("Profiles, friends, groups, and which friends are going", "Profil, teman, grup, dan teman yang ikut")],
+      [fa.FaBell, T("Notifications", "Notifikasi"), T("Reminders, alerts and approvals, by email and push", "Pengingat, peringatan, dan persetujuan, via email dan push")],
       [fa.FaLifeRing, T("Help & support", "Bantuan"), T("Complaint tickets with attachments, emailed to admins", "Tiket keluhan dengan lampiran, dikirim ke admin")],
     ];
     const cw = 3.85, ch = 1.3, gx = 0.175, gy = 0.2;
@@ -331,8 +331,8 @@ function sectionSlide(pres, grad, num, title, sub) {
       text(s, f[i][2], { x: x + 1.15, y: y + 0.6, w: cw - 1.35, h: 0.6, fontSize: 12.5, color: C.muted, valign: "top" });
     }
     s.addNotes(T(
-      "Here's everything in the app on one slide: the nearby dashboard, explore and search, my activities, sharing, comments, private messages, community profiles and friends, notifications, and help and support tickets.",
-      "Ini semua fitur aplikasi dalam satu slide: dasbor aktivitas terdekat, jelajahi dan cari, aktivitas saya, berbagi, komentar, pesan pribadi, profil komunitas dan teman, notifikasi, serta tiket bantuan."));
+      "Here's everything in the app on one slide: the nearby dashboard, explore and search, my activities with check-in and ratings, sharing, comments, private messages, community profiles, friends and groups, notifications by email and phone push, and help and support tickets.",
+      "Ini semua fitur aplikasi dalam satu slide: dasbor aktivitas terdekat, jelajahi dan cari, aktivitas saya dengan check-in dan penilaian, berbagi, komentar, pesan pribadi, profil komunitas, teman dan grup, notifikasi lewat email dan push di ponsel, serta tiket bantuan."));
   }
 
   // 12. Section: How it's built
@@ -452,7 +452,7 @@ function sectionSlide(pres, grad, num, title, sub) {
   {
     const s = content(pres, 17, T("Data stores", "Penyimpanan data"), T("Five places data lives", "Lima tempat data disimpan"));
     const stores = [
-      [fa.FaDatabase, "Supabase Postgres", T("31 tables · 2 views", "31 tabel · 2 view"), T(
+      [fa.FaDatabase, "Supabase Postgres", T("41 tables · 2 views", "41 tabel · 2 view"), T(
         "Profiles, activities, participants, comments, messages, complaints, notifications, audit log. Row-level security on every table.",
         "Profil, aktivitas, peserta, komentar, pesan, keluhan, notifikasi, log audit. Row-level security di setiap tabel."), C.warm],
       [fa.FaFingerprint, "Supabase Auth", T("Accounts & sessions", "Akun & sesi"), T(
@@ -465,8 +465,8 @@ function sectionSlide(pres, grad, num, title, sub) {
         "Language choice and the chosen area or GPS preference. Live GPS stays on the device.",
         "Pilihan bahasa dan wilayah atau preferensi GPS. GPS langsung tetap di perangkat."), C.white],
       [fa.FaKey, T("Vercel environment", "Environment Vercel"), T("Server secrets", "Kunci rahasia server"), T(
-        "Service-role key and SMTP password. Server-only, never sent to browsers or committed.",
-        "Service-role key dan kata sandi SMTP. Hanya di server, tidak dikirim ke browser atau ke GitHub."), C.white],
+        "Service-role key, SMTP password and the push-notification key. Server-only, never sent to browsers or committed.",
+        "Service-role key, kata sandi SMTP, dan kunci notifikasi push. Hanya di server, tidak dikirim ke browser atau ke GitHub."), C.white],
     ];
     const cw = 2.2, gap = 0.225, y = 2.0, ch = 4.4;
     for (let i = 0; i < stores.length; i++) {
@@ -478,18 +478,18 @@ function sectionSlide(pres, grad, num, title, sub) {
       text(s, stores[i][3], { x: x + 0.28, y: y + 2.3, w: cw - 0.5, h: 2.0, fontSize: 12, color: C.muted, valign: "top" });
     }
     s.addNotes(T(
-      "Data lives in five places. The main one is the Supabase Postgres database with 31 tables, all protected by row-level security. Supabase Auth holds accounts and sessions. Supabase Storage holds banner images and complaint attachments. The user's own device keeps their language and location preference; live GPS never leaves it. And Vercel holds the few server secrets.",
-      "Data disimpan di lima tempat. Yang utama adalah database Postgres di Supabase dengan 31 tabel, semuanya dilindungi row-level security. Supabase Auth menyimpan akun dan sesi. Supabase Storage menyimpan gambar banner dan lampiran keluhan. Perangkat pengguna menyimpan pilihan bahasa dan lokasi; GPS langsung tidak pernah keluar dari perangkat. Dan Vercel menyimpan beberapa kunci rahasia server."));
+      "Data lives in five places. The main one is the Supabase Postgres database with 41 tables, all protected by row-level security. Supabase Auth holds accounts and sessions. Supabase Storage holds banner images and complaint attachments. The user's own device keeps their language and location preference; live GPS never leaves it. And Vercel holds the few server secrets.",
+      "Data disimpan di lima tempat. Yang utama adalah database Postgres di Supabase dengan 41 tabel, semuanya dilindungi row-level security. Supabase Auth menyimpan akun dan sesi. Supabase Storage menyimpan gambar banner dan lampiran keluhan. Perangkat pengguna menyimpan pilihan bahasa dan lokasi; GPS langsung tidak pernah keluar dari perangkat. Dan Vercel menyimpan beberapa kunci rahasia server."));
   }
 
   // 18. Data model
   {
-    const s = content(pres, 18, T("Data model", "Model data"), T("31 tables in five groups", "31 tabel dalam lima kelompok"));
+    const s = content(pres, 18, T("Data model", "Model data"), T("41 tables in five groups", "41 tabel dalam lima kelompok"));
     const groups = [
       [fa.FaIdCard, T("People", "Pengguna"), ["profiles", "interests", "user_interests", "user_pins", "privacy_settings", "social_links", "friendships", "user_blocks", "username_history", "reserved_usernames"]],
-      [fa.FaTicketAlt, T("Activities", "Aktivitas"), ["events", "categories", "event_participants", "event_comments", "comment_reports"]],
-      [fa.FaComments, T("Messaging", "Pesan"), ["conversations", "conversation_members", "messages", "message_reports"]],
-      [fa.FaLifeRing, T("Support", "Bantuan"), ["complaints", "complaint_messages", "complaint_attachments", "complaint_status_history", "notifications", "notification_prefs"]],
+      [fa.FaTicketAlt, T("Activities", "Aktivitas"), ["events", "categories", "event_participants", "event_contacts", "event_waitlist", "event_checkin_codes", "event_ratings", "event_comments", "comment_reports"]],
+      [fa.FaComments, T("Groups & chat", "Grup & pesan"), ["groups", "group_members", "play_requests", "play_request_interests", "conversations", "conversation_members", "messages", "message_reports"]],
+      [fa.FaLifeRing, T("Support", "Bantuan"), ["complaints", "complaint_messages", "complaint_attachments", "complaint_status_history", "notifications", "notification_prefs", "push_subscriptions", "calendar_tokens"]],
       [fa.FaUserShield, T("Admin & safety", "Admin & keamanan"), ["audit_logs", "security_events", "admin_events", "platform_settings", "saved_views", "export_jobs"]],
     ];
     const cw = 2.2, gap = 0.225, y = 1.95, ch = 4.55;
@@ -502,15 +502,15 @@ function sectionSlide(pres, grad, num, title, sub) {
       text(s, groups[i][2].map((t, j) => ({ text: t, options: { breakLine: j < groups[i][2].length - 1 } })), { x: x + 0.25, y: y + 1.32, w: cw - 0.4, h: ch - 1.45, fontSize: 10.5, color: C.body, valign: "top", paraSpaceAfter: 3 });
     }
     s.addNotes(T(
-      "The 31 tables fall into five groups: people and their settings, activities and participation, private messaging, support and notifications, and admin and safety records such as the audit log. Views like my_profile expose only what each user is allowed to see.",
-      "Ke-31 tabel terbagi dalam lima kelompok: pengguna dan pengaturannya, aktivitas dan peserta, pesan pribadi, bantuan dan notifikasi, serta catatan admin dan keamanan seperti log audit. View seperti my_profile hanya menampilkan data yang boleh dilihat tiap pengguna."));
+      "The 41 tables fall into five groups: people and their settings, activities with participation, waiting lists, check-in and ratings, groups and private messaging, support and notifications, and admin and safety records such as the audit log. Views like my_profile expose only what each user is allowed to see.",
+      "Ke-41 tabel terbagi dalam lima kelompok: pengguna dan pengaturannya, aktivitas beserta peserta, daftar tunggu, check-in, dan penilaian, grup dan pesan pribadi, bantuan dan notifikasi, serta catatan admin dan keamanan seperti log audit. View seperti my_profile hanya menampilkan data yang boleh dilihat tiap pengguna."));
   }
 
   // 19. Security & privacy
   {
     const s = content(pres, 19, T("Security & privacy", "Keamanan & privasi"), T("Rules enforced in the database, not just the screens", "Aturan ditegakkan di database, bukan hanya di layar"));
     const pts = [
-      [fa.FaLock, T("Row-level security everywhere", "Row-level security di semua tabel"), T("All 31 tables have RLS. 150+ SQL functions check roles before acting.", "Ke-31 tabel memakai RLS. 150+ fungsi SQL mengecek peran sebelum bertindak.")],
+      [fa.FaLock, T("Row-level security everywhere", "Row-level security di semua tabel"), T("All 41 tables have RLS. 190+ SQL functions check roles before acting.", "Ke-41 tabel memakai RLS. 190+ fungsi SQL mengecek peran sebelum bertindak.")],
       [fa.FaEyeSlash, T("Location privacy", "Privasi lokasi"), T("Live GPS is used per request and never stored. Profiles keep only an area's centre.", "GPS dipakai per permintaan dan tidak disimpan. Profil hanya menyimpan titik tengah wilayah.")],
       [fa.FaKey, T("PIN sign-in", "Masuk dengan PIN"), T("bcrypt-hashed, 15-minute lockout after failed tries, and throttling per network.", "Di-hash dengan bcrypt, dikunci 15 menit setelah gagal berulang, dan dibatasi per jaringan.")],
       [fa.FaIdCard, T("Private profile data", "Data profil pribadi"), T("Full name, WhatsApp, age and exact area can't be read by other members.", "Nama lengkap, WhatsApp, usia, dan wilayah persis tidak bisa dibaca anggota lain.")],
@@ -525,8 +525,8 @@ function sectionSlide(pres, grad, num, title, sub) {
       text(s, pts[i][2], { x: x + 1.05, y: y + 0.4, w: 4.8, h: 0.8, fontSize: 13, color: C.muted, valign: "top" });
     }
     s.addNotes(T(
-      "Security is enforced in the database. Every table has row-level security, and over 150 SQL functions check the caller's role. GPS is never stored. PINs are hashed with bcrypt and lock after repeated failures. Other members can't read private profile fields. Admin actions are written to an audit log, and members can report, block and file complaints.",
-      "Keamanan ditegakkan di database. Setiap tabel memakai row-level security, dan lebih dari 150 fungsi SQL mengecek peran pemanggilnya. GPS tidak pernah disimpan. PIN di-hash dengan bcrypt dan dikunci setelah gagal berulang kali. Anggota lain tidak bisa membaca data profil pribadi. Tindakan admin dicatat di log audit, dan anggota bisa melapor, memblokir, dan mengirim keluhan."));
+      "Security is enforced in the database. Every table has row-level security, and over 190 SQL functions check the caller's role. GPS is never stored. PINs are hashed with bcrypt and lock after repeated failures. Other members can't read private profile fields. Admin actions are written to an audit log, and members can report, block and file complaints.",
+      "Keamanan ditegakkan di database. Setiap tabel memakai row-level security, dan lebih dari 190 fungsi SQL mengecek peran pemanggilnya. GPS tidak pernah disimpan. PIN di-hash dengan bcrypt dan dikunci setelah gagal berulang kali. Anggota lain tidak bisa membaca data profil pribadi. Tindakan admin dicatat di log audit, dan anggota bisa melapor, memblokir, dan mengirim keluhan."));
   }
 
   // 20. Section: Results
@@ -537,12 +537,12 @@ function sectionSlide(pres, grad, num, title, sub) {
   {
     const s = content(pres, 21, T("End results", "Hasil akhir"), T("What we delivered", "Yang kami hasilkan"));
     const stats = [
-      ["45", T("screens", "layar"), T("Member app, admin area and sign-in flows", "Aplikasi anggota, area admin, dan alur masuk")],
-      ["51", T("UI components", "komponen UI"), T("Shared building blocks", "Blok penyusun yang dipakai bersama")],
-      [T("19.4k", "19,4 rb"), T("lines of TypeScript", "baris TypeScript"), T("Across 140 source files", "Di 140 file sumber")],
-      [T("4.6k", "4,6 rb"), T("lines of SQL", "baris SQL"), T("Schema plus 9 migrations", "Skema plus 9 migrasi")],
-      ["31", T("database tables", "tabel database"), T("All with row-level security", "Semua dengan row-level security")],
-      [T("1,400+", "1.400+"), T("strings × 2 languages", "teks × 2 bahasa"), T("English and Bahasa Indonesia", "Bahasa Inggris dan Indonesia")],
+      ["52", T("screens", "layar"), T("Member app, admin and sign-in", "Aplikasi anggota, admin, dan masuk")],
+      ["74", T("UI components", "komponen UI"), T("Shared building blocks", "Blok penyusun yang dipakai bersama")],
+      [T("25.6k", "25,6 rb"), T("lines of TypeScript", "baris TypeScript"), T("Across 194 source files, 43 unit tests", "Di 194 file sumber, 43 unit test")],
+      [T("5.9k", "5,9 rb"), T("lines of SQL", "baris SQL"), T("Schema plus 26 migrations", "Skema plus 26 migrasi")],
+      ["41", T("database tables", "tabel database"), T("All with row-level security", "Semua dengan row-level security")],
+      [T("1,700+", "1.700+"), T("strings × 2 languages", "teks × 2 bahasa"), T("English and Bahasa Indonesia", "Bahasa Inggris dan Indonesia")],
     ];
     const cw = 3.85, ch = 1.95, gx = 0.175, gy = 0.25;
     for (let i = 0; i < stats.length; i++) {
@@ -553,26 +553,26 @@ function sectionSlide(pres, grad, num, title, sub) {
       text(s, stats[i][2], { x: x + 0.3, y: y + 1.48, w: cw - 0.6, h: 0.35, fontSize: 12.5, color: C.muted });
     }
     s.addNotes(T(
-      "By the numbers: 45 screens, 51 shared components, about 19,400 lines of TypeScript and 4,600 lines of SQL, 31 database tables all protected by row-level security, and more than 1,400 interface strings in both English and Indonesian.",
-      "Dalam angka: 45 layar, 51 komponen, sekitar 19.400 baris TypeScript dan 4.600 baris SQL, 31 tabel database yang semuanya dilindungi row-level security, dan lebih dari 1.400 teks antarmuka dalam bahasa Inggris dan Indonesia."));
+      "By the numbers: 52 screens, 74 shared components, about 25,600 lines of TypeScript with 43 unit tests, 5,900 lines of SQL across 26 migrations, 41 database tables all protected by row-level security, and more than 1,700 interface strings in both English and Indonesian.",
+      "Dalam angka: 52 layar, 74 komponen, sekitar 25.600 baris TypeScript dengan 43 unit test, 5.900 baris SQL dalam 26 migrasi, 41 tabel database yang semuanya dilindungi row-level security, dan lebih dari 1.700 teks antarmuka dalam bahasa Inggris dan Indonesia."));
   }
 
   // 22. Latest improvements
   {
-    const s = content(pres, 22, T("End results · latest", "Hasil akhir · terbaru"), T("Recent improvements, live now", "Pembaruan terbaru, sudah tayang"));
+    const s = content(pres, 22, T("End results · latest", "Hasil akhir · terbaru"), T("Newest features", "Fitur terbaru"));
     const items = [
-      [fa.FaImage, T("Banners always fit", "Banner selalu pas"), T(
-        "Event banners of any shape now show in full over a soft blurred background, instead of being cropped.",
-        "Banner berbentuk apa pun kini tampil utuh di atas latar buram yang lembut, tidak terpotong lagi.")],
-      [fa.FaQrcode, T("Flyer generator", "Pembuat flyer"), T(
-        "Organizers and admins make a branded flyer in 9:16, 1:1 or 16:9, with QR code, and download PNG/JPG or share.",
-        "Penyelenggara dan admin membuat flyer 9:16, 1:1, atau 16:9 dengan kode QR, lalu unduh PNG/JPG atau bagikan.")],
-      [fa.FaTools, T("Event creation fixed", "Pembuatan aktivitas diperbaiki"), T(
-        "A database fix (migration 010) made event codes like COM-JAT-3962 generate reliably again.",
-        "Perbaikan database (migrasi 010) membuat kode aktivitas seperti COM-JAT-3962 kembali terbuat dengan lancar.")],
-      [fa.FaShieldAlt, T("Security upgrade", "Peningkatan keamanan"), T(
-        "Next.js 16.3.6 with its security fixes, and code checks restored with 0 errors.",
-        "Next.js 16.3.6 dengan perbaikan keamanannya, dan pengecekan kode kembali aktif dengan 0 error.")],
+      [fa.FaUserClock, T("Waiting list & alerts", "Daftar tunggu & peringatan"), T(
+        "Full activities keep a waiting list that moves up by itself. Alerts for new activities in your hobbies and groups.",
+        "Aktivitas penuh punya daftar tunggu yang maju sendiri. Peringatan untuk aktivitas baru sesuai hobi dan grupmu.")],
+      [fa.FaQrcode, T("Check-in & ratings", "Check-in & penilaian"), T(
+        "Organizers show a QR code at the venue; people who came rate the activity, which builds the organizer's score.",
+        "Penyelenggara menampilkan kode QR di lokasi; yang datang menilai aktivitasnya, membentuk skor penyelenggara.")],
+      [fa.FaBell, T("Reminders & push", "Pengingat & push"), T(
+        "A reminder the day before and a \"How was it?\" prompt after, by email and phone notification.",
+        "Pengingat sehari sebelumnya dan pertanyaan \"Bagaimana acaranya?\" sesudahnya, lewat email dan notifikasi ponsel.")],
+      [fa.FaTools, T("Organizer tools", "Alat penyelenggara"), T(
+        "Duplicate, edit a weekly series at once, export to CSV, a big-screen QR, friends going and a calendar feed.",
+        "Duplikat, ubah seri mingguan sekaligus, ekspor CSV, QR layar besar, teman yang ikut, dan feed kalender.")],
     ];
     for (let i = 0; i < items.length; i++) {
       const y = 1.95 + i * 1.15;
@@ -586,8 +586,8 @@ function sectionSlide(pres, grad, num, title, sub) {
     text(s, T("Try it now", "Coba sekarang"), { x: 8.75, y: 5.3, w: 3.85, h: 0.4, fontSize: 17, bold: true, color: C.ink, align: "center" });
     text(s, "komunitasa.vercel.app", { x: 8.75, y: 5.7, w: 3.85, h: 0.35, fontSize: 13, color: C.deep, align: "center" });
     s.addNotes(T(
-      "The most recent changes: banners of any shape now display in full, organizers and admins can generate flyers in three sizes, event creation was fixed with a small database migration, and the framework was upgraded for security.",
-      "Perubahan terbaru: banner berbentuk apa pun kini tampil utuh, penyelenggara dan admin bisa membuat flyer dalam tiga ukuran, pembuatan aktivitas diperbaiki lewat migrasi database kecil, dan framework ditingkatkan demi keamanan."));
+      "The newest features: full activities keep a waiting list that moves up automatically, and people get alerts for new activities that match their hobbies. Organizers can check people in with a QR code, and attendees rate the activity afterwards. Reminders and rating prompts go out by email and phone push. And organizers get time-savers: duplicate, edit a whole weekly series, CSV export and a big-screen QR so a room can join live. Scan this code to try it now.",
+      "Fitur terbaru: aktivitas yang penuh punya daftar tunggu yang maju otomatis, dan pengguna mendapat peringatan untuk aktivitas baru yang sesuai hobinya. Penyelenggara bisa mencatat kehadiran dengan kode QR, dan peserta menilai aktivitasnya setelah selesai. Pengingat dan permintaan penilaian dikirim lewat email dan push di ponsel. Penyelenggara juga mendapat alat praktis: duplikat, ubah seluruh seri mingguan, ekspor CSV, dan QR layar besar agar seisi ruangan bisa ikut langsung. Pindai kode ini untuk mencoba sekarang."));
   }
 
   // 23. Known gaps & next steps
@@ -595,11 +595,11 @@ function sectionSlide(pres, grad, num, title, sub) {
     const s = content(pres, 23, T("What's next", "Langkah berikutnya"), T("Known gaps and next steps", "Kekurangan yang diketahui dan rencana ke depan"));
     const gaps = [
       [T("Stronger second factor", "Faktor kedua lebih kuat"), T("Move the email-code step into a server-side login endpoint, or use Supabase MFA.", "Pindahkan langkah kode email ke endpoint login di server, atau pakai MFA Supabase.")],
-      [T("Scheduled reports", "Laporan terjadwal"), T("Weekly and monthly admin emails need a scheduler and a server key.", "Email admin mingguan dan bulanan butuh penjadwal dan kunci server.")],
-      [T("Contact privacy", "Privasi kontak"), T("Hide the organizer's WhatsApp at the database level, not only in the UI.", "Sembunyikan WhatsApp penyelenggara di level database, bukan hanya di tampilan.")],
+      [T("Scheduled reports", "Laporan terjadwal"), T("The scheduler now runs reminders; weekly admin emails can build on it.", "Penjadwal sudah menjalankan pengingat; email admin mingguan bisa dibangun di atasnya.")],
+      [T("Payments", "Pembayaran"), T("Paid activities are settled outside the app today; in-app payment comes later.", "Aktivitas berbayar saat ini dibayar di luar aplikasi; pembayaran di aplikasi menyusul.")],
       [T("Full account deletion", "Hapus akun sepenuhnya"), T("Anonymizing works today; removing the login needs a server-side step.", "Anonimisasi sudah jalan; menghapus login butuh langkah di sisi server.")],
       [T("Big exports", "Ekspor besar"), T("Exports run in the browser and cap at 10,000 rows per dataset.", "Ekspor berjalan di browser dan dibatasi 10.000 baris per dataset.")],
-      [T("Code tidy-up", "Rapikan kode"), T("Clear the 24 remaining lint warnings over time.", "Bereskan 24 peringatan lint yang tersisa secara bertahap.")],
+      [T("Group chat & photos", "Chat grup & foto"), T("A chat per activity and shared photo albums after it.", "Chat per aktivitas dan album foto bersama setelahnya.")],
     ];
     for (let i = 0; i < gaps.length; i++) {
       const col = i % 2, r = Math.floor(i / 2);
@@ -610,8 +610,8 @@ function sectionSlide(pres, grad, num, title, sub) {
       text(s, gaps[i][1], { x: x + 0.9, y: y + 0.58, w: 4.7, h: 0.6, fontSize: 12.5, color: C.muted, valign: "top" });
     }
     s.addNotes(T(
-      "We're open about what's left: a stronger second sign-in factor, scheduled reports, hiding organizer phone numbers at the database level, full account deletion, larger exports, and cleaning up the remaining lint warnings.",
-      "Kami terbuka soal yang masih kurang: faktor masuk kedua yang lebih kuat, laporan terjadwal, menyembunyikan nomor penyelenggara di level database, penghapusan akun sepenuhnya, ekspor yang lebih besar, dan merapikan peringatan lint yang tersisa."));
+      "We're open about what's left: a stronger second sign-in factor, scheduled admin reports, in-app payments, full account deletion, larger exports, and a group chat and photo albums per activity.",
+      "Kami terbuka soal yang masih kurang: faktor masuk kedua yang lebih kuat, laporan admin terjadwal, pembayaran di aplikasi, penghapusan akun sepenuhnya, ekspor yang lebih besar, serta chat grup dan album foto per aktivitas."));
   }
 
   // 24. Closing
