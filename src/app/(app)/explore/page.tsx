@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Search, SlidersHorizontal, Ticket } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { ActivityCard } from "@/components/ActivityCard";
+import { useFriendsGoing } from "@/lib/friendsGoing";
 import { EventCodeJump } from "@/components/EventCodeJump";
 import { LocationBar } from "@/components/NearbyDashboard";
 import { ManualLocationDialog } from "@/components/ManualLocationDialog";
@@ -148,6 +149,8 @@ export default function ExplorePage() {
     };
   }, [supabase, debounced, activeCategory, timeFilter, priceFilter, beginnerOnly, page]);
 
+  const friends = useFriendsGoing(useMemo(() => events.map((e) => e.id), [events]));
+
   const visible = useMemo(() => {
     let list = events
       .filter((e) => effectiveStatus(e) !== "completed")
@@ -286,7 +289,7 @@ export default function ExplorePage() {
         <>
           <div className="activity-grid">
             {visible.map((e) => (
-              <ActivityCard key={e.id} event={e} />
+              <ActivityCard key={e.id} event={e} friends={friends[e.id]} />
             ))}
           </div>
           {hasMore && (

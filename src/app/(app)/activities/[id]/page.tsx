@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { CalendarPlus, Pencil } from "lucide-react";
+import { CalendarPlus, Copy, Pencil, Presentation } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getServerT } from "@/lib/i18n/server";
 import { getEventForViewer } from "@/lib/eventAccess";
@@ -133,6 +133,12 @@ export default async function EventDetailsPage({
     count: number;
     people: { username: string; display_name: string; avatar_url: string | null }[];
   } | null;
+  // Friends of yours who are going (members only).
+  const friendsGoing = guest
+    ? null
+    : ((await supabase.rpc("friends_going", { p_events: [event.id] })).data as Record<string, { count: number; names: string[] }> | null)?.[
+        event.id
+      ] ?? null;
   // Waiting list: your place (participants-to-be) or its length (organizer).
   const waitlist = guest
     ? null
@@ -238,6 +244,15 @@ export default async function EventDetailsPage({
               />
             )}
           </div>
+
+          {friendsGoing && friendsGoing.count > 0 && (
+            <p className="text-sm font-semibold text-orange-dark">
+              {t("friends.onPage", {
+                names:
+                  friendsGoing.names.join(", ") + (friendsGoing.count > friendsGoing.names.length ? ` +${friendsGoing.count - friendsGoing.names.length}` : ""),
+              })}
+            </p>
+          )}
 
           {attendees && attendees.count > 0 && (
             <AttendeeFaces
@@ -359,8 +374,25 @@ export default async function EventDetailsPage({
             </div>
           )}
 
-          {(canEdit || canMakeFlyer) && (
+          {(canEdit || canMakeFlyer || isOwner) && (
             <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
+              {isOwner && status !== "cancelled" && status !== "completed" && (
+                <Link
+                  href={`/present/${event.id}`}
+                  target="_blank"
+                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-orange-dark"
+                >
+                  <Presentation size={15} /> {t("present.open")}
+                </Link>
+              )}
+              {isOwner && (
+                <Link
+                  href={`/create?from=${event.id}`}
+                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-orange-dark"
+                >
+                  <Copy size={15} /> {t("event.duplicate")}
+                </Link>
+              )}
               {canEdit && (
                 <Link
                   href={`/activities/${event.id}/edit`}

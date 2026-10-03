@@ -9,14 +9,18 @@ import { formatDate, formatDistance, formatFee, formatTimeRange, toFee } from "@
 import { effectiveStatus, relativeDay, spotsLeftToShow } from "@/lib/events";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import type { EventRecord } from "@/types";
+import type { FriendsGoing } from "@/lib/friendsGoing";
 
 export function ActivityCard({
   event,
   highlight,
+  friends,
 }: {
   event: EventRecord;
   /** Shown for recommendations that match the user's primary interest. */
   highlight?: string;
+  /** Friends going (useFriendsGoing): social proof under the labels. */
+  friends?: FriendsGoing;
 }) {
   const { lang, t, td } = useLanguage();
   const status = effectiveStatus(event);
@@ -57,6 +61,12 @@ export function ActivityCard({
           </p>
         )}
         <ActivityTags event={event} />
+        {friends && friends.count > 0 && (
+          <p className="flex items-center gap-1.5 text-sm font-medium text-orange-dark">
+            <Users size={14} aria-hidden />
+            {friends.count === 1 ? t("friends.one", { a: friends.names[0] }) : t("friends.many", { n: friends.count })}
+          </p>
+        )}
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-ink/70">
           <span className={day ? "font-semibold text-ink" : undefined}>
             {day ? t(`card.${day}`) : formatDate(event.event_date, lang)}

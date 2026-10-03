@@ -34,23 +34,39 @@ export function googleCalendarUrl(e: CalendarEvent): string {
 /** iCalendar escaping: backslash, comma, semicolon, newlines. */
 const ics = (s: string) => s.replace(/\\/g, "\\\\").replace(/[,;]/g, (c) => `\\${c}`).replace(/\r?\n/g, "\\n");
 
-/** A one-event .ics file (Apple Calendar, Outlook, most phones) as a data: URL. */
-export function icsDataUrl(e: CalendarEvent): string {
-  const body = [
-    "BEGIN:VCALENDAR",
-    "VERSION:2.0",
-    "PRODID:-//Komunitas//EN",
+/** The VEVENT lines for one activity. */
+function veventLines(e: CalendarEvent & { cancelled?: boolean }, stamp: string): string[] {
+  return [
     "BEGIN:VEVENT",
     `UID:${e.id}@komunitas`,
-    `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "")}`,
+    `DTSTAMP:${stamp}`,
     `DTSTART:${jakartaToUtcStamp(e.date, e.start)}`,
     `DTEND:${jakartaToUtcStamp(e.date, e.end)}`,
     `SUMMARY:${ics(e.title)}`,
     `LOCATION:${ics(e.location)}`,
     `DESCRIPTION:${ics([e.description, e.url].filter(Boolean).join("\n\n"))}`,
     `URL:${e.url}`,
+    ...(e.cancelled ? ["STATUS:CANCELLED"] : []),
     "END:VEVENT",
+  ];
+}
+
+/** A whole calendar (one or many activities) as .ics text. */
+export function icsCalendar(events: (CalendarEvent & { cancelled?: boolean })[], name = "Komunitas"): string {
+  const stamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  return [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//Komunitas//EN",
+    "CALSCALE:GREGORIAN",
+    `X-WR-CALNAME:${ics(name)}`,
+    "X-WR-TIMEZONE:Asia/Jakarta",
+    ...events.flatMap((e) => veventLines(e, stamp)),
     "END:VCALENDAR",
   ].join("\r\n");
-  return `data:text/calendar;charset=utf-8,${encodeURIComponent(body)}`;
+}
+
+/** A one-event .ics file (Apple Calendar, Outlook, most phones) as a data: URL. */
+export function icsDataUrl(e: CalendarEvent): string {
+  return `data:text/calendar;charset=utf-8,${encodeURIComponent(icsCalendar([e]))}`;
 }

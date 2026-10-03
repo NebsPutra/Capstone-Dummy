@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { googleCalendarUrl, icsDataUrl, jakartaToUtcStamp } from "./calendar";
+import { googleCalendarUrl, icsCalendar, icsDataUrl, jakartaToUtcStamp } from "./calendar";
 
 const ev = {
   id: "abc",
@@ -29,5 +29,15 @@ describe("calendar links", () => {
     expect(body).toContain("SUMMARY:Run\\, then coffee\\; together");
     expect(body).toContain("DESCRIPTION:Line one\\nLine two");
     expect(body).toContain("DTSTART:20261006T120000Z");
+  });
+});
+
+describe("icsCalendar", () => {
+  it("puts several activities in one calendar and marks cancelled ones", () => {
+    const body = icsCalendar([ev, { ...ev, id: "def", cancelled: true }], "My Komunitas");
+    expect(body.match(/BEGIN:VEVENT/g)).toHaveLength(2);
+    expect(body).toContain("X-WR-CALNAME:My Komunitas");
+    expect(body).toContain("UID:def@komunitas\r\n");
+    expect(body.split("STATUS:CANCELLED")).toHaveLength(2);
   });
 });

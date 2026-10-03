@@ -13,6 +13,7 @@ import { useLanguage } from "@/lib/i18n/LanguageContext";
 import type { TranslationKey } from "@/lib/i18n/translations";
 import { EVENT_LIST_SELECT, type EventRecord } from "@/types";
 import { ActivityCard } from "./ActivityCard";
+import { useFriendsGoing } from "@/lib/friendsGoing";
 import { EventCodeJump } from "./EventCodeJump";
 import { ManualLocationDialog } from "./ManualLocationDialog";
 import { Alert, PrimaryButton } from "./ui";
@@ -68,6 +69,8 @@ export function NearbyDashboard({
   useEffect(() => {
     load();
   }, [load]);
+
+  const friends = useFriendsGoing(useMemo(() => (events ?? []).map((e) => e.id), [events]));
 
   const sections = useMemo(() => {
     if (!events) return null;
@@ -154,6 +157,7 @@ export function NearbyDashboard({
                   <ActivityCard
                     key={e.id}
                     event={e}
+                    friends={friends[e.id]}
                     highlight={primary ? t("dashboard.primaryMatch") : undefined}
                   />
                 ))}
@@ -162,33 +166,33 @@ export function NearbyDashboard({
             {sections.ongoing.length > 0 && (
               <Section title={t("dashboard.ongoing")}>
                 {sections.ongoing.map((e) => (
-                  <ActivityCard key={e.id} event={e} />
+                  <ActivityCard key={e.id} event={e} friends={friends[e.id]} />
                 ))}
               </Section>
             )}
             <Section title={t("dashboard.nearby")}>
               {sections.nearby.map((e) => (
-                <ActivityCard key={e.id} event={e} />
+                <ActivityCard key={e.id} event={e} friends={friends[e.id]} />
               ))}
             </Section>
             {sections.thisWeekend.length > 0 && (
               <Section title={t("dashboard.thisWeekend")}>
                 {sections.thisWeekend.map((e) => (
-                  <ActivityCard key={e.id} event={e} />
+                  <ActivityCard key={e.id} event={e} friends={friends[e.id]} />
                 ))}
               </Section>
             )}
             {sections.beginner.length > 0 && (
               <Section title={t("level.beginner")}>
                 {sections.beginner.map((e) => (
-                  <ActivityCard key={e.id} event={e} />
+                  <ActivityCard key={e.id} event={e} friends={friends[e.id]} />
                 ))}
               </Section>
             )}
             {sections.upcoming.length > 0 && (
               <Section title={t("dashboard.upcoming")}>
                 {sections.upcoming.map((e) => (
-                  <ActivityCard key={e.id} event={e} />
+                  <ActivityCard key={e.id} event={e} friends={friends[e.id]} />
                 ))}
               </Section>
             )}

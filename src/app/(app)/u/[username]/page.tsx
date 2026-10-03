@@ -60,7 +60,7 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
       : null;
   const canMessage = Boolean(messaging && (messaging.conversation_id || messaging.reason === null));
   // "How was it?" ratings of activities this person organized (migration 024).
-  type Review = { rating: number; comment: string; created_at: string; activity: string };
+  type Review = { rating: number; comment: string; created_at: string; activity: string; event_id: string };
   const sb = await createClient();
   const [{ data: ratingData }, { data: reviewData }] =
     p.relationship === "blocked"
@@ -236,7 +236,13 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
                         <span className="text-ink/20">{"★".repeat(5 - r.rating)}</span>
                       </p>
                       <p className="mt-0.5 text-ink/80">{r.comment}</p>
-                      <p className="mt-0.5 text-xs text-ink/60">{r.activity}</p>
+                      <p className="mt-0.5 flex flex-wrap gap-x-3 text-xs text-ink/60">
+                        <span>{r.activity}</span>
+                        {/* Rude or false review: goes to the admins via Help (category: content). */}
+                        <Link href={`/help?event=${r.event_id}&category=content`} className="font-medium hover:text-danger hover:underline">
+                          {t("rating.report")}
+                        </Link>
+                      </p>
                     </li>
                   ))}
                 </ul>

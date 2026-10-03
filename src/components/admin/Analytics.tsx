@@ -179,7 +179,7 @@ export function AnalyticsPage() {
   const { t, td } = useLanguage();
   const colors = useChartColors();
   const ref = useRef<HTMLDivElement>(null);
-  const [tab, setTab] = useState<"users" | "events" | "hobbies" | "social">("users");
+  const [tab, setTab] = useState<"users" | "events" | "hobbies" | "social" | "participation">("users");
   const [range, setRange] = useState<DateRange>(rangeFor("90d"));
   const [category, setCategory] = useState("");
   const [status, setStatus] = useState("");
@@ -216,7 +216,7 @@ export function AnalyticsPage() {
         }
       />
       <div className="flex flex-wrap items-center gap-2">
-        {(["users", "events", "hobbies", "social"] as const).map((k) => (
+        {(["users", "events", "hobbies", "social", "participation"] as const).map((k) => (
           <button
             key={k}
             onClick={() => setTab(k)}
@@ -247,6 +247,7 @@ export function AnalyticsPage() {
       {tab === "hobbies" && <HobbyCharts d={hobbies.data} loading={hobbies.loading} />}
       {tab === "social" && <SocialCharts d={social.data} loading={social.loading} />}
       {tab === "social" && <EngagementCharts from={range.from} to={range.to} />}
+      {tab === "participation" && <ParticipationCharts from={range.from} to={range.to} />}
     </div>
   );
 }
@@ -321,6 +322,47 @@ function EngagementCharts({ from, to }: { from: string; to: string }) {
           <Bars data={(c.data?.top_events ?? []).map((x) => ({ label: x.title, v: x.v }))} bars={[{ key: "v", name: t("aeng.comments") }]} horizontal />
         </ChartCard>
       </div>
+    </div>
+  );
+}
+
+interface ParticipationStats {
+  finished_activities: number;
+  activities_with_checkin: number;
+  show_up_rate: number | null;
+  ratings: number;
+  average_rating: number | null;
+  waiting_now: number;
+  notifications: Record<string, number>;
+  push_devices: number;
+  groups: number;
+  open_play_requests: number;
+}
+
+/** After joining: attendance, ratings, waiting lists, reminders and alerts (migration 027). */
+function ParticipationCharts({ from, to }: { from: string; to: string }) {
+  const { t } = useLanguage();
+  const p = useRpc<ParticipationStats>("admin_engagement_stats", { p_from: from, p_to: to }, [from, to]);
+  const d = p.data;
+  const sent = (["event_reminder", "rate_activity", "waitlist_promoted", "event_changed", "organizer_message", "group_new_event", "interest_match"] as const).map(
+    (k) => ({ label: t(`apart.notif.${k}`), v: d?.notifications?.[k] ?? 0 })
+  );
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <KpiCard label={t("apart.finished")} value={d?.finished_activities} />
+        <KpiCard label={t("apart.withCheckin")} value={d?.activities_with_checkin} />
+        <KpiCard label={t("apart.showUp")} value={d ? (d.show_up_rate == null ? "—" : `${d.show_up_rate}%`) : undefined} />
+        <KpiCard label={t("apart.ratings")} value={d ? (d.ratings ? `${d.ratings} · ★ ${d.average_rating}` : "0") : undefined} />
+        <KpiCard label={t("apart.waiting")} value={d?.waiting_now} />
+        <KpiCard label={t("apart.push")} value={d?.push_devices} />
+        <KpiCard label={t("apart.groups")} value={d?.groups} />
+        <KpiCard label={t("apart.playRequests")} value={d?.open_play_requests} />
+      </div>
+      <ChartCard title={t("apart.sent")} loading={p.loading} total={sum(sent.map((x) => ({ v: x.v })))} minTotal={1}>
+        <Bars data={sent} bars={[{ key: "v", name: t("apart.sentShort") }]} horizontal />
+      </ChartCard>
+      <p className="text-xs text-ink/65">{t("apart.note")}</p>
     </div>
   );
 }

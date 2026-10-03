@@ -56,6 +56,7 @@ export function ActivityForm({
   contactWhatsapp,
   fromRequest,
   groupId: initialGroupId,
+  template,
 }: {
   event?: EventRecord;
   /** The organizer's WhatsApp, stored in event_contacts (migration 016), when editing. */
@@ -64,6 +65,8 @@ export function ActivityForm({
   fromRequest?: { id: string; title: string; categoryId: string };
   /** Creating from a group page: preselect that group. */
   groupId?: string;
+  /** "Duplicate": start a NEW activity from this one (everything except the date). */
+  template?: EventRecord;
 }) {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
@@ -71,41 +74,45 @@ export function ActivityForm({
   const { t, td, lang } = useLanguage();
   const busy = useRef(false);
   const isEdit = Boolean(event);
+  // Field defaults: the activity being edited, or the one being duplicated.
+  const src = event ?? template;
 
   const [categories, setCategories] = useState<Category[]>([]);
 
-  const [title, setTitle] = useState(event?.title ?? fromRequest?.title ?? "");
-  const [categoryId, setCategoryId] = useState(event?.category_id ?? fromRequest?.categoryId ?? "");
-  const [description, setDescription] = useState(event?.description ?? "");
-  const [date, setDate] = useState(event?.event_date ?? "");
-  const [startTime, setStartTime] = useState(event?.start_time.slice(0, 5) ?? "");
-  const [endTime, setEndTime] = useState(event?.end_time.slice(0, 5) ?? "");
-  const [maxParticipants, setMaxParticipants] = useState(String(event?.max_participants ?? 10));
-  const [fee, setFee] = useState<number>(event ? toFee(event.fee) : 0);
-  const [bannerUrl, setBannerUrl] = useState<string | null>(event?.banner_url ?? null);
+  const [title, setTitle] = useState(src?.title ?? fromRequest?.title ?? "");
+  const [categoryId, setCategoryId] = useState(src?.category_id ?? fromRequest?.categoryId ?? "");
+  const [description, setDescription] = useState(src?.description ?? "");
+  const [date, setDate] = useState(event?.event_date ?? ""); // a duplicate needs a new date
+  const [startTime, setStartTime] = useState(src?.start_time.slice(0, 5) ?? "");
+  const [endTime, setEndTime] = useState(src?.end_time.slice(0, 5) ?? "");
+  const [maxParticipants, setMaxParticipants] = useState(String(src?.max_participants ?? 10));
+  const [fee, setFee] = useState<number>(src ? toFee(src.fee) : 0);
+  const [bannerUrl, setBannerUrl] = useState<string | null>(src?.banner_url ?? null);
 
-  const [locationName, setLocationName] = useState(event?.location_name ?? "");
-  const [address, setAddress] = useState(event?.address ?? "");
+  const [locationName, setLocationName] = useState(src?.location_name ?? "");
+  const [address, setAddress] = useState(src?.address ?? "");
   // null = not pinned yet. The map must be pinned deliberately; previously an
   // un-pinned event was silently saved at the Jakarta fallback coordinates.
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
-    event ? { lat: event.latitude, lng: event.longitude } : null
+    src ? { lat: src.latitude, lng: src.longitude } : null
   );
-  const [mapCenter, setMapCenter] = useState(event ? { lat: event.latitude, lng: event.longitude } : JAKARTA);
+  const [mapCenter, setMapCenter] = useState(src ? { lat: src.latitude, lng: src.longitude } : JAKARTA);
   const [locating, setLocating] = useState(false);
 
-  const [picName, setPicName] = useState(event?.pic_name ?? "");
+  const [picName, setPicName] = useState(src?.pic_name ?? "");
   const [picWhatsapp, setPicWhatsapp] = useState(contactWhatsapp ?? "");
-  const [picInstructions, setPicInstructions] = useState(event?.pic_contact_instructions ?? "");
-  const [whatsappPublic, setWhatsappPublic] = useState(event?.whatsapp_public ?? false);
-  const [privacy, setPrivacy] = useState<EventPrivacy>(event?.privacy ?? "public");
-  const [joinPermission, setJoinPermission] = useState<JoinPermission>(event?.join_permission ?? "open");
-  const [skillLevel, setSkillLevel] = useState<SkillLevel>(event?.skill_level ?? "all");
+  const [picInstructions, setPicInstructions] = useState(src?.pic_contact_instructions ?? "");
+  const [whatsappPublic, setWhatsappPublic] = useState(src?.whatsapp_public ?? false);
+  const [privacy, setPrivacy] = useState<EventPrivacy>(src?.privacy ?? "public");
+  const [joinPermission, setJoinPermission] = useState<JoinPermission>(src?.join_permission ?? "open");
+  const [skillLevel, setSkillLevel] = useState<SkillLevel>(src?.skill_level ?? "all");
   // New activities only: 1 = just once, otherwise weekly for that many weeks.
   const [repeatWeeks, setRepeatWeeks] = useState(1);
+  // Editing one date of a weekly series: also apply to its upcoming dates?
+  const [applyToSeries, setApplyToSeries] = useState(false);
   // Groups the user belongs to (migration 019); an activity can belong to one.
   const [myGroups, setMyGroups] = useState<{ id: string; name: string }[]>([]);
-  const [groupId, setGroupId] = useState(event?.group_id ?? initialGroupId ?? "");
+  const [groupId, setGroupId] = useState(src?.group_id ?? initialGroupId ?? "");
 
   const [errors, setErrors] = useState<Partial<Record<Field, string>>>({});
   const [formError, setFormError] = useState<TranslationKey | null>(null);
@@ -263,6 +270,21 @@ export function ActivityForm({
         if (error) return setFormError(friendlyErrorKey(error, "update event"));
         const { error: contactError } = await saveContact(event.id);
         if (contactError) return setFormError(friendlyErrorKey(contactError, "save contact"));
+        if (applyToSeries && event.series_id) {
+          // Same changes for the series' other upcoming dates; each keeps its own date.
+          const { event_date: _ownDate, ...shared } = payload;
+          void _ownDate;
+          const { data: others, error: seriesError } = await supabase
+            .from("events")
+            .update(shared)
+            .eq("series_id", event.series_id)
+            .neq("id", event.id)
+            .neq("status", "cancelled")
+            .gte("event_date", jakartaToday())
+            .select("id");
+          if (seriesError) return setFormError(friendlyErrorKey(seriesError, "update series"));
+          await Promise.all((others ?? []).map((o) => saveContact(o.id)));
+        }
         toast(t("edit.success"));
         router.push(`/activities/${event.id}`);
         router.refresh();
@@ -382,6 +404,17 @@ export function ActivityForm({
             />
           </FieldShell>
         </div>
+        {isEdit && event?.series_id && (
+          <label className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-ink/10 p-3 text-sm">
+            <input
+              type="checkbox"
+              checked={applyToSeries}
+              onChange={(e) => setApplyToSeries(e.target.checked)}
+              className="mt-0.5 h-4 w-4 accent-orange"
+            />
+            <span>{t("edit.applyToSeries")}</span>
+          </label>
+        )}
         {!isEdit && (
           <FieldShell id="repeat" label={t("create.repeat")}>
             <select

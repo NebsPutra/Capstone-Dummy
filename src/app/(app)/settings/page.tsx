@@ -13,6 +13,7 @@ import { NotificationPrefs } from "@/components/social/ProfileSettings";
 import Link from "next/link";
 import { LifeBuoy } from "lucide-react";
 import { disablePush } from "@/lib/pushClient";
+import { CalendarFeed } from "@/components/CalendarFeed";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -58,6 +59,8 @@ export default function SettingsPage() {
       </div>
 
       <NotificationPrefs />
+
+      <CalendarFeed />
 
       <Link href="/help" className="card flex items-center gap-3 p-5 transition hover:-translate-y-0.5 hover:shadow-lift">
         <LifeBuoy size={20} className="shrink-0 text-orange-dark" />

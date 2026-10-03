@@ -10,6 +10,8 @@ import { useReducedMotion } from "@/lib/reducedMotion";
  * (WCAG 2.2.2) and stays on its poster for prefers-reduced-motion users until
  * they press play. public/promo.mp4 is a silent 720p re-encode (~4 MB) of the
  * 1080p promo; replace both files together if the promo changes.
+ * Phones and data-saver mode don't autoplay either: the 4 MB only downloads
+ * when someone taps play.
  */
 export function PromoVideo() {
   const { t } = useLanguage();
@@ -17,20 +19,26 @@ export function PromoVideo() {
   const reducedMotion = useReducedMotion();
   const [playing, setPlaying] = useState(false); // mirrors the element via onPlay/onPause
   const [userPaused, setUserPaused] = useState(false);
+  // null until known (client only): phone-sized screen or data saver.
+  const [light, setLight] = useState<boolean | null>(null);
+  useEffect(() => {
+    const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
+    setLight(window.matchMedia("(max-width: 767px)").matches || Boolean(saveData));
+  }, []);
 
   // Autoplay unless the user paused or asked for less motion. Browsers refuse
   // autoplay in background tabs (and e.g. iOS Low Power Mode), so retry when
   // the tab becomes visible instead of giving up.
   useEffect(() => {
     const video = ref.current;
-    if (!video || reducedMotion || userPaused) return;
+    if (!video || light !== false || reducedMotion || userPaused) return;
     const tryPlay = () => {
       if (document.visibilityState === "visible") video.play().catch(() => {});
     };
     tryPlay();
     document.addEventListener("visibilitychange", tryPlay);
     return () => document.removeEventListener("visibilitychange", tryPlay);
-  }, [reducedMotion, userPaused]);
+  }, [light, reducedMotion, userPaused]);
 
   const toggle = () => {
     const video = ref.current;
@@ -49,7 +57,7 @@ export function PromoVideo() {
         muted
         loop
         playsInline
-        preload="metadata"
+        preload="none"
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
         aria-label={t("landing.videoLabel")}

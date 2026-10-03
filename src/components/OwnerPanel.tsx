@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
+import { Download } from "lucide-react";
+import { toCsv } from "@/lib/csv";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { friendlyErrorKey } from "@/lib/errors";
@@ -108,6 +110,23 @@ export function OwnerPanel({
   }
 
   const checkedIn = approved.filter((p) => p.checked_in_at).length;
+
+  function exportCsv() {
+    const csv = toCsv([
+      [t("csv.name"), t("csv.username"), t("csv.status"), t("csv.joined"), t("csv.checkedIn")],
+      ...participants.map((p) => [
+        p.participant?.nickname ?? "",
+        p.participant?.username ? `@${p.participant.username}` : "",
+        t(p.status === "approved" ? "csv.going" : "csv.requested"),
+        new Date(p.joined_at).toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }),
+        p.checked_in_at ? new Date(p.checked_in_at).toLocaleString("en-GB", { timeZone: "Asia/Jakarta" }) : "",
+      ]),
+    ]);
+    const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+    const a = Object.assign(document.createElement("a"), { href: url, download: `participants-${eventId.slice(0, 8)}.csv` });
+    a.click();
+    URL.revokeObjectURL(url);
+  }
   const qrUrl = qrCode && typeof window !== "undefined" ? `${window.location.origin}/activities/${eventId}/checkin?c=${qrCode}` : "";
 
   function cancelEvent() {
@@ -228,6 +247,16 @@ export function OwnerPanel({
             {sending ? t("owner.sending") : t("owner.send")}
           </button>
         </section>
+      )}
+
+      {participants.length > 0 && (
+        <button
+          type="button"
+          onClick={exportCsv}
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-orange-dark hover:underline"
+        >
+          <Download size={15} aria-hidden /> {t("owner.exportCsv")}
+        </button>
       )}
 
       {error && <Alert>{t(error)}</Alert>}

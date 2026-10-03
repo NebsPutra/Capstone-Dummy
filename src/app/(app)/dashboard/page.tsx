@@ -3,6 +3,8 @@ import { getServerT } from "@/lib/i18n/server";
 import { DashboardGreeting } from "@/components/DashboardGreeting";
 import { NearbyDashboard } from "@/components/NearbyDashboard";
 import { HeroBanner } from "@/components/HeroBanner";
+import { WelcomeCard } from "@/components/WelcomeCard";
+import { InstallPrompt } from "@/components/InstallPrompt";
 import { AgeReminder } from "@/components/AgeReminder";
 import type { ManualArea } from "@/lib/location";
 
@@ -44,6 +46,8 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-6">
       <HeroBanner greeting={<DashboardGreeting nickname={profile?.nickname} />} primaryInterestKey={primaryKey} />
+      <WelcomeCard />
+      <InstallPrompt />
       <NearbyDashboard interestKeys={interestKeys} primaryInterestKey={primaryKey} profileArea={profileArea} />
       {profile && profile.age == null && <AgeReminder userId={user!.id} />}
     </div>
