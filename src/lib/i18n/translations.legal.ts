@@ -16,9 +16,9 @@ export const enLegal = {
   "legal.questions": "Questions? Email",
 
   // Cookie notice
-  "cookie.text": "Komunitas only uses essential cookies and browser storage to keep you signed in and remember your language, theme and area. No tracking or ads.",
-  "cookie.more": "Cookie policy",
-  "cookie.ok": "Got it",
+  "cookie.text": "Essential cookies only. No tracking or ads.",
+  "cookie.more": "Details",
+  "cookie.ok": "OK",
 
   // Sign-up consent
   "consent.agreePrefix": "I agree to the",
@@ -80,9 +80,9 @@ export const idLegal: Record<keyof typeof enLegal, string> = {
   "legal.back": "Kembali ke Komunitas",
   "legal.questions": "Ada pertanyaan? Kirim email ke",
 
-  "cookie.text": "Komunitas hanya memakai cookie dan penyimpanan browser yang penting agar kamu tetap masuk dan untuk mengingat bahasa, tema, dan wilayahmu. Tanpa pelacak atau iklan.",
-  "cookie.more": "Kebijakan cookie",
-  "cookie.ok": "Mengerti",
+  "cookie.text": "Hanya cookie penting. Tanpa pelacak atau iklan.",
+  "cookie.more": "Detail",
+  "cookie.ok": "OK",
 
   "consent.agreePrefix": "Saya menyetujui",
   "consent.terms": "Syarat Layanan",

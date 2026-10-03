@@ -17,7 +17,7 @@ export default function SettingsPage() {
   const router = useRouter();
   const supabase = createClient();
   const { t } = useLanguage();
-  const { location, setManual, switchToGps } = useUserLocation({ autoPrompt: false });
+  const { location, setManual, switchToGps } = useUserLocation();
   const [email, setEmail] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);

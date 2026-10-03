@@ -290,7 +290,8 @@ export function ActivityForm({
         if (fromRequest) {
           await supabase.rpc("play_request_close", { p_request: fromRequest.id, p_event: data[0].id });
         }
-        router.push(`/activities/${data[0].id}`);
+        // ?created=1: the activity page opens with a "share it now" box.
+        router.push(`/activities/${data[0].id}?created=1`);
       }
     } finally {
       busy.current = false;

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Search } from "lucide-react";
+import { Search, SlidersHorizontal, Ticket } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { ActivityCard } from "@/components/ActivityCard";
 import { EventCodeJump } from "@/components/EventCodeJump";
@@ -33,7 +33,7 @@ type PriceFilter = (typeof PRICE_FILTERS)[number];
 export default function ExplorePage() {
   const supabase = useMemo(() => createClient(), []);
   const { t, td } = useLanguage();
-  const { location, setManual, switchToGps } = useUserLocation({ autoPrompt: false });
+  const { location, setManual, switchToGps } = useUserLocation();
 
   const [query, setQuery] = useState("");
   const [debounced, setDebounced] = useState("");
@@ -45,6 +45,8 @@ export default function ExplorePage() {
   const [maxDistance, setMaxDistance] = useState<number | null>(null);
   const [nearestFirst, setNearestFirst] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [codeOpen, setCodeOpen] = useState(false);
 
   const [events, setEvents] = useState<EventRecord[]>([]);
   const [page, setPage] = useState(0);
@@ -54,6 +56,8 @@ export default function ExplorePage() {
 
   const coords = location.status === "ready" ? { lat: location.lat, lng: location.lng } : null;
   const hasFilters = Boolean(query || activeCategory || timeFilter || priceFilter || beginnerOnly || maxDistance || nearestFirst);
+  // Filters inside the phone "Filters" panel that are switched on (for its badge).
+  const activeFilterCount = [timeFilter, priceFilter, beginnerOnly, maxDistance, nearestFirst].filter(Boolean).length;
   function clearFilters() {
     setQuery("");
     setActiveCategory(null);
@@ -162,7 +166,18 @@ export default function ExplorePage() {
         <p className="mt-1 text-ink/70">{t("explore.subtitle")}</p>
       </div>
 
-      <EventCodeJump />
+      {/* The code box is for people who were given a code: a small link until needed. */}
+      {codeOpen ? (
+        <EventCodeJump />
+      ) : (
+        <button
+          type="button"
+          onClick={() => setCodeOpen(true)}
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-orange-dark hover:underline"
+        >
+          <Ticket size={16} aria-hidden /> {t("explore.haveCode")}
+        </button>
+      )}
 
       <div className="relative">
         <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/65" />
@@ -175,7 +190,8 @@ export default function ExplorePage() {
         />
       </div>
 
-      <div className="flex flex-wrap gap-2">
+      {/* Phones: one row that scrolls sideways; wider screens: wrap. */}
+      <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] md:mx-0 md:flex-wrap md:overflow-visible md:px-0">
         {categories.map((c) => (
           <Chip
             key={c.id}
@@ -187,43 +203,59 @@ export default function ExplorePage() {
         ))}
       </div>
 
-      <div className="flex flex-wrap items-center gap-2 border-t border-ink/5 pt-4">
-        {TIME_FILTERS.map((key) => (
-          <Chip key={key} active={timeFilter === key} onClick={() => setTimeFilter(timeFilter === key ? null : key)}>
-            {t(`explore.${key}`)}
-          </Chip>
-        ))}
-        <span className="mx-1 h-4 w-px bg-ink/10" />
-        {PRICE_FILTERS.map((key) => (
-          <Chip key={key} active={priceFilter === key} onClick={() => setPriceFilter(priceFilter === key ? null : key)}>
-            {t(`explore.${key}`)}
-          </Chip>
-        ))}
-        <Chip active={beginnerOnly} onClick={() => setBeginnerOnly((v) => !v)}>
-          {t("level.beginner")}
-        </Chip>
-        <span className="mx-1 h-4 w-px bg-ink/10" />
-        <Chip active={nearestFirst} disabled={!coords} onClick={() => setNearestFirst((v) => !v)}>
-          {t("explore.nearby")}
-        </Chip>
-        {DISTANCE_OPTIONS.map((d) => (
-          <Chip
-            key={d}
-            active={maxDistance === d}
-            disabled={!coords}
-            onClick={() => setMaxDistance(maxDistance === d ? null : d)}
-          >
-            {t("explore.within", { km: d })}
-          </Chip>
-        ))}
-      </div>
+      {/* Phones: behind a Filters button; wider screens: always shown. */}
+      <button
+        type="button"
+        onClick={() => setFiltersOpen((v) => !v)}
+        aria-expanded={filtersOpen}
+        aria-controls="explore-filters"
+        className="inline-flex items-center gap-2 rounded-full border border-ink/10 bg-surface px-4 py-2 text-sm font-semibold md:hidden"
+      >
+        <SlidersHorizontal size={16} aria-hidden /> {t("explore.filters")}
+        {activeFilterCount > 0 && (
+          <span className="rounded-full bg-orange-deep px-1.5 text-xs leading-5 text-white">{activeFilterCount}</span>
+        )}
+      </button>
 
-      {!coords && (
-        <div className="space-y-2">
-          <p className="text-xs text-ink/65">{t("explore.distanceNeedsLocation")}</p>
-          <LocationBar location={location} onManual={() => setDialogOpen(true)} onGps={switchToGps} />
+      <div id="explore-filters" className={`${filtersOpen ? "block" : "hidden"} space-y-4 md:block`}>
+        <div className="flex flex-wrap items-center gap-2 border-t border-ink/5 pt-4">
+          {TIME_FILTERS.map((key) => (
+            <Chip key={key} active={timeFilter === key} onClick={() => setTimeFilter(timeFilter === key ? null : key)}>
+              {t(`explore.${key}`)}
+            </Chip>
+          ))}
+          <span className="mx-1 h-4 w-px bg-ink/10" />
+          {PRICE_FILTERS.map((key) => (
+            <Chip key={key} active={priceFilter === key} onClick={() => setPriceFilter(priceFilter === key ? null : key)}>
+              {t(`explore.${key}`)}
+            </Chip>
+          ))}
+          <Chip active={beginnerOnly} onClick={() => setBeginnerOnly((v) => !v)}>
+            {t("level.beginner")}
+          </Chip>
+          <span className="mx-1 h-4 w-px bg-ink/10" />
+          <Chip active={nearestFirst} disabled={!coords} onClick={() => setNearestFirst((v) => !v)}>
+            {t("explore.nearby")}
+          </Chip>
+          {DISTANCE_OPTIONS.map((d) => (
+            <Chip
+              key={d}
+              active={maxDistance === d}
+              disabled={!coords}
+              onClick={() => setMaxDistance(maxDistance === d ? null : d)}
+            >
+              {t("explore.within", { km: d })}
+            </Chip>
+          ))}
         </div>
-      )}
+
+        {!coords && (
+          <div className="space-y-2">
+            <p className="text-xs text-ink/65">{t("explore.distanceNeedsLocation")}</p>
+            <LocationBar location={location} onManual={() => setDialogOpen(true)} onGps={switchToGps} />
+          </div>
+        )}
+      </div>
 
       {error ? (
         <Alert>{t(error)}</Alert>

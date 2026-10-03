@@ -6,7 +6,7 @@ import { markerIconDefault as icon } from "@/lib/leafletIcon";
 
 export function EventMap({ lat, lng, label }: { lat: number; lng: number; label: string }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-ink/10">
+    <div className="isolate overflow-hidden rounded-xl border border-ink/10">
       <MapContainer
         center={[lat, lng]}
         zoom={15}

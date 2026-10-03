@@ -1,10 +1,11 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { friendlyErrorKey } from "@/lib/errors";
 import { isJoinable } from "@/lib/events";
+import { formatFee } from "@/lib/utils";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import type { TranslationKey } from "@/lib/i18n/translations";
 import type { EventParticipant, EventStatus, JoinPermission, ParticipationStatus } from "@/types";
@@ -23,6 +24,7 @@ export function JoinPanel({
   status,
   isOwner,
   myParticipation,
+  fee,
 }: {
   eventId: string;
   inviteToken: string | null;
@@ -31,12 +33,24 @@ export function JoinPanel({
   status: EventStatus;
   isOwner: boolean;
   myParticipation: EventParticipant | null;
+  /** Shown in the phone bar next to the Join button. */
+  fee: number | string;
 }) {
   const router = useRouter();
   const supabase = createClient();
   const toast = useToast();
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const busy = useRef(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+  // Phone bar shows only while the regular Join button is off screen.
+  const [cardVisible, setCardVisible] = useState(true);
+  useEffect(() => {
+    const card = cardRef.current;
+    if (!card) return;
+    const io = new IntersectionObserver(([entry]) => setCardVisible(entry.isIntersecting));
+    io.observe(card);
+    return () => io.disconnect();
+  }, []);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<TranslationKey | null>(null);
 
@@ -126,8 +140,24 @@ export function JoinPanel({
       ? "join.completed"
       : null;
 
+  const label = joinPermission === "open" ? t("join.join") : t("join.request");
+
   return (
-    <div className="card space-y-3 p-5">
+    <div ref={cardRef} className="card space-y-3 p-5">
+      {/* Phones: the same action, pinned above the bottom bar while this card is off screen. */}
+      {joinable && !cardVisible && (
+        <div className="fixed inset-x-3 bottom-[calc(5.25rem+env(safe-area-inset-bottom))] z-30 flex items-center justify-between gap-3 rounded-2xl border border-ink/10 bg-surface/95 p-2.5 pl-4 shadow-lift backdrop-blur-sm md:hidden">
+          <span className="text-sm font-semibold">{formatFee(fee, lang)}</span>
+          <PrimaryButton
+            onClick={handleJoin}
+            loading={loading}
+            loadingText={joinPermission === "open" ? t("join.joining") : t("join.requesting")}
+            className="px-6 py-2.5"
+          >
+            {label}
+          </PrimaryButton>
+        </div>
+      )}
       <PrimaryButton
         onClick={handleJoin}
         disabled={!joinable}
@@ -135,11 +165,7 @@ export function JoinPanel({
         loadingText={joinPermission === "open" ? t("join.joining") : t("join.requesting")}
         className="w-full py-3.5"
       >
-        {!joinable && blockedLabel
-          ? t(blockedLabel)
-          : joinPermission === "open"
-          ? t("join.join")
-          : t("join.request")}
+        {!joinable && blockedLabel ? t(blockedLabel) : label}
       </PrimaryButton>
       {joinable && joinPermission === "approval_required" && (
         <p className="text-center text-xs text-ink/65">{t("join.approvalNote")}</p>

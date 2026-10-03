@@ -45,10 +45,10 @@ export default async function EventDetailsPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ t?: string }>;
+  searchParams: Promise<{ t?: string; created?: string }>;
 }) {
   const { id } = await params;
-  const { t: token } = await searchParams;
+  const { t: token, created } = await searchParams;
   const supabase = await createClient();
   const { t, td, lang } = await getServerT();
   const {
@@ -131,7 +131,18 @@ export default async function EventDetailsPage({
     : (await supabase.from("event_contacts").select("pic_whatsapp").eq("event_id", event.id).maybeSingle()).data;
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
+    // pb: room for the phone Join bar.
+    <div className="mx-auto max-w-3xl space-y-6 pb-20 md:pb-0">
+      {/* Right after creating: invite people while the organizer is here. */}
+      {isOwner && created && status !== "cancelled" && (
+        <section className="card space-y-3 border-2 border-orange/40 p-5">
+          <div>
+            <h2 className="text-lg font-bold">{t("share.liveTitle")}</h2>
+            <p className="text-sm text-ink/70">{t("share.liveBody")}</p>
+          </div>
+          <ShareBox shareToken={event.share_token} eventCode={event.event_code} title={event.title} />
+        </section>
+      )}
       {viaInvite && (
         <p className="rounded-xl bg-orange/10 px-4 py-3 text-sm font-medium text-orange-dark">
           {t("event.inviteAccess")}
@@ -319,6 +330,8 @@ export default async function EventDetailsPage({
           cta={t("guest.joinCta")}
           haveAccount={t("guest.haveAccount")}
           signIn={t("landing.login")}
+          fee={formatFee(event.fee, lang)}
+          joinable={isJoinable(status)}
         />
       ) : (
         <>
@@ -329,6 +342,7 @@ export default async function EventDetailsPage({
             status={status}
             isOwner={isOwner}
             myParticipation={myParticipation}
+            fee={event.fee}
           />
 
           {isOwner && (
@@ -343,7 +357,7 @@ export default async function EventDetailsPage({
 
           <EventComments eventId={event.id} isOwner={isOwner} />
 
-          <ShareBox shareToken={event.share_token} eventCode={event.event_code} title={event.title} />
+          {!created && <ShareBox shareToken={event.share_token} eventCode={event.event_code} title={event.title} />}
 
           <Link
             href={`/help?event=${event.id}`}
@@ -374,6 +388,8 @@ function GuestJoinCard({
   cta,
   haveAccount,
   signIn,
+  fee,
+  joinable,
 }: {
   nextPath: string;
   title: string;
@@ -381,10 +397,24 @@ function GuestJoinCard({
   cta: string;
   haveAccount: string;
   signIn: string;
+  fee: string;
+  joinable: boolean;
 }) {
   const next = `?next=${encodeURIComponent(nextPath)}`;
   return (
     <div className="card space-y-3 p-6 text-center">
+      {/* Phones: pinned "Sign up to join" (guest pages have no bottom nav). */}
+      {joinable && (
+        <div className="fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-30 flex items-center justify-between gap-3 rounded-2xl border border-ink/10 bg-surface/95 p-2.5 pl-4 text-left shadow-lift backdrop-blur-sm md:hidden">
+          <span className="text-sm font-semibold">{fee}</span>
+          <Link
+            href={`/register${next}`}
+            className="rounded-full bg-orange-deep px-6 py-2.5 text-sm font-semibold text-white hover:bg-orange-deeper"
+          >
+            {cta}
+          </Link>
+        </div>
+      )}
       <h2 className="text-lg font-bold">{title}</h2>
       <p className="mx-auto max-w-md text-sm text-ink/70">{body}</p>
       <Link

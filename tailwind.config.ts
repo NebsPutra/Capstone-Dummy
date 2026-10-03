@@ -47,7 +47,9 @@ const config: Config = {
         float: { "0%, 100%": { transform: "translateY(0)" }, "50%": { transform: "translateY(-6px)" } },
       },
       animation: {
-        "page-in": "page-in 220ms ease-out both",
+        // backwards, not both: a fill that keeps transform applied makes the page
+        // wrapper the containing block for position: fixed (phone bars, sheets).
+        "page-in": "page-in 220ms ease-out backwards",
         "pop-in": "pop-in 180ms ease-out both",
         "fade-in": "fade-in 200ms ease-out both",
         float: "float 5s ease-in-out infinite",

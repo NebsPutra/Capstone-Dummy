@@ -59,11 +59,13 @@ async function permissionState(): Promise<PermissionState | "unsupported"> {
 }
 
 /**
- * @param autoPrompt Ask for GPS permission on load if it has never been
- *   decided (dashboard). Pages where location is optional (explore, create)
- *   pass false and only use GPS if it was already granted.
+ * GPS is used automatically only when permission was already granted; the
+ * browser prompt only ever appears after a tap on "Use GPS" (switchToGps), so a
+ * first visit isn't greeted by a permission pop-up.
+ * @param fallback Area to use when there's no GPS and no saved choice, e.g. the
+ *   kelurahan from registration (dashboard). Not saved as the user's choice.
  */
-export function useUserLocation({ autoPrompt }: { autoPrompt: boolean }) {
+export function useUserLocation({ fallback = null }: { fallback?: ManualArea | null } = {}) {
   const [location, setLocation] = useState<UserLocation>({ status: "checking" });
   const inFlight = useRef(false);
 
@@ -90,8 +92,8 @@ export function useUserLocation({ autoPrompt }: { autoPrompt: boolean }) {
         inFlight.current = false;
         const denied = err.code === err.PERMISSION_DENIED;
         if (denied) writePref({ ...readPref(), gpsDenied: true });
-        // Fall back to a previously chosen manual area if there is one.
-        const manual = readPref().manual;
+        // Fall back to a previously chosen manual area, or the given fallback.
+        const manual = readPref().manual ?? fallback;
         if (manual) {
           setLocation({ status: "ready", source: "manual", ...manual });
         } else {
@@ -100,12 +102,14 @@ export function useUserLocation({ autoPrompt }: { autoPrompt: boolean }) {
       },
       { enableHighAccuracy: false, timeout: 15_000, maximumAge: 5 * 60_000 }
     );
-  }, []);
+  }, [fallback]);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const pref = readPref();
+      const saved = readPref();
+      // The fallback area stands in for a manual choice, without being saved.
+      const pref = { ...saved, manual: saved.manual ?? fallback ?? undefined };
       if (pref.mode === "manual" && pref.manual) {
         setLocation({ status: "ready", source: "manual", ...pref.manual });
         return;
@@ -124,14 +128,12 @@ export function useUserLocation({ autoPrompt }: { autoPrompt: boolean }) {
       if (state === "granted") {
         locateWithGps();
       } else if (state === "denied" || pref.gpsDenied) {
-        if (state === "denied") writePref({ ...pref, gpsDenied: true });
+        if (state === "denied") writePref({ ...saved, gpsDenied: true });
         setLocation(
           pref.manual
             ? { status: "ready", source: "manual", ...pref.manual }
             : { status: "unavailable", reason: "denied" }
         );
-      } else if (autoPrompt) {
-        locateWithGps(); // "prompt" / unknown: ask once, on the page that needs it
       } else {
         setLocation(
           pref.manual
@@ -143,7 +145,7 @@ export function useUserLocation({ autoPrompt }: { autoPrompt: boolean }) {
     return () => {
       cancelled = true;
     };
-  }, [autoPrompt, locateWithGps]);
+  }, [fallback, locateWithGps]);
 
   const setManual = useCallback((area: ManualArea) => {
     writePref({ ...readPref(), mode: "manual", manual: area });

@@ -37,7 +37,7 @@ export function NearbyDashboard({
 }) {
   const supabase = useMemo(() => createClient(), []);
   const { t } = useLanguage();
-  const { location, setManual, switchToGps } = useUserLocation({ autoPrompt: true });
+  const { location, setManual, switchToGps } = useUserLocation({ fallback: profileArea });
 
   const [events, setEvents] = useState<EventRecord[] | null>(null);
   const [error, setError] = useState<TranslationKey | null>(null);

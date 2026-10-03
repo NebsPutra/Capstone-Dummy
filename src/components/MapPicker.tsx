@@ -33,7 +33,7 @@ export function MapPicker({
   onChange: (lat: number, lng: number) => void;
 }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-ink/10">
+    <div className="isolate overflow-hidden rounded-xl border border-ink/10">
       <MapContainer center={[center.lat, center.lng]} zoom={14} style={{ height: 280, width: "100%" }}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
