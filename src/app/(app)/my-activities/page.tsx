@@ -1,6 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { getServerT } from "@/lib/i18n/server";
 import { ActivityCard } from "@/components/ActivityCard";
+import { effectiveStatus } from "@/lib/events";
+import { eventStamp } from "@/lib/utils";
 import { EVENT_LIST_SELECT, type EventRecord, type ParticipationStatus } from "@/types";
 
 export default async function MyActivitiesPage() {
@@ -24,8 +26,18 @@ export default async function MyActivitiesPage() {
   ]);
 
   const rows = (joinedRows ?? []) as unknown as { status: ParticipationStatus; event: EventRecord | null }[];
-  const joined = rows.filter((r) => r.status === "approved" && r.event).map((r) => r.event!);
-  const pending = rows.filter((r) => r.status === "pending" && r.event).map((r) => r.event!);
+  const createdList = (created ?? []) as EventRecord[];
+  const joinedAll = rows.filter((r) => r.status === "approved" && r.event).map((r) => r.event!);
+  const pendingAll = rows.filter((r) => r.status === "pending" && r.event).map((r) => r.event!);
+
+  // Upcoming (incl. happening now) soonest first; finished ones go to a folded
+  // "Past" list, newest first, so the next activity is always at the top.
+  const stamp = (e: EventRecord) => eventStamp(e.event_date, e.start_time);
+  const isPast = (e: EventRecord) => effectiveStatus(e) === "completed";
+  const upcoming = (list: EventRecord[]) => list.filter((e) => !isPast(e)).sort((a, b) => stamp(a).localeCompare(stamp(b)));
+  const past = [...createdList, ...joinedAll]
+    .filter(isPast)
+    .sort((a, b) => stamp(b).localeCompare(stamp(a)));
 
   return (
     <div className="space-y-10">
@@ -34,9 +46,25 @@ export default async function MyActivitiesPage() {
         <p className="mt-1 text-ink/70">{t("my.subtitle")}</p>
       </div>
 
-      <Section title={t("my.created")} events={(created ?? []) as EventRecord[]} empty={t("my.emptyCreated")} />
-      <Section title={t("my.joined")} events={joined} empty={t("my.emptyJoined")} />
-      {pending.length > 0 && <Section title={t("my.pending")} events={pending} empty="" />}
+      <Section title={t("my.created")} events={upcoming(createdList)} empty={t("my.emptyCreated")} />
+      <Section title={t("my.joined")} events={upcoming(joinedAll)} empty={t("my.emptyJoined")} />
+      {upcoming(pendingAll).length > 0 && <Section title={t("my.pending")} events={upcoming(pendingAll)} empty="" />}
+
+      {past.length > 0 && (
+        <details className="group">
+          <summary className="cursor-pointer list-none text-lg font-semibold [&::-webkit-details-marker]:hidden">
+            <span className="mr-2 inline-block transition group-open:rotate-90" aria-hidden>
+              ›
+            </span>
+            {t("my.past", { n: past.length })}
+          </summary>
+          <div className="activity-grid mt-4">
+            {past.map((e) => (
+              <ActivityCard key={e.id} event={e} />
+            ))}
+          </div>
+        </details>
+      )}
     </div>
   );
 }

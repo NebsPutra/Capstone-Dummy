@@ -48,7 +48,8 @@ export function ActivityCard({
       <div className="space-y-2 p-4">
         <div className="flex items-start justify-between gap-2">
           <h3 className="font-semibold leading-snug">{event.title}</h3>
-          <StatusBadge status={status} />
+          {/* "Open" is the normal case: only states worth noticing get a badge. */}
+          {status !== "open" && <StatusBadge status={status} />}
         </div>
         {event.category && (
           <p className="text-sm text-ink/70">

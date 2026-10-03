@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { Pencil } from "lucide-react";
+import { CalendarPlus, Pencil } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getServerT } from "@/lib/i18n/server";
 import { getEventForViewer } from "@/lib/eventAccess";
@@ -18,6 +18,8 @@ import { EventMapClient as EventMap } from "@/components/EventMapClient";
 import { EventCover } from "@/components/EventCover";
 import { FlyerGenerator } from "@/components/FlyerGenerator";
 import { ROLE_RANK } from "@/lib/admin";
+import { googleCalendarUrl, icsDataUrl } from "@/lib/calendar";
+import { SITE_URL } from "@/lib/site";
 import { LifeBuoy } from "lucide-react";
 import { PUBLIC_EVENT_SELECT, type EventParticipant, type EventRecord } from "@/types";
 
@@ -234,6 +236,32 @@ export default async function EventDetailsPage({
               </ul>
             </div>
           )}
+
+          {(status === "open" || status === "almost_full" || status === "full") && (() => {
+            const cal = {
+              id: event.id,
+              title: event.title,
+              description: event.description,
+              location: [event.location_name, event.address].filter(Boolean).join(", "),
+              date: event.event_date,
+              start: event.start_time,
+              end: event.end_time,
+              url: `${SITE_URL}/activities/${event.id}`,
+            };
+            return (
+              <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+                <span className="inline-flex items-center gap-1.5 font-semibold">
+                  <CalendarPlus size={16} className="text-orange-dark" aria-hidden /> {t("calendar.add")}
+                </span>
+                <a href={googleCalendarUrl(cal)} target="_blank" rel="noreferrer" className="font-medium text-orange-dark hover:underline">
+                  Google
+                </a>
+                <a href={icsDataUrl(cal)} download={`komunitas-${event.event_code}.ics`} className="font-medium text-orange-dark hover:underline">
+                  {t("calendar.ics")}
+                </a>
+              </p>
+            );
+          })()}
 
           {event.description && (
             <div>

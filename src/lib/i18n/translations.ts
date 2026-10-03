@@ -130,6 +130,9 @@ const enBase = {
   "explore.haveCode": "Have an event code?",
   "explore.createInstead": "Create an activity",
   "event.beFirst": "Be the first to join!",
+  "my.past": "Past activities ({n})",
+  "calendar.add": "Add to calendar:",
+  "calendar.ics": "Apple / Outlook",
   "share.liveTitle": "Your activity is live!",
   "share.liveBody": "Share it now so people can join: send the link to your WhatsApp groups or show the QR code.",
   "landing.upcomingTitle": "Upcoming activities",
@@ -566,8 +569,8 @@ const enBase = {
   "my.created": "Created by me",
   "my.joined": "Joined",
   "my.pending": "Waiting for approval",
-  "my.emptyCreated": "You haven't created any activities yet.",
-  "my.emptyJoined": "You haven't joined any activities yet.",
+  "my.emptyCreated": "No upcoming activities you're organizing.",
+  "my.emptyJoined": "No upcoming activities you've joined.",
 
   // Notifications
   "notif.title": "Notifications",
@@ -756,6 +759,9 @@ const idBase: Record<keyof typeof enBase, string> = {
   "explore.haveCode": "Punya kode acara?",
   "explore.createInstead": "Buat aktivitas",
   "event.beFirst": "Jadilah yang pertama ikut!",
+  "my.past": "Aktivitas yang sudah lewat ({n})",
+  "calendar.add": "Tambah ke kalender:",
+  "calendar.ics": "Apple / Outlook",
   "share.liveTitle": "Aktivitasmu sudah tayang!",
   "share.liveBody": "Bagikan sekarang supaya orang bisa ikut: kirim tautannya ke grup WhatsApp-mu atau tunjukkan kode QR-nya.",
   "landing.upcomingTitle": "Aktivitas mendatang",
@@ -1192,8 +1198,8 @@ const idBase: Record<keyof typeof enBase, string> = {
   "my.created": "Dibuat oleh saya",
   "my.joined": "Diikuti",
   "my.pending": "Menunggu persetujuan",
-  "my.emptyCreated": "Kamu belum membuat aktivitas apa pun.",
-  "my.emptyJoined": "Kamu belum bergabung dengan aktivitas apa pun.",
+  "my.emptyCreated": "Belum ada aktivitas mendatang yang kamu selenggarakan.",
+  "my.emptyJoined": "Belum ada aktivitas mendatang yang kamu ikuti.",
 
   // Notifications
   "notif.title": "Notifikasi",
