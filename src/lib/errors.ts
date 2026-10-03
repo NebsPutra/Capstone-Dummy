@@ -58,6 +58,9 @@ const DOMAIN_CODES = [
   "GROUP_OWNER_CANNOT_LEAVE",
   "GROUP_NOT_MEMBER",
   "SERIES_NOT_OWNER",
+  "CHECKIN_CODE_INVALID",
+  "CHECKIN_CLOSED",
+  "RATING_CLOSED",
 ] as const;
 const BY_LENGTH = [...DOMAIN_CODES].sort((a, b) => b.length - a.length);
 

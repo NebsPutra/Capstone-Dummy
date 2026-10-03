@@ -59,6 +59,18 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
       ? (((await (await createClient()).rpc("can_message_user", { p_user: p.user_id })).data as Messaging | null) ?? null)
       : null;
   const canMessage = Boolean(messaging && (messaging.conversation_id || messaging.reason === null));
+  // "How was it?" ratings of activities this person organized (migration 024).
+  type Review = { rating: number; comment: string; created_at: string; activity: string };
+  const sb = await createClient();
+  const [{ data: ratingData }, { data: reviewData }] =
+    p.relationship === "blocked"
+      ? [{ data: null }, { data: null }]
+      : await Promise.all([
+          sb.rpc("organizer_rating", { p_user: p.user_id }),
+          sb.rpc("organizer_reviews", { p_user: p.user_id }),
+        ]);
+  const rating = ratingData as { average: number | null; count: number } | null;
+  const reviews = (reviewData as Review[] | null) ?? [];
   const { t, td, lang } = await getServerT();
   const d = p.details;
   const since = new Date(p.member_since).toLocaleDateString(lang === "id" ? "id-ID" : "en-GB", { month: "long", year: "numeric", timeZone: "Asia/Jakarta" });
@@ -204,6 +216,30 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
                     ))}
                   </ul>
                 </div>
+              )}
+            </section>
+          )}
+
+          {rating && rating.count > 0 && (
+            <section className="card space-y-3 p-5">
+              <h2 className="font-semibold">{t("rating.organizerHeading")}</h2>
+              <p className="flex items-baseline gap-2">
+                <span className="text-2xl font-bold">★ {rating.average}</span>
+                <span className="text-sm text-ink/70">{rating.count === 1 ? t("rating.countOne") : t("rating.count", { n: rating.count })}</span>
+              </p>
+              {reviews.length > 0 && (
+                <ul className="space-y-3 border-t border-ink/5 pt-3">
+                  {reviews.map((r, i) => (
+                    <li key={i} className="text-sm">
+                      <p className="text-orange-dark" aria-label={t("rating.stars", { n: r.rating })}>
+                        {"★".repeat(r.rating)}
+                        <span className="text-ink/20">{"★".repeat(5 - r.rating)}</span>
+                      </p>
+                      <p className="mt-0.5 text-ink/80">{r.comment}</p>
+                      <p className="mt-0.5 text-xs text-ink/60">{r.activity}</p>
+                    </li>
+                  ))}
+                </ul>
               )}
             </section>
           )}

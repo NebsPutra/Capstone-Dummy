@@ -23,6 +23,7 @@ import {
 import { useToast } from "../Toast";
 import { Alert, PrimaryButton, inputClass } from "../ui";
 import { Avatar } from "./People";
+import { PushToggle } from "@/components/PushToggle";
 
 // ---------------------------------------------------------------------------
 // Username
@@ -477,7 +478,18 @@ export function BlockedUsers() {
 
 // Mirrors public._mutable_notification_types() (migration 008); security,
 // account, support and join decisions can't be muted.
-const MUTABLE_TYPES = ["event_comment", "comment_reply", "join_request", "friend_request", "friend_accepted", "new_message"] as const;
+const MUTABLE_TYPES = [
+  "event_comment",
+  "comment_reply",
+  "join_request",
+  "friend_request",
+  "friend_accepted",
+  "new_message",
+  "event_reminder",
+  "group_new_event",
+  "interest_match",
+  "rate_activity",
+] as const;
 
 export function NotificationPrefs() {
   const { t } = useLanguage();
@@ -510,6 +522,7 @@ export function NotificationPrefs() {
     <section className="card p-5">
       <h2 className="font-semibold">{t("notifPrefs.title")}</h2>
       <p className="text-sm text-ink/70">{t("notifPrefs.desc")}</p>
+      <PushToggle />
       {!muted ? (
         <div className="skeleton mt-3 h-40" />
       ) : (

@@ -63,3 +63,23 @@ export function weeklyDates(first: string, weeks: number): string[] {
     return d.toISOString().slice(0, 10);
   });
 }
+
+/**
+ * Time windows for check-in and ratings; mirror the SQL in migration 024
+ * (check_in, set_attendance, rate_event). `now` is a Jakarta stamp.
+ */
+export function activityWindows(
+  event: Pick<EventRecord, "event_date" | "start_time" | "end_time">,
+  now: string = jakartaNowStamp()
+): { qrOpen: boolean; attendanceOpen: boolean; ratingOpen: boolean } {
+  const ms = (stamp: string) => Date.parse(`${stamp}:00Z`);
+  const t = ms(now.slice(0, 16));
+  const start = ms(eventStamp(event.event_date, event.start_time));
+  const end = ms(eventStamp(event.event_date, event.end_time));
+  const hour = 3_600_000;
+  return {
+    qrOpen: t >= start - hour && t <= end + hour,
+    attendanceOpen: t >= start - hour && t <= end + 48 * hour,
+    ratingOpen: t >= end && t <= end + 14 * 24 * hour,
+  };
+}

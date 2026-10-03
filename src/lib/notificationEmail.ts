@@ -8,6 +8,10 @@ export const EMAIL_TYPES = [
   "friend_request",
   "join_request",
   "play_request_ready",
+  "event_changed",
+  "organizer_message",
+  "waitlist_promoted",
+  "event_reminder",
 ] as const;
 
 /** At most one email per type per person in this window, so a live chat doesn't flood the inbox. */

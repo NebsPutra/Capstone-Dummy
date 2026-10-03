@@ -12,6 +12,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { NotificationPrefs } from "@/components/social/ProfileSettings";
 import Link from "next/link";
 import { LifeBuoy } from "lucide-react";
+import { disablePush } from "@/lib/pushClient";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -30,6 +31,7 @@ export default function SettingsPage() {
   async function handleSignOut() {
     if (signingOut) return;
     setSigningOut(true);
+    await disablePush(); // the next person on this device must not get these pushes
     await supabase.auth.signOut();
     router.replace("/login");
     router.refresh();

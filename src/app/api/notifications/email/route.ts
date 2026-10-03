@@ -3,10 +3,13 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendMail, simpleEmailHtml } from "@/lib/mailer";
 import { EMAIL_THROTTLE_MINUTES, notificationEmail } from "@/lib/notificationEmail";
+import { sendPush } from "@/lib/push";
 
 // Called by a Supabase Database Webhook on INSERT into public.notifications
 // (set up in the dashboard, see README). Muted types never get here, because
 // _notify() doesn't insert them. Authenticated with a shared secret header.
+// Every notification goes out as a web push to the recipient's devices (if
+// they turned push on); the EMAIL_TYPES also go out by email.
 export const runtime = "nodejs";
 
 function secretOk(got: string | null) {
@@ -25,11 +28,13 @@ export async function POST(req: NextRequest) {
   const { type, record } = (await req.json().catch(() => ({}))) as { type?: string; record?: Row };
   if (type !== "INSERT" || !record?.user_id) return NextResponse.json({ skipped: "not an insert" });
 
-  const email = notificationEmail(record, req.nextUrl.origin);
-  if (!email) return NextResponse.json({ skipped: "type not emailed" });
-
   const admin = createAdminClient();
   if (!admin) return NextResponse.json({ error: "service role not configured" }, { status: 500 });
+
+  const pushed = await sendPush(admin, record);
+
+  const email = notificationEmail(record, req.nextUrl.origin);
+  if (!email) return NextResponse.json({ pushed, skipped: "type not emailed" });
 
   // Throttle: skip if this person already got a notification of this type recently.
   const since = new Date(new Date(record.created_at).getTime() - EMAIL_THROTTLE_MINUTES * 60_000).toISOString();
@@ -41,11 +46,11 @@ export async function POST(req: NextRequest) {
     .neq("id", record.id)
     .gte("created_at", since)
     .lte("created_at", record.created_at);
-  if (count) return NextResponse.json({ skipped: "throttled" });
+  if (count) return NextResponse.json({ pushed, skipped: "throttled" });
 
   const { data } = await admin.auth.admin.getUserById(record.user_id);
   const to = data.user?.email;
-  if (!to) return NextResponse.json({ skipped: "no email" });
+  if (!to) return NextResponse.json({ pushed, skipped: "no email" });
 
   const sent = await sendMail({
     to,
@@ -53,5 +58,5 @@ export async function POST(req: NextRequest) {
     text: [...email.paragraphs, `${email.action.label}: ${email.action.href}`, email.footer].join("\n\n"),
     html: simpleEmailHtml(email.subject, email.paragraphs, email.action, email.footer),
   });
-  return NextResponse.json({ sent });
+  return NextResponse.json({ pushed, sent });
 }

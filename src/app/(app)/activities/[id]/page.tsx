@@ -5,7 +5,7 @@ import { CalendarPlus, Pencil } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getServerT } from "@/lib/i18n/server";
 import { getEventForViewer } from "@/lib/eventAccess";
-import { effectiveStatus, isJoinable } from "@/lib/events";
+import { activityWindows, effectiveStatus, isJoinable } from "@/lib/events";
 import { formatDate, formatFee, formatTimeRange, jakartaToday } from "@/lib/utils";
 import { whatsappDigits } from "@/lib/validation";
 import { StatusBadge } from "@/components/StatusBadge";
@@ -14,6 +14,7 @@ import { JoinPanel } from "@/components/JoinPanel";
 import { OwnerPanel, type ParticipantRow } from "@/components/OwnerPanel";
 import { ShareBox } from "@/components/ShareBox";
 import { EventComments } from "@/components/EventComments";
+import { RatingForm } from "@/components/RatingForm";
 import { EventMapClient as EventMap } from "@/components/EventMapClient";
 import { EventCover } from "@/components/EventCover";
 import { FlyerGenerator } from "@/components/FlyerGenerator";
@@ -99,7 +100,7 @@ export default async function EventDetailsPage({
   if (isOwner) {
     const { data } = await supabase
       .from("event_participants")
-      .select("id, status, joined_at, participant:profiles!event_participants_user_id_fkey(nickname, username)")
+      .select("id, status, joined_at, checked_in_at, participant:profiles!event_participants_user_id_fkey(nickname, username)")
       .eq("event_id", event.id)
       .in("status", ["approved", "pending"])
       .order("joined_at", { ascending: true });
@@ -125,6 +126,27 @@ export default async function EventDetailsPage({
         ).data ?? []
       ).filter((d) => d.event_date >= jakartaToday() || d.id === event.id)
     : [];
+
+  const windows = activityWindows(event);
+  // Who's going: count for everyone, names only for signed-in viewers (privacy rules in SQL).
+  const attendees = ((await supabase.rpc("event_attendees", { p_event: event.id })).data ?? null) as {
+    count: number;
+    people: { username: string; display_name: string; avatar_url: string | null }[];
+  } | null;
+  // Waiting list: your place (participants-to-be) or its length (organizer).
+  const waitlist = guest
+    ? null
+    : ((await supabase.rpc("waitlist_status", { p_event_id: event.id })).data as { position: number; length: number } | null);
+  // Organizer's average rating, and your own rating of this activity.
+  const organizerRating =
+    !guest && event.creator_id
+      ? ((await supabase.rpc("organizer_rating", { p_user: event.creator_id })).data as { average: number | null; count: number } | null)
+      : null;
+  const myRating =
+    !guest && myParticipation?.status === "approved" && windows.ratingOpen
+      ? (await supabase.from("event_ratings").select("rating, comment").eq("event_id", event.id).eq("user_id", user!.id).maybeSingle()).data
+      : null;
+  const canRate = !guest && !isOwner && myParticipation?.status === "approved" && windows.ratingOpen && status === "completed";
 
   // RLS on event_contacts returns the number only to the organizer, approved
   // participants, staff, or anyone when the organizer made it public.
@@ -199,9 +221,16 @@ export default async function EventDetailsPage({
                 label={t("event.organizer")}
                 value={
                   event.organizer ? (
-                    <Link href={`/u/${event.organizer.username}`} className="text-orange-dark hover:underline">
-                      {event.organizer.nickname || `@${event.organizer.username}`}
-                    </Link>
+                    <>
+                      <Link href={`/u/${event.organizer.username}`} className="text-orange-dark hover:underline">
+                        {event.organizer.nickname || `@${event.organizer.username}`}
+                      </Link>
+                      {organizerRating?.count ? (
+                        <span className="ml-1.5 text-sm font-normal text-ink/70" title={t("rating.organizerTitle")}>
+                          ★ {organizerRating.average} ({organizerRating.count})
+                        </span>
+                      ) : null}
+                    </>
                   ) : (
                     "—"
                   )
@@ -209,6 +238,22 @@ export default async function EventDetailsPage({
               />
             )}
           </div>
+
+          {attendees && attendees.count > 0 && (
+            <AttendeeFaces
+              count={attendees.count}
+              people={attendees.people}
+              label={(() => {
+                const [a, b] = attendees.people.map((p) => p.display_name);
+                const n = attendees.count;
+                if (!a) return t("going.count", { n }); // logged out: number only
+                if (n === 1) return t("going.one", { a });
+                if (!b) return t("going.oneMore", { a, n: n - 1 });
+                if (n === 2) return t("going.two", { a, b });
+                return t("going.twoMore", { a, b, n: n - 2 });
+              })()}
+            />
+          )}
 
           {seriesDates.length > 1 && (
             <div>
@@ -371,7 +416,10 @@ export default async function EventDetailsPage({
             isOwner={isOwner}
             myParticipation={myParticipation}
             fee={event.fee}
+            waitlistPosition={waitlist?.position ?? 0}
           />
+
+          {canRate && <RatingForm eventId={event.id} initial={myRating} />}
 
           {isOwner && (
             <OwnerPanel
@@ -380,6 +428,9 @@ export default async function EventDetailsPage({
               maxParticipants={event.max_participants}
               approvedCount={event.participant_count}
               participants={participants}
+              attendanceOpen={windows.attendanceOpen && status !== "cancelled"}
+              qrOpen={windows.qrOpen && status !== "cancelled"}
+              waitlistLength={waitlist?.length ?? 0}
             />
           )}
 
@@ -457,6 +508,47 @@ function GuestJoinCard({
           {signIn}
         </Link>
       </p>
+    </div>
+  );
+}
+
+/** "Who's going": overlapping avatars (signed-in viewers) and a short sentence. */
+function AttendeeFaces({
+  count,
+  people,
+  label,
+}: {
+  count: number;
+  people: { username: string; display_name: string; avatar_url: string | null }[];
+  label: string;
+}) {
+  return (
+    <div className="flex items-center gap-3">
+      {people.length > 0 && (
+        <div className="flex -space-x-2">
+          {people.slice(0, 5).map((p) => (
+            <Link
+              key={p.username}
+              href={`/u/${p.username}`}
+              title={p.display_name}
+              className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-orange/15 text-xs font-bold text-orange-dark ring-2 ring-surface"
+            >
+              {p.avatar_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={p.avatar_url} alt="" className="h-full w-full object-cover" />
+              ) : (
+                p.display_name.replace(/^@/, "").slice(0, 1).toUpperCase()
+              )}
+            </Link>
+          ))}
+          {count > 5 && (
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-cream-warm text-[11px] font-semibold text-ink/70 ring-2 ring-surface">
+              +{count - 5}
+            </span>
+          )}
+        </div>
+      )}
+      <p className="text-sm text-ink/75">{label}</p>
     </div>
   );
 }

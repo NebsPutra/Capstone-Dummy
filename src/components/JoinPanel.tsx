@@ -25,6 +25,7 @@ export function JoinPanel({
   isOwner,
   myParticipation,
   fee,
+  waitlistPosition = 0,
 }: {
   eventId: string;
   inviteToken: string | null;
@@ -35,6 +36,8 @@ export function JoinPanel({
   myParticipation: EventParticipant | null;
   /** Shown in the phone bar next to the Join button. */
   fee: number | string;
+  /** Your place on the waiting list (0 = not on it). */
+  waitlistPosition?: number;
 }) {
   const router = useRouter();
   const supabase = createClient();
@@ -79,6 +82,24 @@ export function JoinPanel({
         return;
       }
       toast((data as ParticipationStatus) === "pending" ? t("join.requested") : t("join.joined"));
+      router.refresh();
+    });
+  }
+
+  function joinWaitlist() {
+    run(async () => {
+      const { error: rpcError } = await supabase.rpc("join_waitlist", { p_event_id: eventId, p_token: inviteToken });
+      if (rpcError) return setError(friendlyErrorKey(rpcError, "join_waitlist"));
+      toast(t("waitlist.joined"));
+      router.refresh();
+    });
+  }
+
+  function leaveWaitlist() {
+    run(async () => {
+      const { error: rpcError } = await supabase.rpc("leave_waitlist", { p_event_id: eventId });
+      if (rpcError) return setError(friendlyErrorKey(rpcError, "leave_waitlist"));
+      toast(t("waitlist.left"));
       router.refresh();
     });
   }
@@ -141,6 +162,31 @@ export function JoinPanel({
       : null;
 
   const label = joinPermission === "open" ? t("join.join") : t("join.request");
+
+  // Full: a waiting list instead of a dead end (migration 023).
+  if (status === "full") {
+    return (
+      <div ref={cardRef} className="card space-y-3 p-5 text-center">
+        {waitlistPosition > 0 ? (
+          <>
+            <p className="text-sm font-medium">{t("waitlist.position", { n: waitlistPosition })}</p>
+            <p className="text-xs text-ink/65">{t("waitlist.how")}</p>
+            <button onClick={leaveWaitlist} disabled={loading} className="text-sm font-medium text-danger disabled:opacity-60">
+              {t("waitlist.leave")}
+            </button>
+          </>
+        ) : (
+          <>
+            <p className="text-sm text-ink/70">{t("waitlist.full")}</p>
+            <PrimaryButton onClick={joinWaitlist} loading={loading} className="w-full py-3.5">
+              {t("waitlist.join")}
+            </PrimaryButton>
+          </>
+        )}
+        {error && <Alert>{t(error)}</Alert>}
+      </div>
+    );
+  }
 
   return (
     <div ref={cardRef} className="card space-y-3 p-5">

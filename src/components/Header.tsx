@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Bell, ChevronDown, LogOut, Settings, User } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { disablePush } from "@/lib/pushClient";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
 import { Logo } from "./Logo";
@@ -33,6 +34,7 @@ export function Header({
   async function signOut() {
     if (signingOut) return;
     setSigningOut(true);
+    await disablePush(); // the next person on this device must not get these pushes
     await createClient().auth.signOut();
     router.replace("/login");
     router.refresh();
