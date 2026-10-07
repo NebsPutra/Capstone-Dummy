@@ -2,7 +2,7 @@
 
 **Date:** 2026-09-30
 **Scope:** Static (read-only) review of the Komunitas web application — Supabase RLS policies, `security definer` SQL functions, the Next.js API routes, and client-side trust boundaries. No dynamic scanning or exploitation was run, and no live data was touched.
-**Reviewer:** A Team (static review, Claude Code assisted)
+**Reviewer:** A Team (static review)
 **Commit reviewed:** `db0acda` and the working tree on `main`.
 
 ---

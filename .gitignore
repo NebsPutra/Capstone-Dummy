@@ -8,8 +8,6 @@ node_modules
 .DS_Store
 brag-output*/
 
-# graphify output
-graphify-out/
 
 # Local ad videos and meeting notes (kept outside the repo)
 /ADS-PHONE.mp4
