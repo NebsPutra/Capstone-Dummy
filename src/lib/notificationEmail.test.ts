@@ -28,6 +28,17 @@ describe("notificationEmail", () => {
     expect(e.action.href).toBe(`${origin}/activities/abc`);
   });
 
+  it("emails an announcement with the admin's text and its own opt-out footer", () => {
+    const e = notificationEmail(
+      { type: "announcement", params: { title: "Plan your weekend", body: "Create an activity.\n\nBuat aktivitas." }, link: "/create" },
+      origin
+    )!;
+    expect(e.subject).toBe("Plan your weekend");
+    expect(e.paragraphs).toEqual(["Create an activity.", "Buat aktivitas."]);
+    expect(e.action.href).toBe(`${origin}/create`);
+    expect(e.footer).toContain("News and tips");
+  });
+
   it("skips types that aren't emailed", () => {
     expect(notificationEmail({ type: "security_alert" }, origin)).toBeNull();
   });

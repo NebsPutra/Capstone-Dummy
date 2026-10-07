@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { Badge, Empty, PageHeader, fmtDateTime } from "@/components/admin/ui";
 import { feedHref, useFeedText, type FeedItem } from "@/components/admin/AdminDashboard";
+import { AnnouncementComposer } from "@/components/admin/AnnouncementComposer";
 
 export default function AdminNotificationsPage() {
   const { t, lang } = useLanguage();
@@ -36,6 +37,7 @@ export default function AdminNotificationsPage() {
           </>
         }
       />
+      <AnnouncementComposer />
       {!items ? <div className="skeleton h-64" /> : !items.length ? <Empty text={t("notif.caughtUp")} /> : (
         <ul className="space-y-2">
           {items.map((f) => (

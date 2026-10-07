@@ -476,7 +476,7 @@ export function BlockedUsers() {
 // Notification preferences
 // ---------------------------------------------------------------------------
 
-// Mirrors public._mutable_notification_types() (migration 008); security,
+// Mirrors public._mutable_notification_types() (migrations 008, 022, 029); security,
 // account, support and join decisions can't be muted.
 const MUTABLE_TYPES = [
   "event_comment",
@@ -489,6 +489,7 @@ const MUTABLE_TYPES = [
   "group_new_event",
   "interest_match",
   "rate_activity",
+  "announcement",
 ] as const;
 
 export function NotificationPrefs() {
