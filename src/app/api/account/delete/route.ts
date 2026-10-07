@@ -63,11 +63,13 @@ export async function POST(req: NextRequest) {
     if (error) return fail(table, error);
   }
 
-  // 3. Uploaded banners (stored under the user's id).
-  const { data: files } = await admin.storage.from("event-banners").list(uid, { limit: 1000 });
-  if (files?.length) {
-    const { error } = await admin.storage.from("event-banners").remove(files.map((f) => `${uid}/${f.name}`));
-    if (error) return fail("banners", error);
+  // 3. Uploaded banners and profile pictures (stored under the user's id).
+  for (const bucket of ["event-banners", "avatars"]) {
+    const { data: files } = await admin.storage.from(bucket).list(uid, { limit: 1000 });
+    if (files?.length) {
+      const { error } = await admin.storage.from(bucket).remove(files.map((f) => `${uid}/${f.name}`));
+      if (error) return fail(bucket, error);
+    }
   }
 
   // 4. Strip the profile. The username change triggers the social cleanup

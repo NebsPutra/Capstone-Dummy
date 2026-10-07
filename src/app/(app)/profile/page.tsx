@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getServerT } from "@/lib/i18n/server";
 import { ProfileEditor } from "@/components/ProfileEditor";
+import { AvatarUpload } from "@/components/AvatarUpload";
 import { SocialLinksEditor, UsernameCard } from "@/components/social/ProfileSettings";
 import type { Interest, Profile } from "@/types";
 
@@ -36,9 +37,7 @@ export default async function ProfilePage() {
     <div className="mx-auto max-w-2xl space-y-6">
       <div className="card p-6">
         <div className="flex items-center gap-4">
-          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-orange-deep text-2xl font-bold text-white">
-            {(p?.nickname || p?.full_name || "U")[0].toUpperCase()}
-          </div>
+          <AvatarUpload userId={user!.id} name={p?.nickname || p?.full_name || "U"} url={p?.avatar_url ?? null} />
           <div className="min-w-0">
             <h1 className="truncate text-xl font-bold">{p?.nickname || p?.full_name}</h1>
             <p className="text-sm text-ink/65">
