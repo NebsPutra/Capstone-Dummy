@@ -11,6 +11,7 @@ const LINKS = [
   ["/create", "announce.link.create"],
   ["/explore", "announce.link.explore"],
   ["/dashboard", "announce.link.dashboard"],
+  ["/profile", "announce.link.profile"],
 ] as const;
 
 /**
