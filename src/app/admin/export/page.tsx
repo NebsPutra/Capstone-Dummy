@@ -10,7 +10,7 @@ import { DATASETS, collect, downloadBlob, rowCount, toDocx, toXlsx, type ChartIm
 import { cn } from "@/lib/utils";
 import { Alert, PrimaryButton } from "@/components/ui";
 import { PageHeader, RangePicker, fmtDateTime } from "@/components/admin/ui";
-import { exportNodePng, nodePngBytes, useChartColors } from "@/components/admin/charts";
+import { exportNodePng, nodesPngBytes, useChartColors } from "@/components/admin/charts";
 import { EventCharts, HobbyCharts, UserCharts, type EventAnalytics, type HobbyAnalytics, type UserAnalytics } from "@/components/admin/Analytics";
 
 type Format = "xlsx" | "docx" | "png";
@@ -88,7 +88,7 @@ export default function ExportCenterPage() {
         const images: Partial<Record<"users" | "events" | "hobbies", ChartImage[]>> = {};
         for (const group of ["users", "events", "hobbies"] as const) {
           const cards = [...(pngRef.current?.querySelectorAll<HTMLElement>(`[data-group="${group}"] [data-chart-card]`) ?? [])].filter((c) => c.querySelector("svg.recharts-surface"));
-          images[group] = await Promise.all(cards.map((c) => nodePngBytes(c, "#FFFFFF")));
+          images[group] = await nodesPngBytes(cards, "#FFFFFF");
         }
         setPct(80);
         const tally = <T extends Record<string, string>>(xs: T[] | null, key: keyof T) =>

@@ -25,7 +25,7 @@ const sheets: Sheets = {
   complaints: Array.from({ length: 6 }, (_, i) => ({ ref: `C-${i}`, created_at: "2026-10-02T09:00:00Z", category: ["bug", "content", "safety"][i % 3], severity: "low", status: ["OPEN", "RESOLVED"][i % 2], subject: "x", anonymous: false, contact: null, email: "sent", event_ref: null, last_update: null })),
   analytics: [
     { section: "kpi", metric: "total_users", period: null, value: 40 },
-    ...["2026-09-01", "2026-09-08", "2026-09-15", "2026-09-22", "2026-09-29"].map((p, i) => ({ section: "user_growth", metric: "new_users", period: p, value: 3 + i * 2 })),
+    ...["2026-09-01", "2026-09-08", "2026-09-15", "2026-09-22", "2026-09-29"].map((p, i) => ({ section: "user_growth", metric: "new_users", period: p, value: i === 1 ? 0 : 3 + i * 2 })),
   ],
   audit: Array.from({ length: 25 }, (_, i) => ({ time: "2026-10-03T10:00:00Z", actor: "admin", role: "admin", action: ["user_suspended", "event_hidden", "chart_exported"][i % 3], entity: "user", entity_id: String(i), old_value: null, new_value: null })),
 };
@@ -39,6 +39,7 @@ describe("buildXlsx", () => {
     const charts = Object.keys(zip.files).filter((f) => /^xl\/charts\/chart\d+\.xml$/.test(f));
     expect(charts).toHaveLength(11);
     expect(await zip.file("[Content_Types].xml")!.async("string")).toContain("drawingml.chart+xml");
+    for (const c of charts) expect(await zip.file(c)!.async("string")).not.toMatch(/<c:v>(undefined|NaN)<\/c:v>/); // Excel refuses the file
 
     const wb = new ExcelJS.Workbook();
     await wb.xlsx.load(Buffer.from(bytes) as unknown as ArrayBuffer);

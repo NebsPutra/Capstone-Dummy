@@ -91,7 +91,7 @@ interface ChartDef {
 
 function chartXml(c: ChartDef): string {
   const strCache = `<c:strCache><c:ptCount val="${c.cats.length}"/>${c.cats.map((v, i) => `<c:pt idx="${i}"><c:v>${xml(v)}</c:v></c:pt>`).join("")}</c:strCache>`;
-  const numCache = `<c:numCache><c:formatCode>General</c:formatCode><c:ptCount val="${c.vals.length}"/>${c.vals.map((v, i) => `<c:pt idx="${i}"><c:v>${v}</c:v></c:pt>`).join("")}</c:numCache>`;
+  const numCache = `<c:numCache><c:formatCode>General</c:formatCode><c:ptCount val="${c.vals.length}"/>${c.vals.map((v, i) => `<c:pt idx="${i}"><c:v>${Number.isFinite(v) ? v : 0}</c:v></c:pt>`).join("")}</c:numCache>`;
   const cat = `<c:cat><c:strRef><c:f>${xml(c.catRef)}</c:f>${strCache}</c:strRef></c:cat>`;
   const val = `<c:val><c:numRef><c:f>${xml(c.valRef)}</c:f>${numCache}</c:numRef></c:val>`;
   const fill = (hex: string) => `<c:spPr><a:solidFill><a:srgbClr val="${hex}"/></a:solidFill></c:spPr>`;
@@ -347,8 +347,10 @@ export async function buildXlsx(s: Sheets, meta: XlsxMeta, L: Label): Promise<Ui
       valRef: `${q(pName)}!$${colLetter(mCol(0) - 1)}$${first}:$${colLetter(mCol(0) - 1)}$${last}`,
       cats: Array.from({ length: last - first + 1 }, (_, i) => String(pivot.getCell(first + i, 1).value)),
       vals: Array.from({ length: last - first + 1 }, (_, i) => {
-        const v = pivot.getCell(first + i, mCol(0)).value as number | { result: number };
-        return typeof v === "number" ? v : v.result;
+        // ExcelJS drops a cached result of 0, so fall back to 0 (Excel rejects
+        // a chart whose cache holds "undefined").
+        const v = pivot.getCell(first + i, mCol(0)).value as number | { result?: number };
+        return typeof v === "number" ? v : (v.result ?? 0);
       }),
     });
     r += 3;

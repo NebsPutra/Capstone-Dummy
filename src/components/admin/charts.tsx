@@ -49,13 +49,22 @@ export async function exportNodePng(node: HTMLElement, filename: string, backgro
     .then(() => {});
 }
 
-/** A rendered chart card as PNG bytes (export button left out), for the Word report. */
-export async function nodePngBytes(node: HTMLElement, background: string) {
-  const { toPng } = await import("html-to-image");
-  const url = await toPng(node, { pixelRatio: 2, backgroundColor: background, cacheBust: true, filter: (n) => !(n instanceof HTMLButtonElement) });
-  const bin = atob(url.split(",")[1]);
-  const data = Uint8Array.from(bin, (c) => c.charCodeAt(0));
-  return { data, w: node.offsetWidth, h: node.offsetHeight };
+/**
+ * Rendered chart cards as PNG bytes (export buttons left out), for the Word
+ * report. Fonts are embedded once and cards are captured one at a time;
+ * per-card font fetching made 18 charts take minutes.
+ */
+export async function nodesPngBytes(nodes: HTMLElement[], background: string) {
+  const { toPng, getFontEmbedCSS } = await import("html-to-image");
+  if (!nodes.length) return [];
+  const fontEmbedCSS = await getFontEmbedCSS(nodes[0]);
+  const out = [];
+  for (const node of nodes) {
+    const url = await toPng(node, { pixelRatio: 2, backgroundColor: background, fontEmbedCSS, filter: (n) => !(n instanceof HTMLButtonElement) });
+    const bin = atob(url.split(",")[1]);
+    out.push({ data: Uint8Array.from(bin, (c) => c.charCodeAt(0)), w: node.offsetWidth, h: node.offsetHeight });
+  }
+  return out;
 }
 
 /** Card with title, PNG export and a "not enough data" state for tiny datasets. */
