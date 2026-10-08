@@ -6,11 +6,11 @@ import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import type { TranslationKey } from "@/lib/i18n/translations";
 import { rangeFor, type DateRange } from "@/lib/admin";
-import { DATASETS, collect, downloadBlob, rowCount, toDocx, toXlsx, type Dataset, type ReportData } from "@/lib/exporters";
+import { DATASETS, collect, downloadBlob, rowCount, toDocx, toXlsx, type ChartImage, type Dataset, type ReportData } from "@/lib/exporters";
 import { cn } from "@/lib/utils";
 import { Alert, PrimaryButton } from "@/components/ui";
 import { PageHeader, RangePicker, fmtDateTime } from "@/components/admin/ui";
-import { exportNodePng, useChartColors } from "@/components/admin/charts";
+import { exportNodePng, nodePngBytes, useChartColors } from "@/components/admin/charts";
 import { EventCharts, HobbyCharts, UserCharts, type EventAnalytics, type HobbyAnalytics, type UserAnalytics } from "@/components/admin/Analytics";
 
 type Format = "xlsx" | "docx" | "png";
@@ -75,13 +75,22 @@ export default function ExportCenterPage() {
         const sheets = await collect(sb, dataset, opt, setPct);
         rows = rowCount(sheets);
         file = `komunitas-${dataset}-${stamp}.xlsx`;
-        downloadBlob(await toXlsx(sheets, { title: t("report.title"), period, generated: fmtDateTime(new Date().toISOString(), lang) }), file);
+        downloadBlob(await toXlsx(sheets, { title: t("report.title"), period, generated: fmtDateTime(new Date().toISOString(), lang) }, tr), file);
       } else if (format === "docx") {
         const [k, u, e, h, c, a] = await Promise.all([
           sb.rpc("admin_dashboard_kpis", args), sb.rpc("admin_user_analytics", args), sb.rpc("admin_event_analytics", args), sb.rpc("admin_hobby_analytics", args),
           sb.from("complaints").select("status").gte("created_at", args.p_from), sb.from("audit_logs").select("action").gte("created_at", args.p_from).limit(5000),
         ]);
-        setPct(70);
+        setPct(60);
+        // Render the analytics charts below, then capture each card for the report.
+        setCharts({ u: u.data as UserAnalytics, e: e.data as EventAnalytics, h: h.data as HobbyAnalytics });
+        await new Promise((r) => setTimeout(r, 1200)); // let charts render
+        const images: Partial<Record<"users" | "events" | "hobbies", ChartImage[]>> = {};
+        for (const group of ["users", "events", "hobbies"] as const) {
+          const cards = [...(pngRef.current?.querySelectorAll<HTMLElement>(`[data-group="${group}"] [data-chart-card]`) ?? [])].filter((c) => c.querySelector("svg.recharts-surface"));
+          images[group] = await Promise.all(cards.map((c) => nodePngBytes(c, "#FFFFFF")));
+        }
+        setPct(80);
         const tally = <T extends Record<string, string>>(xs: T[] | null, key: keyof T) =>
           Object.entries((xs ?? []).reduce<Record<string, number>>((m, x) => ({ ...m, [x[key]]: (m[x[key]] ?? 0) + 1 }), {})).map(([k2, n]) => ({ k: k2, n }));
         const report: ReportData = {
@@ -91,7 +100,7 @@ export default function ExportCenterPage() {
         };
         rows = report.users.by_city.length + report.events.by_category.length;
         file = `komunitas-report-${stamp}.docx`;
-        downloadBlob(await toDocx(report, tr, { period, generated: fmtDateTime(new Date().toISOString(), lang) }), file);
+        downloadBlob(await toDocx(report, tr, { period, generated: fmtDateTime(new Date().toISOString(), lang) }, images), file);
       } else {
         const [u, e, h] = await Promise.all([sb.rpc("admin_user_analytics", args), sb.rpc("admin_event_analytics", args), sb.rpc("admin_hobby_analytics", args)]);
         setCharts({ u: u.data as UserAnalytics, e: e.data as EventAnalytics, h: h.data as HobbyAnalytics });
@@ -150,12 +159,12 @@ export default function ExportCenterPage() {
           <p key={j.id} className="text-xs text-ink/70">{fmtDateTime(j.created_at, lang)} · {j.dataset} · {j.format} · {j.status}{j.row_count != null ? ` · ${j.row_count}` : ""}</p>
         ))}
       </section>
-      {format === "png" && charts && (
+      {format !== "xlsx" && charts && (
         <div ref={pngRef} className="space-y-4 rounded-2xl bg-cream p-6">
           <h2 className="text-lg font-bold">{t("report.title")} · {period}</h2>
-          <UserCharts d={charts.u} loading={false} />
-          <EventCharts d={charts.e} loading={false} />
-          <HobbyCharts d={charts.h} loading={false} />
+          <div data-group="users" className="space-y-4"><UserCharts d={charts.u} loading={false} /></div>
+          <div data-group="events" className="space-y-4"><EventCharts d={charts.e} loading={false} /></div>
+          <div data-group="hobbies" className="space-y-4"><HobbyCharts d={charts.h} loading={false} /></div>
         </div>
       )}
     </div>

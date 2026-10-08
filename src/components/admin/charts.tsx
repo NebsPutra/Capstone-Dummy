@@ -49,6 +49,15 @@ export async function exportNodePng(node: HTMLElement, filename: string, backgro
     .then(() => {});
 }
 
+/** A rendered chart card as PNG bytes (export button left out), for the Word report. */
+export async function nodePngBytes(node: HTMLElement, background: string) {
+  const { toPng } = await import("html-to-image");
+  const url = await toPng(node, { pixelRatio: 2, backgroundColor: background, cacheBust: true, filter: (n) => !(n instanceof HTMLButtonElement) });
+  const bin = atob(url.split(",")[1]);
+  const data = Uint8Array.from(bin, (c) => c.charCodeAt(0));
+  return { data, w: node.offsetWidth, h: node.offsetHeight };
+}
+
 /** Card with title, PNG export and a "not enough data" state for tiny datasets. */
 export function ChartCard({
   title,
@@ -73,7 +82,7 @@ export function ChartCard({
   const [busy, setBusy] = useState(false);
   const notEnough = !loading && typeof total === "number" && total < minTotal;
   return (
-    <div ref={ref} className={`card flex flex-col gap-3 p-4 ${className}`}>
+    <div ref={ref} data-chart-card className={`card flex flex-col gap-3 p-4 ${className}`}>
       <div className="flex items-start justify-between gap-2">
         <h3 className="text-sm font-semibold">{title}</h3>
         {!loading && !notEnough && (
