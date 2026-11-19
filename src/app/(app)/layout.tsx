@@ -9,6 +9,7 @@ import { LegalFooter } from "@/components/LegalFooter";
 import { SkipLink } from "@/components/SkipLink";
 import { GuestShell } from "@/components/GuestShell";
 import { isGuestPath } from "@/lib/guest";
+import { IdleTimeout } from "@/components/IdleTimeout";
 
 export default async function AppLayout({
   children,
@@ -57,6 +58,7 @@ export default async function AppLayout({
   return (
     <div className="ambient-gradient flex min-h-screen">
       <SkipLink />
+      <IdleTimeout />
       <Sidebar isAdmin={isAdmin} unreadMessages={(unreadMessages as number | null) ?? 0} />
       <div className="flex min-h-screen min-w-0 flex-1 flex-col">
         <Header

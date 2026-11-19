@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getServerT } from "@/lib/i18n/server";
 import { ROLE_RANK } from "@/lib/admin";
 import { AdminShell } from "@/components/admin/AdminShell";
+import { IdleTimeout } from "@/components/IdleTimeout";
 
 /**
  * Server-side gate for the whole admin area. This only decides what to
@@ -31,6 +32,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   return (
     <AdminShell rank={rank} role={profile!.role}>
+      <IdleTimeout />
       {children}
     </AdminShell>
   );

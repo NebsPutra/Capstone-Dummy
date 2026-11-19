@@ -36,6 +36,14 @@ function SignInSwitch() {
   );
 }
 
+/** Shown after the session timeout signed someone out (src/proxy.ts, IdleTimeout). */
+function ExpiredNotice() {
+  const { t } = useLanguage();
+  const expired = useSearchParams().get("expired");
+  if (expired !== "idle" && expired !== "expired") return null;
+  return <Alert tone="info">{t(expired === "idle" ? "session.expiredIdle" : "session.expiredMax")}</Alert>;
+}
+
 type PinReason = "invalid" | "no_pin" | "locked" | "rate_limited" | "suspended" | "unavailable" | "error";
 
 /**
@@ -140,6 +148,7 @@ function PinSignIn({
         noValidate
         className="space-y-5"
       >
+        <ExpiredNotice />
         <FieldShell id="identifier" label={t("pinLogin.identifier")} error={identifierError ? t("pinLogin.identifierRequired") : null}>
           <input
             id="identifier"
@@ -403,6 +412,7 @@ function SignIn({ initialEmail, onUsePin }: { initialEmail: string; onUsePin: ()
     >
       {step === "email" && (
         <form onSubmit={submitEmail} noValidate className="space-y-4">
+          <ExpiredNotice />
           <FieldShell id="email" label={t("auth.email")} error={error === "auth.emailInvalid" ? t(error) : null}>
             <input
               id="email"
