@@ -10,6 +10,8 @@ import { useReducedMotion } from "@/lib/reducedMotion";
  * (WCAG 2.2.2) and stays on its poster for prefers-reduced-motion users until
  * they press play. public/promo.mp4 is a silent 720p re-encode (~4 MB) of the
  * 1080p promo; replace both files together if the promo changes.
+ * public/promo-poster.jpg is the frame at 17.5s (the map and an activity card),
+ * so the hero shows the product rather than the logo.
  * Phones and data-saver mode don't autoplay either: the 4 MB only downloads
  * when someone taps play.
  */

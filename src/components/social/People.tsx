@@ -143,7 +143,7 @@ export function PersonRow({ person, onChange }: { person: PersonCard; onChange?:
           <span className="block truncate text-xs text-ink/65">{sub}</span>
           {(person.mutual > 0 || person.primary_interest) && (
             <span className="block truncate text-xs text-ink/65">
-              {person.primary_interest && `${person.primary_interest.emoji ?? ""} ${td(`interest.${person.primary_interest.key}`, person.primary_interest.label)}`}
+              {person.primary_interest && td(`interest.${person.primary_interest.key}`, person.primary_interest.label)}
               {person.primary_interest && person.mutual > 0 && " · "}
               {person.mutual > 0 && t("social.mutual", { n: person.mutual })}
             </span>

@@ -170,7 +170,7 @@ export function Combobox({
       <div className="relative">
         <Search
           size={16}
-          className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-ink/35"
+          className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-ink/55"
           aria-hidden
         />
         <input
@@ -221,7 +221,7 @@ export function Combobox({
         ) : (
           <ChevronDown
             size={16}
-            className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-ink/35"
+            className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-ink/55"
             aria-hidden
           />
         )}

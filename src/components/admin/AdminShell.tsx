@@ -177,7 +177,7 @@ export function AdminShell({ rank, role, children }: { rank: number; role: strin
         <nav className="flex-1 space-y-4 overflow-y-auto px-3 pb-4">
           {groups.map((g) => (
             <div key={g.key}>
-              <p className="px-3 pb-1 text-[11px] font-semibold uppercase tracking-wider text-ink/35">{t(g.key)}</p>
+              <p className="px-3 pb-1 text-[11px] font-semibold uppercase tracking-wider text-ink/65">{t(g.key)}</p>
               {g.items.map(({ href, key, icon: Icon }) => (
                 <Link
                   key={href}

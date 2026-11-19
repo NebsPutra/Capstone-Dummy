@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { CheckCircle2 } from "lucide-react";
+import { Check, CheckCircle2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { LEGAL_UPDATED } from "@/lib/legal/documents";
@@ -154,7 +154,7 @@ function Register() {
                   i <= stepIndex ? "bg-orange-deep text-white" : "bg-cream-warm text-ink/65"
                 }`}
               >
-                {i < stepIndex ? "✓" : i + 1}
+                {i < stepIndex ? <Check size={14} strokeWidth={3} aria-hidden /> : i + 1}
               </span>
               <span className={`hidden text-xs sm:inline ${i === stepIndex ? "font-semibold" : "text-ink/65"}`}>
                 {label}

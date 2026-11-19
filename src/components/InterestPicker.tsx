@@ -3,6 +3,8 @@
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import type { Interest } from "@/types";
 import { FieldShell, inputClass } from "./ui";
+import { TopicIcon } from "@/components/TopicIcon";
+import { Check } from "lucide-react";
 
 /** Multi-select hobby chips (registration + profile editing). */
 export function InterestPicker({
@@ -25,11 +27,11 @@ export function InterestPicker({
             type="button"
             aria-pressed={on}
             onClick={() => onToggle(i.id)}
-            className={`rounded-full border px-3.5 py-2 text-sm font-medium transition ${
+            className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm font-medium transition ${
               on ? "border-orange bg-orange/10 text-orange-dark" : "border-ink/10 text-ink/70 hover:bg-cream-warm"
             }`}
           >
-            {on ? "☑" : "☐"} {i.emoji} {td(`interest.${i.key}`, i.label)}
+            {on ? <Check size={15} aria-hidden className="shrink-0" /> : <TopicIcon k={i.key} />} {td(`interest.${i.key}`, i.label)}
           </button>
         );
       })}
@@ -66,7 +68,7 @@ export function PrimaryInterestSelect({
             .filter((i) => selected.includes(i.id))
             .map((i) => (
               <option key={i.id} value={i.id}>
-                {i.emoji} {td(`interest.${i.key}`, i.label)}
+                {td(`interest.${i.key}`, i.label)}
               </option>
             ))}
         </select>

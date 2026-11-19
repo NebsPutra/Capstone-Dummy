@@ -8,6 +8,7 @@ import { jakartaToday } from "@/lib/utils";
 import { ActivityCard } from "@/components/ActivityCard";
 import { GroupMembershipButton, type GroupCard } from "@/components/Groups";
 import { EVENT_LIST_SELECT, type EventRecord } from "@/types";
+import { TopicIcon } from "@/components/TopicIcon";
 
 type Member = { username: string; display_name: string; avatar_url: string | null; role: "owner" | "member" };
 
@@ -41,8 +42,8 @@ export default async function GroupPage({ params }: { params: Promise<{ id: stri
       <div className="card space-y-4 p-6">
         <div>
           {g.category && (
-            <p className="text-sm font-medium text-orange-dark">
-              {g.category.emoji} {td(`category.${g.category.key}`, g.category.label)}
+            <p className="flex items-center gap-1.5 text-sm font-medium text-orange-dark">
+              <TopicIcon k={g.category.key} /> {td(`category.${g.category.key}`, g.category.label)}
             </p>
           )}
           <h1 className="mt-1 text-2xl font-bold">{g.name}</h1>

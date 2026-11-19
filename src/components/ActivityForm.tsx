@@ -349,7 +349,7 @@ export function ActivityForm({
             <option value="">{t("create.selectCategory")}</option>
             {categories.map((c) => (
               <option key={c.id} value={c.id}>
-                {c.emoji} {td(`category.${c.key}`, c.label)}
+                {td(`category.${c.key}`, c.label)}
               </option>
             ))}
           </select>

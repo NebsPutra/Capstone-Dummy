@@ -209,7 +209,7 @@ function CommentItem({ c, thread, eventId, reload, isReply }: { c: Comment; thre
               />
             </div>
           ) : placeholder ? (
-            <p className="mt-0.5 text-sm italic text-ink/65">{placeholder}</p>
+            <p className="mt-0.5 text-sm text-ink/65">{placeholder}</p>
           ) : (
             <p className={cn("mt-0.5 whitespace-pre-line break-words text-sm leading-relaxed", c.status === "hidden" && "text-ink/65")}>{c.body}</p>
           )}

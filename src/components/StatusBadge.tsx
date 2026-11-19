@@ -4,16 +4,7 @@ import type { EventStatus } from "@/types";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
-const DOT: Record<EventStatus, string> = {
-  open: "🟢",
-  almost_full: "🟡",
-  full: "🔴",
-  ongoing: "🔵",
-  completed: "⚪",
-  cancelled: "⚫",
-};
-
-const TONE: Record<EventStatus, string> = {
+ const TONE: Record<EventStatus, string> = {
   open: "bg-success-soft text-success",
   almost_full: "bg-warning-soft text-warning",
   full: "bg-danger-soft text-danger",
@@ -32,7 +23,8 @@ export function StatusBadge({ status }: { status: EventStatus }) {
         TONE[status]
       )}
     >
-      <span aria-hidden>{DOT[status]}</span>
+      {/* Dot in the badge colour: the state, at a glance. */}
+      <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-current" />
       {t(`status.${status}`)}
     </span>
   );

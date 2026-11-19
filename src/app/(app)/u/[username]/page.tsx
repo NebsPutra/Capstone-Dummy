@@ -7,6 +7,7 @@ import { formatDate } from "@/lib/utils";
 import { socialLabel, socialUrl, type Relationship, type SocialLink } from "@/lib/social";
 import { Avatar, ProfileActions, UserFriendsList } from "@/components/social/People";
 import { MessageButton } from "@/components/messages/Messages";
+import { TopicIcon } from "@/components/TopicIcon";
 
 type Interest = { key: string; label: string; emoji: string | null };
 interface PublicProfile {
@@ -174,11 +175,11 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
                 {d.interests.map((i) => (
                   <span
                     key={i.key}
-                    className={`rounded-full px-3 py-1 text-xs font-medium ${
+                    className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium ${
                       i.key === d.primary_interest?.key ? "bg-orange/15 text-orange-dark" : "bg-cream-warm text-ink/70"
                     }`}
                   >
-                    {i.emoji} {td(`interest.${i.key}`, i.label)}
+                    <TopicIcon k={i.key} size={13} /> {td(`interest.${i.key}`, i.label)}
                   </span>
                 ))}
               </div>
@@ -233,7 +234,7 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
                     <li key={i} className="text-sm">
                       <p className="text-orange-dark" aria-label={t("rating.stars", { n: r.rating })}>
                         {"★".repeat(r.rating)}
-                        <span className="text-ink/20">{"★".repeat(5 - r.rating)}</span>
+                        <span className="text-ink/35">{"★".repeat(5 - r.rating)}</span>
                       </p>
                       <p className="mt-0.5 text-ink/80">{r.comment}</p>
                       <p className="mt-0.5 flex flex-wrap gap-x-3 text-xs text-ink/60">

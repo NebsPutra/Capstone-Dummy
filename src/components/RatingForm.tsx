@@ -59,7 +59,7 @@ export function RatingForm({
                 size={30}
                 aria-hidden
                 className={`transition peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-orange-dark ${
-                  n <= rating ? "fill-orange text-orange" : "text-ink/30"
+                  n <= rating ? "fill-orange text-orange" : "text-ink/40"
                 }`}
               />
               <span className="sr-only">{t("rating.stars", { n })}</span>

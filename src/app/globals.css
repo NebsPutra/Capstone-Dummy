@@ -60,6 +60,22 @@ body {
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
 
+/* Headings break into even lines; paragraphs avoid a lone last word. */
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+p {
+  text-wrap: pretty;
+}
+
+/* Numbers that change or sit in columns keep a fixed width (no jitter). */
+time,
+table {
+  font-variant-numeric: tabular-nums;
+}
+
 .ambient-gradient {
   background: rgb(var(--cream));
 }
@@ -190,6 +206,18 @@ body {
   background: rgba(194, 65, 12, 0.25);
   border-radius: 999px;
 }
+
+/* Feedback motion: a toast rises in, a confirmation icon pops. Short, and
+   switched off by the reduced-motion rule below. */
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+}
+@keyframes pop {
+  0% { transform: scale(0.4); opacity: 0; }
+  60% { transform: scale(1.15); opacity: 1; }
+}
+.animate-rise { animation: rise-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) backwards; }
+.animate-pop { animation: pop 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) backwards; }
 
 /* Respect users who ask for less motion. */
 @media (prefers-reduced-motion: reduce) {

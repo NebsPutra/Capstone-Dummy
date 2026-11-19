@@ -1,9 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { MapPin, Plus, Users } from "lucide-react";
+import { Loader2, MapPin, Plus, Users } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import type { TranslationKey } from "@/lib/i18n/translations";
@@ -11,6 +11,7 @@ import { friendlyErrorKey } from "@/lib/errors";
 import { formatDate } from "@/lib/utils";
 import type { Category } from "@/types";
 import { Alert, FieldShell, PrimaryButton, inputClass } from "./ui";
+import { TopicIcon } from "@/components/TopicIcon";
 
 export type GroupCard = {
   id: string;
@@ -95,8 +96,12 @@ export function Groups() {
                 className="card block h-full space-y-2 p-5 transition hover:-translate-y-0.5 hover:shadow-lift"
               >
                 <div className="flex items-start justify-between gap-2">
-                  <p className="text-sm font-medium text-orange-dark">
-                    {g.category ? `${g.category.emoji} ${td(`category.${g.category.key}`, g.category.label)}` : null}
+                  <p className="flex items-center gap-1.5 text-sm font-medium text-orange-dark">
+                    {g.category && (
+                      <>
+                        <TopicIcon k={g.category.key} /> {td(`category.${g.category.key}`, g.category.label)}
+                      </>
+                    )}
                   </p>
                   {g.i_am_member && (
                     <span className="shrink-0 rounded-full bg-success-soft px-2.5 py-0.5 text-xs font-semibold text-success">
@@ -196,7 +201,7 @@ function NewGroupForm({ onCancel }: { onCancel: () => void }) {
             <option value="">{t("create.selectCategory")}</option>
             {categories.map((c) => (
               <option key={c.id} value={c.id}>
-                {c.emoji} {td(`category.${c.key}`, c.label)}
+                {td(`category.${c.key}`, c.label)}
               </option>
             ))}
           </select>
@@ -244,17 +249,20 @@ export function GroupMembershipButton({ groupId, isMember }: { groupId: string; 
   const supabase = useMemo(() => createClient(), []);
   const router = useRouter();
   const { t } = useLanguage();
-  const [busy, setBusy] = useState(false);
+  const [working, setBusy] = useState(false);
+  const [refreshing, startRefresh] = useTransition(); // busy until the page shows the new state
+  const busy = working || refreshing;
   const [error, setError] = useState<TranslationKey | null>(null);
 
   async function toggle() {
+    if (busy) return;
     if (isMember && !window.confirm(t("groups.leaveConfirm"))) return;
     setBusy(true);
     setError(null);
     const { error: rpcError } = await supabase.rpc("group_toggle_membership", { p_group: groupId });
     setBusy(false);
     if (rpcError) return setError(friendlyErrorKey(rpcError, "group_toggle_membership"));
-    router.refresh();
+    startRefresh(() => router.refresh());
   }
 
   return (
@@ -263,12 +271,14 @@ export function GroupMembershipButton({ groupId, isMember }: { groupId: string; 
         type="button"
         onClick={toggle}
         disabled={busy}
-        className={`rounded-full px-6 py-2.5 text-sm font-semibold disabled:opacity-60 ${
+        aria-busy={busy || undefined}
+        className={`inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-semibold disabled:opacity-60 ${
           isMember
             ? "border border-ink/10 text-ink/75 hover:bg-cream-warm"
             : "bg-orange-deep text-white shadow-soft hover:bg-orange-deeper"
         }`}
       >
+        {busy && <Loader2 size={15} aria-hidden className="animate-spin" />}
         {isMember ? t("groups.leave") : t("groups.join")}
       </button>
       {error && <Alert>{t(error)}</Alert>}

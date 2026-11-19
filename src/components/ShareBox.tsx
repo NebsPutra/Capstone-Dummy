@@ -56,7 +56,7 @@ export function ShareBox({
             onClick={copyLink}
             className="flex w-full items-center justify-center gap-2 rounded-full border border-ink/10 py-2.5 text-sm font-medium hover:bg-cream-warm"
           >
-            {copied ? <Check size={16} /> : <Copy size={16} />}
+            {copied ? <Check size={16} className="animate-pop" /> : <Copy size={16} />}
             {copied ? t("share.copied") : t("share.copyLink")}
           </button>
           <a

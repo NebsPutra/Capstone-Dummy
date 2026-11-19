@@ -76,7 +76,7 @@ export function ActivityCard({
             {day ? t(`card.${day}`) : formatDate(event.event_date, lang)}
           </span>
           <span>·</span>
-          <span>{formatTimeRange(event.start_time, event.end_time)}</span>
+          <span className="tabular-nums">{formatTimeRange(event.start_time, event.end_time)}</span>
         </div>
         <div className="flex items-center justify-between gap-2 text-sm text-ink/70">
           <span className="truncate">{event.location_name}</span>
@@ -94,7 +94,7 @@ export function ActivityCard({
           ) : (
             <div className="flex items-center gap-1.5 text-sm text-ink/70">
               <Users size={15} aria-hidden />
-              <span>
+              <span className="tabular-nums">
                 {event.participant_count ?? 0}/{event.max_participants}
                 <span className="sr-only"> {t("event.participants")}</span>
               </span>

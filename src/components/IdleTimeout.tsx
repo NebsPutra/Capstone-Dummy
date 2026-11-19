@@ -98,7 +98,7 @@ export function IdleTimeout() {
       <h2 id="idle-title" className="text-lg font-bold">
         {t("idle.title")}
       </h2>
-      <p className="mt-2 text-sm text-ink/70" aria-live="polite">
+      <p className="mt-2 text-sm tabular-nums text-ink/70" aria-live="polite">
         {t("idle.body", { s: secondsLeft })}
       </p>
       <div className="mt-5 flex flex-col gap-2">

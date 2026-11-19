@@ -42,7 +42,8 @@ export default async function PresentPage({ params }: { params: Promise<{ id: st
         max={event.max_participants}
         scanLabel={t("present.scan")}
         goingLabel={t("present.going")}
-        codeLabel={t("present.code", { code: event.event_code })}
+        codeLabel={t("present.code", { code: "\u0000" })}
+        code={event.event_code}
       />
     </main>
   );

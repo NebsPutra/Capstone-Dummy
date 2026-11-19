@@ -126,7 +126,7 @@ export function MessagesInbox({ activeId, compact }: { activeId?: string; compac
                     <span className={cn("truncate text-sm", c.unread > 0 ? "font-medium text-ink" : "text-ink/65")}>
                       {c.last ? `${c.last.is_mine ? `${t("messages.you")}: ` : ""}${c.last.body ?? t("messages.deleted")}` : t("messages.noMessagesYet")}
                     </span>
-                    {c.muted && <BellOff size={12} className="shrink-0 text-ink/30" aria-label={t("messages.muted")} />}
+                    {c.muted && <BellOff size={12} className="shrink-0 text-ink/55" aria-label={t("messages.muted")} />}
                     {c.unread > 0 && (
                       <span className="ml-auto shrink-0 rounded-full bg-orange-deep px-1.5 text-[11px] font-bold leading-5 text-white">{c.unread > 99 ? "99+" : c.unread}</span>
                     )}
@@ -371,7 +371,7 @@ export function ChatThread({ initial, initialMessages }: { initial: Conversation
                   className={cn(
                     "max-w-[80%] rounded-2xl px-3.5 py-2 text-left text-sm sm:max-w-[70%]",
                     m.deleted
-                      ? "border border-dashed border-ink/15 italic text-ink/65"
+                      ? "border border-dashed border-ink/15 text-ink/65"
                       : m.is_mine
                       ? "rounded-br-md bg-orange-deep text-white"
                       : "rounded-bl-md bg-cream-warm text-ink"

@@ -12,13 +12,16 @@ export function PresentLive({
   scanLabel,
   goingLabel,
   codeLabel,
+  code,
 }: {
   eventId: string;
   joinUrl: string;
   max: number;
   scanLabel: string;
   goingLabel: string;
+  /** Translated sentence with a \u0000 placeholder where the code goes. */
   codeLabel: string;
+  code: string;
 }) {
   const supabase = useMemo(() => createClient(), []);
   const [count, setCount] = useState<number | null>(null);
@@ -48,12 +51,17 @@ export function PresentLive({
       </div>
       <div className="space-y-3">
         <p className="text-xl font-semibold md:text-2xl">{scanLabel}</p>
-        <p aria-live="polite" className={`text-7xl font-extrabold text-orange-dark transition-transform md:text-8xl ${bump ? "scale-110" : ""}`}>
+        <p aria-live="polite" className={`text-7xl font-extrabold tabular-nums text-orange-dark transition-transform md:text-8xl ${bump ? "scale-110" : ""}`}>
           {count ?? "–"}
-          <span className="text-3xl text-ink/50 md:text-4xl">/{max}</span>
+          <span className="text-3xl text-ink/65 tabular-nums md:text-4xl">/{max}</span>
         </p>
         <p className="text-lg text-ink/70">{goingLabel}</p>
-        <p className="font-mono text-base text-ink/60">{codeLabel}</p>
+        {/* Only the code itself is monospaced (easy to read out and type). */}
+        <p className="text-base text-ink/70">
+          {codeLabel.split("\u0000")[0]}
+          <span className="font-mono font-semibold text-ink">{code}</span>
+          {codeLabel.split("\u0000")[1]}
+        </p>
       </div>
     </div>
   );

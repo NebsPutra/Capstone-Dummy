@@ -135,7 +135,7 @@ export function Sidebar({ isAdmin = false, unreadMessages = 0 }: { isAdmin?: boo
             {collapsed ? (
               <hr className="mx-3 mb-2 border-ink/10" />
             ) : (
-              <p className="mb-1.5 px-3 text-[11px] font-semibold uppercase tracking-wider text-ink/45">{t(key)}</p>
+              <p className="mb-1.5 px-3 text-[11px] font-semibold uppercase tracking-wider text-ink/65">{t(key)}</p>
             )}
             <div className="space-y-0.5">{items.map(link)}</div>
           </div>

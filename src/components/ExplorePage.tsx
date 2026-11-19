@@ -18,6 +18,7 @@ import { PUBLIC_EVENT_SELECT, type Category, type EventRecord } from "@/types";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import type { TranslationKey } from "@/lib/i18n/translations";
 import { ActivityGridSkeleton } from "@/components/Skeletons";
+import { TopicIcon } from "@/components/TopicIcon";
 
 const TIME_FILTERS = ["today", "tomorrow", "thisWeek", "upcoming", "ongoing"] as const;
 const PRICE_FILTERS = ["free", "paid"] as const;
@@ -164,10 +165,8 @@ export function ExplorePage({ initial, initialCategories }: { initial: EventReco
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">{t("explore.title")}</h1>
-        <p className="mt-1 text-ink/70">{t("explore.subtitle")}</p>
-      </div>
+      {/* No subtitle: the search box placeholder already says what you can search. */}
+      <h1 className="text-2xl font-bold">{t("explore.title")}</h1>
 
       {/* The code box is for people who were given a code: a small link until needed. */}
       {codeOpen ? (
@@ -201,7 +200,7 @@ export function ExplorePage({ initial, initialCategories }: { initial: EventReco
             active={activeCategory === c.id}
             onClick={() => setActiveCategory(activeCategory === c.id ? null : c.id)}
           >
-            {c.emoji} {td(`category.${c.key}`, c.label)}
+            <TopicIcon k={c.key} /> {td(`category.${c.key}`, c.label)}
           </Chip>
         ))}
       </div>
@@ -336,7 +335,7 @@ function Chip({
       onClick={onClick}
       disabled={disabled}
       aria-pressed={active}
-      className={`shrink-0 rounded-full border px-3.5 py-1.5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-40 ${
+      className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-40 ${
         active ? "border-orange bg-orange-deep text-white" : "border-ink/10 bg-surface text-ink/70 hover:bg-cream-warm"
       }`}
     >

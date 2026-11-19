@@ -63,8 +63,7 @@ export function LandingPage({ upcoming }: { upcoming: EventRecord[] }) {
           <div className="text-center md:order-last md:text-left">
             <h1 className="text-4xl font-extrabold leading-tight tracking-tight md:text-5xl">
               <span className="block">{t("landing.headline1")}</span>
-              <span className="block">{t("landing.headline2")}</span>
-              <span className="block text-orange-dark">{t("landing.headline3")}</span>
+              <span className="block text-orange-dark">{t("landing.headline2")}</span>
             </h1>
             <p className="mx-auto mt-6 max-w-xl text-lg text-ink/70 md:mx-0">
               {t("landing.subheadline")}
@@ -93,7 +92,7 @@ export function LandingPage({ upcoming }: { upcoming: EventRecord[] }) {
       <section className="mx-auto max-w-5xl px-6 pb-24 pt-16">
         <ul className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {FEATURES.map(({ title, desc }) => (
-            <li key={title} className="border-t border-ink/10 pt-4">
+            <li key={title}>
               <h3 className="font-semibold">{title}</h3>
               <p className="mt-1.5 text-sm text-ink/70">{desc}</p>
             </li>

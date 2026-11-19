@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { friendlyErrorKey } from "@/lib/errors";
@@ -13,11 +14,16 @@ export function RequestActions({ participantId }: { participantId: string }) {
   const supabase = createClient();
   const toast = useToast();
   const { t } = useLanguage();
-  const [busy, setBusy] = useState<"approved" | "rejected" | null>(null);
+  const [acting, setBusy] = useState<"approved" | "rejected" | null>(null);
+  const [last, setLast] = useState<"approved" | "rejected" | null>(null);
+  // Busy until the refreshed list is on screen, not just until the request returns.
+  const [refreshing, startRefresh] = useTransition();
+  const busy = acting ?? (refreshing ? last : null);
 
   async function decide(status: "approved" | "rejected") {
     if (busy) return;
     setBusy(status);
+    setLast(status);
     const { error } = await supabase.rpc("set_participant_status", {
       p_participant_id: participantId,
       p_status: status,
@@ -28,7 +34,7 @@ export function RequestActions({ participantId }: { participantId: string }) {
       return;
     }
     toast(status === "approved" ? t("event.approved") : t("event.rejected"));
-    router.refresh();
+    startRefresh(() => router.refresh());
   }
 
   return (
@@ -36,16 +42,20 @@ export function RequestActions({ participantId }: { participantId: string }) {
       <button
         onClick={() => decide("approved")}
         disabled={Boolean(busy)}
-        className="rounded-full bg-orange-deep px-4 py-1.5 text-xs font-semibold text-white disabled:opacity-50"
+        aria-busy={busy === "approved" || undefined}
+        className="inline-flex items-center gap-1 rounded-full bg-orange-deep px-4 py-1.5 text-xs font-semibold text-white disabled:opacity-50"
       >
-        {busy === "approved" ? "…" : t("event.approve")}
+        {busy === "approved" && <Loader2 size={12} aria-hidden className="animate-spin" />}
+        {t("event.approve")}
       </button>
       <button
         onClick={() => decide("rejected")}
         disabled={Boolean(busy)}
-        className="rounded-full border border-ink/10 px-4 py-1.5 text-xs font-semibold disabled:opacity-50"
+        aria-busy={busy === "rejected" || undefined}
+        className="inline-flex items-center gap-1 rounded-full border border-ink/10 px-4 py-1.5 text-xs font-semibold disabled:opacity-50"
       >
-        {busy === "rejected" ? "…" : t("event.reject")}
+        {busy === "rejected" && <Loader2 size={12} aria-hidden className="animate-spin" />}
+        {t("event.reject")}
       </button>
     </div>
   );

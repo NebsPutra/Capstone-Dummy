@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { CalendarPlus, Copy, Pencil, Presentation } from "lucide-react";
+import { CalendarPlus, Copy, MapPin, Pencil, Presentation } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getServerT } from "@/lib/i18n/server";
 import { getEventForViewer } from "@/lib/eventAccess";
@@ -333,7 +333,7 @@ export default async function EventDetailsPage({
           )}
 
           <div>
-            <h2 className="mb-1 text-sm font-semibold">📍 {t("event.location")}</h2>
+            <h2 className="mb-1 flex items-center gap-1.5 text-sm font-semibold"><MapPin size={15} aria-hidden className="shrink-0 text-orange-dark" /> {t("event.location")}</h2>
             <p className="text-sm text-ink/70">{event.location_name}</p>
             {event.address && <p className="text-sm text-ink/65">{event.address}</p>}
             <div className="mt-3">
@@ -518,7 +518,7 @@ function GuestJoinCard({
     <div className="card space-y-3 p-6 text-center">
       {/* Phones: pinned "Sign up to join" (guest pages have no bottom nav). */}
       {joinable && (
-        <div className="fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-30 flex items-center justify-between gap-3 rounded-2xl border border-ink/10 bg-surface/95 p-2.5 pl-4 text-left shadow-lift backdrop-blur-sm md:hidden">
+        <div className="fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-30 flex items-center justify-between gap-3 rounded-full border border-ink/10 bg-surface/95 p-2.5 pl-5 text-left shadow-lift backdrop-blur-sm md:hidden">
           <span className="text-sm font-semibold">{fee}</span>
           <Link
             href={`/register${next}`}

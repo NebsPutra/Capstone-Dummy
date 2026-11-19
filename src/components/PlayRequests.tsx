@@ -10,6 +10,7 @@ import { friendlyErrorKey } from "@/lib/errors";
 import type { Category } from "@/types";
 import { Alert, FieldShell, PrimaryButton, inputClass } from "./ui";
 import { useToast } from "./Toast";
+import { TopicIcon } from "@/components/TopicIcon";
 
 type PlayRequest = {
   id: string;
@@ -110,8 +111,8 @@ export function PlayRequests() {
             return (
               <li key={r.id} className="card space-y-3 p-5">
                 <div>
-                  <p className="text-sm font-medium text-orange-dark">
-                    {r.category.emoji} {td(`category.${r.category.key}`, r.category.label)}
+                  <p className="flex items-center gap-1.5 text-sm font-medium text-orange-dark">
+                    <TopicIcon k={r.category.key} /> {td(`category.${r.category.key}`, r.category.label)}
                   </p>
                   <h2 className="mt-0.5 text-lg font-bold leading-snug">{r.title}</h2>
                   <p className="text-sm text-ink/70">
@@ -247,7 +248,7 @@ function NewRequestForm({ onCancel, onCreated }: { onCancel: () => void; onCreat
             <option value="">{t("create.selectCategory")}</option>
             {categories.map((c) => (
               <option key={c.id} value={c.id}>
-                {c.emoji} {td(`category.${c.key}`, c.label)}
+                {td(`category.${c.key}`, c.label)}
               </option>
             ))}
           </select>

@@ -5,6 +5,8 @@ import { ProfileEditor } from "@/components/ProfileEditor";
 import { AvatarUpload } from "@/components/AvatarUpload";
 import { SocialLinksEditor, UsernameCard } from "@/components/social/ProfileSettings";
 import type { Interest, Profile } from "@/types";
+import { ChevronRight, Eye, Lock, MapPin, Users } from "lucide-react";
+import { TopicIcon } from "@/components/TopicIcon";
 
 export default async function ProfilePage() {
   const supabase = await createClient();
@@ -44,21 +46,25 @@ export default async function ProfilePage() {
               @{p?.username}
               {p?.gender && ` · ${t(`gender.${p.gender}`)}`}
             </p>
-            {area && <p className="text-sm text-ink/65">📍 {area}</p>}
+            {area && (
+              <p className="flex items-center gap-1 text-sm text-ink/65">
+                <MapPin size={14} aria-hidden className="shrink-0" /> {area}
+              </p>
+            )}
           </div>
         </div>
 
-        <div className="mt-5 grid grid-cols-3 gap-3 border-y border-ink/5 py-4 text-center">
+        <div className="mt-6 grid grid-cols-3 gap-3 text-center">
           <div>
-            <p className="text-lg font-bold">{createdCount ?? 0}</p>
+            <p className="text-lg font-bold tabular-nums">{createdCount ?? 0}</p>
             <p className="text-xs text-ink/65">{t("profile.created")}</p>
           </div>
           <div>
-            <p className="text-lg font-bold">{joinedCount ?? 0}</p>
+            <p className="text-lg font-bold tabular-nums">{joinedCount ?? 0}</p>
             <p className="text-xs text-ink/65">{t("profile.joined")}</p>
           </div>
           <div>
-            <p className="text-lg font-bold">{primary?.emoji ?? "—"}</p>
+            <p className="flex h-7 items-center justify-center text-orange-dark">{primary ? <TopicIcon k={primary.key} size={22} /> : "-"}</p>
             <p className="text-xs text-ink/65">
               {primary ? td(`interest.${primary.key}`, primary.label) : t("profile.noPrimary")}
             </p>
@@ -73,11 +79,11 @@ export default async function ProfilePage() {
             .map((i) => (
               <span
                 key={i.id}
-                className={`rounded-full px-3 py-1 text-xs font-medium ${
+                className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium ${
                   i.id === primary?.id ? "bg-orange/15 text-orange-dark" : "bg-cream-warm text-ink/70"
                 }`}
               >
-                {i.emoji} {td(`interest.${i.key}`, i.label)}
+                <TopicIcon k={i.key} size={13} /> {td(`interest.${i.key}`, i.label)}
               </span>
             ))}
         </div>
@@ -85,28 +91,28 @@ export default async function ProfilePage() {
 
       <a href="/profile/security" className="card flex items-center justify-between gap-3 p-5 transition hover:border-orange/40">
         <div className="min-w-0">
-          <p className="font-semibold">🔒 {t("security.title")}</p>
+          <p className="flex items-center gap-2 font-semibold"><Lock size={16} aria-hidden className="shrink-0 text-orange-dark" /> {t("security.title")}</p>
           <p className={`text-sm ${p?.pin_set_at ? "text-ink/65" : "font-medium text-orange-dark"}`}>
             {p?.pin_set_at ? t("security.cardDesc") : t("security.cardNoPin")}
           </p>
         </div>
-        <span className="text-ink/65">→</span>
+        <ChevronRight size={18} aria-hidden className="shrink-0 text-ink/65" />
       </a>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <a href="/profile/privacy" className="card flex items-center justify-between gap-3 p-5 transition hover:border-orange/40">
           <div className="min-w-0">
-            <p className="font-semibold">👁️ {t("privacy.title")}</p>
+            <p className="flex items-center gap-2 font-semibold"><Eye size={16} aria-hidden className="shrink-0 text-orange-dark" /> {t("privacy.title")}</p>
             <p className="text-sm text-ink/65">{t("privacy.cardDesc")}</p>
           </div>
-          <span className="text-ink/65">→</span>
+          <ChevronRight size={18} aria-hidden className="shrink-0 text-ink/65" />
         </a>
         <a href="/community?tab=friends" className="card flex items-center justify-between gap-3 p-5 transition hover:border-orange/40">
           <div className="min-w-0">
-            <p className="font-semibold">🤝 {t("social.tab.friends")}</p>
+            <p className="flex items-center gap-2 font-semibold"><Users size={16} aria-hidden className="shrink-0 text-orange-dark" /> {t("social.tab.friends")}</p>
             <p className="text-sm text-ink/65">{t("social.friendsCount", { n: friendCount ?? 0 })}</p>
           </div>
-          <span className="text-ink/65">→</span>
+          <ChevronRight size={18} aria-hidden className="shrink-0 text-ink/65" />
         </a>
       </div>
 

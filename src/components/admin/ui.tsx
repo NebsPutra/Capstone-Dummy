@@ -64,7 +64,7 @@ export function KpiCard({
 }) {
   const { t, lang } = useLanguage();
   return (
-    <div className="card p-4 transition hover:-translate-y-0.5 hover:shadow-lift">
+    <div className="card p-4 tabular-nums transition hover:-translate-y-0.5 hover:shadow-lift">
       <div className="flex items-center justify-between gap-2 text-xs font-medium text-ink/65">
         <span>{label}</span>
         {icon}

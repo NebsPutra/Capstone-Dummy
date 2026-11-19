@@ -43,11 +43,10 @@ const enBase = {
   "nav.accountMenu": "Account menu",
 
   // Landing
-  "landing.headline1": "Find Activities.",
-  "landing.headline2": "Meet People.",
-  "landing.headline3": "Build Community.",
+  "landing.headline1": "Run, read and play",
+  "landing.headline2": "with people near you.",
   "landing.subheadline":
-    "Discover and create social activities around you based on your interests and location.",
+    "Join a Saturday run, a book club or a badminton match this week. Free, and no app to install.",
   "landing.ctaExplore": "Explore activities",
   "landing.ctaCreate": "Create an activity",
   "landing.login": "Sign in",
@@ -513,7 +512,6 @@ const enBase = {
 
   // Explore
   "explore.title": "Explore activities",
-  "explore.subtitle": "Search activities by name, area or event code, at any distance.",
   "explore.searchPlaceholder": "Search activities, places, event codes...",
   "explore.nearby": "Nearest first",
   "explore.today": "Today",
@@ -783,11 +781,10 @@ const idBase: Record<keyof typeof enBase, string> = {
   "nav.accountMenu": "Menu akun",
 
   // Landing
-  "landing.headline1": "Temukan Aktivitas.",
-  "landing.headline2": "Temui Orang Baru.",
-  "landing.headline3": "Bangun Komunitas.",
+  "landing.headline1": "Lari, baca, main bareng",
+  "landing.headline2": "orang sekitarmu.",
   "landing.subheadline":
-    "Temukan dan buat aktivitas sosial di sekitarmu berdasarkan minat dan lokasimu.",
+    "Ikut lari pagi, klub buku, atau main badminton minggu ini. Gratis, tanpa perlu instal aplikasi.",
   "landing.ctaExplore": "Jelajahi aktivitas",
   "landing.ctaCreate": "Buat aktivitas",
   "landing.login": "Masuk",
@@ -1253,7 +1250,6 @@ const idBase: Record<keyof typeof enBase, string> = {
 
   // Explore
   "explore.title": "Jelajahi aktivitas",
-  "explore.subtitle": "Cari aktivitas berdasarkan nama, area, atau kode acara, di jarak berapa pun.",
   "explore.searchPlaceholder": "Cari aktivitas, tempat, kode acara...",
   "explore.nearby": "Terdekat dulu",
   "explore.today": "Hari ini",

@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { QRCodeSVG } from "qrcode.react";
-import { Download } from "lucide-react";
+import { Download, Loader2 } from "lucide-react";
 import { toCsv } from "@/lib/csv";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -52,7 +52,12 @@ export function OwnerPanel({
   const supabase = createClient();
   const toast = useToast();
   const { t } = useLanguage();
-  const [busyId, setBusyId] = useState<string | null>(null);
+  const [actingId, setBusyId] = useState<string | null>(null);
+  // Keep the row busy until the reloaded list is on screen, not just until the
+  // request returns (thesis test: "Approve" looked like it did nothing).
+  const [refreshing, startRefresh] = useTransition();
+  const [lastId, setLastId] = useState<string | null>(null);
+  const busyId = actingId ?? (refreshing ? lastId : null);
   const [error, setError] = useState<TranslationKey | null>(null);
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [message, setMessage] = useState("");
@@ -66,12 +71,13 @@ export function OwnerPanel({
   async function act(id: string, call: () => RpcResult, success: TranslationKey) {
     if (busyId) return; // one action at a time
     setBusyId(id);
+    setLastId(id);
     setError(null);
     const { error: rpcError } = await call();
     setBusyId(null);
     if (rpcError) return setError(friendlyErrorKey(rpcError, success));
     toast(t(success));
-    router.refresh();
+    startRefresh(() => router.refresh());
   }
 
   function setStatus(p: ParticipantRow, next: "approved" | "rejected") {
@@ -148,8 +154,10 @@ export function OwnerPanel({
               <button
                 disabled={Boolean(busyId) || locked || approvedCount >= maxParticipants}
                 onClick={() => setStatus(p, "approved")}
-                className="rounded-full bg-orange-deep px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50"
+                aria-busy={busyId === p.id || undefined}
+                className="inline-flex items-center gap-1 rounded-full bg-orange-deep px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50"
               >
+                {busyId === p.id && <Loader2 size={12} aria-hidden className="animate-spin" />}
                 {t("event.approve")}
               </button>
               <button

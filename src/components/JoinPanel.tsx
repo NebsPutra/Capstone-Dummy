@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
+import { CheckCircle2, Clock } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { friendlyErrorKey } from "@/lib/errors";
@@ -54,11 +55,17 @@ export function JoinPanel({
     io.observe(card);
     return () => io.disconnect();
   }, []);
-  const [loading, setLoading] = useState(false);
+  const [working, setLoading] = useState(false);
+  // The page reload after an action takes a few seconds; stay "loading" until
+  // the new state is on screen (thesis test: the button looked unchanged).
+  const [refreshing, startRefresh] = useTransition();
+  const refresh = () => startRefresh(() => router.refresh());
+  const loading = working || refreshing;
   const [error, setError] = useState<TranslationKey | null>(null);
+  const [justJoined, setJustJoined] = useState(false); // animate only right after joining, not on every visit
 
   async function run(fn: () => Promise<void>) {
-    if (busy.current) return; // double-click protection
+    if (busy.current || refreshing) return; // double-click protection
     busy.current = true;
     setLoading(true);
     setError(null);
@@ -78,11 +85,12 @@ export function JoinPanel({
       });
       if (rpcError) {
         setError(friendlyErrorKey(rpcError, "join_event"));
-        router.refresh(); // e.g. it just became full — show the real state
+        refresh(); // e.g. it just became full — show the real state
         return;
       }
+      setJustJoined(true);
       toast((data as ParticipationStatus) === "pending" ? t("join.requested") : t("join.joined"));
-      router.refresh();
+      refresh();
     });
   }
 
@@ -91,7 +99,7 @@ export function JoinPanel({
       const { error: rpcError } = await supabase.rpc("join_waitlist", { p_event_id: eventId, p_token: inviteToken });
       if (rpcError) return setError(friendlyErrorKey(rpcError, "join_waitlist"));
       toast(t("waitlist.joined"));
-      router.refresh();
+      refresh();
     });
   }
 
@@ -100,7 +108,7 @@ export function JoinPanel({
       const { error: rpcError } = await supabase.rpc("leave_waitlist", { p_event_id: eventId });
       if (rpcError) return setError(friendlyErrorKey(rpcError, "leave_waitlist"));
       toast(t("waitlist.left"));
-      router.refresh();
+      refresh();
     });
   }
 
@@ -110,7 +118,7 @@ export function JoinPanel({
       const { error: rpcError } = await supabase.rpc("leave_event", { p_event_id: eventId });
       if (rpcError) return setError(friendlyErrorKey(rpcError, "leave_event"));
       toast(t("join.left"));
-      router.refresh();
+      refresh();
     });
   }
 
@@ -130,6 +138,9 @@ export function JoinPanel({
 
     return (
       <div className="card space-y-3 p-5 text-center">
+        {/* Pops in right after joining: confirms the action at a glance. */}
+        {myParticipation.status === "approved" && <CheckCircle2 size={28} aria-hidden className={`${justJoined ? "animate-pop " : ""}mx-auto text-success`} />}
+        {myParticipation.status === "pending" && <Clock size={28} aria-hidden className={`${justJoined ? "animate-pop " : ""}mx-auto text-warning`} />}
         <p className="text-sm font-medium">{t(label)}</p>
         {myParticipation.status !== "rejected" && canLeave && (
           <button
@@ -192,7 +203,7 @@ export function JoinPanel({
     <div ref={cardRef} className="card space-y-3 p-5">
       {/* Phones: the same action, pinned above the bottom bar while this card is off screen. */}
       {joinable && !cardVisible && (
-        <div className="fixed inset-x-3 bottom-[calc(5.25rem+env(safe-area-inset-bottom))] z-30 flex items-center justify-between gap-3 rounded-2xl border border-ink/10 bg-surface/95 p-2.5 pl-4 shadow-lift backdrop-blur-sm md:hidden">
+        <div className="fixed inset-x-3 bottom-[calc(5.25rem+env(safe-area-inset-bottom))] z-30 flex items-center justify-between gap-3 rounded-full border border-ink/10 bg-surface/95 p-2.5 pl-5 shadow-lift backdrop-blur-sm md:hidden">
           <span className="text-sm font-semibold">{formatFee(fee, lang)}</span>
           <PrimaryButton
             onClick={handleJoin}
