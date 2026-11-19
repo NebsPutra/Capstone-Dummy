@@ -98,8 +98,21 @@ export function getDistricts(cityId: string): Promise<WilayahItem[]> {
   return cached(`districts:${cityId}`, () => fetchList(`districts/${cityId}.json`));
 }
 
+// Villages the emsifa data leaves out, with their official BPS codes.
+// BB-17 (thesis test): Kelurahan Menteng was missing from Kecamatan Menteng.
+// Add an entry here if users report another missing kelurahan/desa.
+const MISSING_VILLAGES: Record<string, WilayahItem[]> = {
+  "3173020": [{ id: "3173020001", name: "Menteng" }],
+};
+
+/** Adds known-missing villages (skipping any the API already returns), sorted by name. */
+export function withMissingVillages(kecamatanId: string, list: WilayahItem[]): WilayahItem[] {
+  const extra = (MISSING_VILLAGES[kecamatanId] ?? []).filter((v) => !list.some((x) => x.id === v.id));
+  return extra.length ? [...list, ...extra].sort((a, b) => a.name.localeCompare(b.name, "id")) : list;
+}
+
 export function getVillages(kecamatanId: string): Promise<WilayahItem[]> {
-  return cached(`villages:${kecamatanId}`, () => fetchList(`villages/${kecamatanId}.json`));
+  return cached(`villages:${kecamatanId}`, async () => withMissingVillages(kecamatanId, await fetchList(`villages/${kecamatanId}.json`)));
 }
 
 /** BPS codes are hierarchical: a city id's first two digits are its province. */
