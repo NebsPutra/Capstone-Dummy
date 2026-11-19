@@ -62,10 +62,64 @@ export function MobileNav({ isAdmin = false, unreadMessages = 0 }: { isAdmin?: b
     moreActive,
   ].indexOf(true);
   const { nav, goo, bubble } = useLiquidBubble(active);
+  const reduced = useReducedMotion();
+  const closing = useRef(false);
 
-  // Close the sheet after navigating.
+  // The sheet grows out of the "More" button like a drop, and melts back into it.
+  const sheetMotion = (open: boolean) => {
+    const d = sheet.current;
+    const btn = nav.current?.querySelector<HTMLElement>('[data-slot="4"]');
+    if (!d || !btn) return null;
+    const p = d.getBoundingClientRect();
+    const b = btn.getBoundingClientRect();
+    d.style.transformOrigin = `${b.left + b.width / 2 - p.left}px ${Math.min(b.top + b.height / 2 - p.top, p.height)}px`;
+    const grow = [
+      { transform: "scale(0.14, 0.06)", borderRadius: "999px", opacity: 0.5 },
+      { transform: "scale(0.4, 0.55)", borderRadius: "56px", opacity: 1, offset: 0.35 },
+      { transform: "scale(1.03, 1.04)", borderRadius: "28px", offset: 0.68 },
+      { transform: "scale(0.99, 0.985)", offset: 0.84 },
+      { transform: "scale(1, 1)", borderRadius: "24px 24px 0 0" },
+    ];
+    const melt = [
+      { transform: "scale(1, 1)", borderRadius: "24px 24px 0 0", opacity: 1 },
+      { transform: "scale(0.4, 0.55)", borderRadius: "56px", offset: 0.6 },
+      { transform: "scale(0.14, 0.06)", borderRadius: "999px", opacity: 0 },
+    ];
+    return open
+      ? d.animate(grow, { duration: 560, easing: "cubic-bezier(.3,1.2,.5,1)" })
+      : d.animate(melt, { duration: 300, easing: "cubic-bezier(.5,0,.75,0)", fill: "forwards" });
+  };
+  const openSheet = () => {
+    const d = sheet.current;
+    if (!d || d.open) return;
+    closing.current = false;
+    d.showModal();
+    if (reduced) return;
+    sheetMotion(true);
+    d.querySelectorAll("li").forEach((li, i) =>
+      li.animate(
+        [{ opacity: 0, transform: "translateY(14px) scale(0.85)" }, { opacity: 1, transform: "none" }],
+        { duration: 380, delay: 200 + i * 35, easing: "cubic-bezier(.3,1.4,.5,1)", fill: "backwards" },
+      ),
+    );
+  };
+  const closeSheet = () => {
+    const d = sheet.current;
+    if (!d?.open || closing.current) return;
+    if (reduced) return d.close();
+    closing.current = true;
+    const a = sheetMotion(false);
+    if (!a) return d.close();
+    a.onfinish = () => {
+      d.close();
+      a.cancel(); // drop the end frame so the next opening starts clean
+      closing.current = false;
+    };
+  };
+
+  // Close the sheet after navigating (unless it's already melting away).
   useEffect(() => {
-    sheet.current?.close();
+    if (!closing.current) sheet.current?.close();
   }, [pathname]);
 
   const badge = unreadMessages > 0 && (
@@ -113,7 +167,7 @@ export function MobileNav({ isAdmin = false, unreadMessages = 0 }: { isAdmin?: b
         <button
           type="button"
           data-slot={4}
-          onClick={() => sheet.current?.showModal()}
+          onClick={openSheet}
           aria-haspopup="dialog"
           className={cn(
             "relative z-10 flex flex-col items-center gap-0.5 rounded-full px-1 py-1.5 text-[10px] font-medium transition-colors",
@@ -132,15 +186,19 @@ export function MobileNav({ isAdmin = false, unreadMessages = 0 }: { isAdmin?: b
       <dialog
         ref={sheet}
         aria-label={t("nav.more")}
-        onClick={(e) => e.target === e.currentTarget && sheet.current?.close()}
-        className="m-0 mt-auto w-full max-w-none rounded-t-3xl bg-surface p-0 text-ink backdrop:bg-ink/40 md:hidden"
+        onClick={(e) => e.target === e.currentTarget && closeSheet()}
+        onCancel={(e) => {
+          e.preventDefault(); // Escape: animate out instead of vanishing
+          closeSheet();
+        }}
+        className="liquid-sheet m-0 mt-auto w-full max-w-none rounded-t-3xl bg-surface p-0 text-ink backdrop:bg-ink/40 md:hidden"
       >
         <div className="px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4">
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-base font-semibold">{t("nav.more")}</h2>
             <button
               type="button"
-              onClick={() => sheet.current?.close()}
+              onClick={closeSheet}
               aria-label={t("common.close")}
               className="rounded-full p-2 text-ink/70 hover:bg-cream-warm"
             >
@@ -154,7 +212,7 @@ export function MobileNav({ isAdmin = false, unreadMessages = 0 }: { isAdmin?: b
                 <li key={href}>
                   <Link
                     href={href}
-                    onClick={() => sheet.current?.close()}
+                    onClick={closeSheet}
                     aria-current={active ? "page" : undefined}
                     className={cn(
                       "flex flex-col items-center gap-1.5 rounded-2xl px-2 py-3 text-center text-xs font-medium",

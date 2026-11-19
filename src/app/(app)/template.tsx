@@ -1,5 +1,7 @@
-// Re-mounts on every navigation, giving each page a short fade + rise
-// (disabled automatically for prefers-reduced-motion, see globals.css).
+import { PageTransition } from "@/components/PageTransition";
+
+// Re-mounts on every navigation: the page spreads out from where you tapped
+// (see PageTransition; off for prefers-reduced-motion).
 export default function Template({ children }: { children: React.ReactNode }) {
-  return <div className="animate-page-in">{children}</div>;
+  return <PageTransition>{children}</PageTransition>;
 }
