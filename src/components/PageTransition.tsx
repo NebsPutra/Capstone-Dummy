@@ -28,10 +28,12 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
     const el = ref.current;
     if (!el || reduced || performance.now() - lastTap.t > 3000) return;
     const r = el.getBoundingClientRect();
-    const x = lastTap.x - r.left;
-    const y = lastTap.y - r.top;
-    // Radius that covers the visible part of the page from the tap point.
     const visibleH = Math.max(0, Math.min(r.height, window.innerHeight - r.top));
+    // Taps outside the page (desktop sidebar, phone tab bar) start from the
+    // nearest point of the page, so it doesn't stay blank while the circle travels.
+    const x = Math.min(Math.max(lastTap.x - r.left, 0), r.width);
+    const y = Math.min(Math.max(lastTap.y - r.top, 0), visibleH);
+    // Radius that covers the visible part of the page from that point.
     const R = Math.hypot(Math.max(x, r.width - x), Math.max(y, visibleH - y)) + 24;
     const at = `at ${x}px ${y}px`;
     el.animate(

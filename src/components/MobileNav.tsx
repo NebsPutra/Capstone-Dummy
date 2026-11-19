@@ -73,11 +73,14 @@ export function MobileNav({ isAdmin = false, unreadMessages = 0 }: { isAdmin?: b
     const p = d.getBoundingClientRect();
     const b = btn.getBoundingClientRect();
     d.style.transformOrigin = `${b.left + b.width / 2 - p.left}px ${Math.min(b.top + b.height / 2 - p.top, p.height)}px`;
+    // Each stage has its own easing (the overall timing is linear), so the
+    // drop stage is actually visible: a drop squeezes out, stretches up,
+    // spreads past full size, then settles.
     const grow = [
-      { transform: "scale(0.14, 0.06)", borderRadius: "999px", opacity: 0.5 },
-      { transform: "scale(0.4, 0.55)", borderRadius: "56px", opacity: 1, offset: 0.35 },
-      { transform: "scale(1.03, 1.04)", borderRadius: "28px", offset: 0.68 },
-      { transform: "scale(0.99, 0.985)", offset: 0.84 },
+      { transform: "scale(0.12, 0.05)", borderRadius: "999px", opacity: 0.6, easing: "ease-out" },
+      { transform: "scale(0.22, 0.32)", borderRadius: "80px", opacity: 1, offset: 0.25, easing: "ease-in-out" },
+      { transform: "scale(1.04, 1.03)", borderRadius: "30px", offset: 0.62, easing: "ease-in-out" },
+      { transform: "scale(0.985, 0.99)", offset: 0.82, easing: "ease-in-out" },
       { transform: "scale(1, 1)", borderRadius: "24px 24px 0 0" },
     ];
     const melt = [
@@ -86,7 +89,7 @@ export function MobileNav({ isAdmin = false, unreadMessages = 0 }: { isAdmin?: b
       { transform: "scale(0.14, 0.06)", borderRadius: "999px", opacity: 0 },
     ];
     return open
-      ? d.animate(grow, { duration: 560, easing: "cubic-bezier(.3,1.2,.5,1)" })
+      ? d.animate(grow, { duration: 680 })
       : d.animate(melt, { duration: 300, easing: "cubic-bezier(.5,0,.75,0)", fill: "forwards" });
   };
   const openSheet = () => {
@@ -99,7 +102,7 @@ export function MobileNav({ isAdmin = false, unreadMessages = 0 }: { isAdmin?: b
     d.querySelectorAll("li").forEach((li, i) =>
       li.animate(
         [{ opacity: 0, transform: "translateY(14px) scale(0.85)" }, { opacity: 1, transform: "none" }],
-        { duration: 380, delay: 200 + i * 35, easing: "cubic-bezier(.3,1.4,.5,1)", fill: "backwards" },
+        { duration: 380, delay: 320 + i * 35, easing: "cubic-bezier(.3,1.4,.5,1)", fill: "backwards" },
       ),
     );
   };
@@ -195,7 +198,10 @@ export function MobileNav({ isAdmin = false, unreadMessages = 0 }: { isAdmin?: b
       >
         <div className="px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4">
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-base font-semibold">{t("nav.more")}</h2>
+            {/* First focus on the title, not the close button (no stray focus ring on open). */}
+            <h2 tabIndex={-1} autoFocus className="text-base font-semibold">
+              {t("nav.more")}
+            </h2>
             <button
               type="button"
               onClick={closeSheet}
