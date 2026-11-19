@@ -100,7 +100,7 @@ export default function AdminUserDetail({ params }: { params: Promise<{ id: stri
         actions={<Badge value={p.account_status} label={t(`account.status.${p.account_status}` as "account.status.active")} />}
       />
 
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <section className="card space-y-2 p-5 text-sm">
           <h2 className="font-semibold">{t("ausers.account")}</h2>
           <p>{t("col.role")}: <b>{t(`role.${p.role}` as TranslationKey)}</b></p>
@@ -156,7 +156,7 @@ export default function AdminUserDetail({ params }: { params: Promise<{ id: stri
 
         <section className="card space-y-3 p-5 lg:col-span-2">
           <h2 className="font-semibold">{t("ausers.edit")}</h2>
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {(["full_name", "nickname", "whatsapp_number"] as const).map((k) => (
               <FieldShell key={k} id={k} label={t(k === "full_name" ? "register.fullName" : k === "nickname" ? "register.nickname" : "register.whatsapp")}>
                 <input id={k} disabled={!canEdit} value={form[k] ?? ""} onChange={(e) => setForm({ ...form, [k]: e.target.value })} className={inputClass()} />
@@ -186,7 +186,7 @@ export default function AdminUserDetail({ params }: { params: Promise<{ id: stri
         </section>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         {[
           { title: t("ausers.createdEvents"), rows: d.created_events.map((e) => ({ href: `/admin/events/${e.id}`, a: `${e.ref} · ${e.title}`, b: td(`status.${e.status}`, e.status) })) },
           { title: t("ausers.joinedEvents"), rows: d.joined_events.map((e) => ({ href: `/admin/events/${e.id}`, a: `${e.ref} · ${e.title}`, b: td(`participation.${e.participation}`, e.participation) })) },
@@ -203,7 +203,7 @@ export default function AdminUserDetail({ params }: { params: Promise<{ id: stri
         ))}
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <UserSecurityPanel userId={id} canManage={canEdit} />
         <UserSocialPanel userId={id} username={p.username} canEdit={canEdit} />
       </div>

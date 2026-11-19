@@ -82,7 +82,7 @@ export default function AdminEventDetail({ params }: { params: Promise<{ id: str
           </>
         }
       />
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <section className="card overflow-hidden lg:col-span-2">
           <EventCover
             bannerUrl={ev.banner_url}

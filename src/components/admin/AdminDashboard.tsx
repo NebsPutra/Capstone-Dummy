@@ -113,7 +113,7 @@ export function AdminDashboard() {
         <KpiCard label={t("kpi.eventsThisMonth")} value={k?.events_this_month} />
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <ChartCard title={t("chart.userGrowth")} loading={users.loading} total={users.data?.growth.at(-1)?.total}>
           <LineTrend data={users.data?.growth ?? []} lines={[{ key: "total", name: t("chart.total") }, { key: "new", name: t("chart.new") }]} />
         </ChartCard>
@@ -122,7 +122,7 @@ export function AdminDashboard() {
         </ChartCard>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <section className="card space-y-3 p-4">
           <h2 className="text-sm font-semibold">{t("admin.alertsTitle")}</h2>
           <AlertsList alerts={alerts.data} />

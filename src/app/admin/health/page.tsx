@@ -38,7 +38,7 @@ export default function AdminHealthPage() {
     <div className="space-y-4">
       <PageHeader title={t("health.title")} subtitle={h ? t("health.checkedAt", { time: fmtDateTime(h.db_time, lang) }) : undefined}
         actions={<button onClick={reload} disabled={loading} className="rounded-full border border-ink/10 bg-surface px-3 py-1.5 text-xs font-semibold">{t("health.recheck")}</button>} />
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
         {tiles.map((x) => (
           <div key={x.label} className="card space-y-1 p-4">
             <p className="flex items-center gap-2 text-sm font-semibold"><span className={`h-2.5 w-2.5 rounded-full ${tone[x.level]}`} />{x.label}</p>

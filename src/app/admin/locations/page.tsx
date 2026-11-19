@@ -21,7 +21,7 @@ export default function AdminLocationsPage() {
   return (
     <div className="space-y-6">
       <PageHeader title={t("aloc.title")} actions={<RangePicker value={range} onChange={setRange} />} />
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <ChartCard title={t("aloc.users")} loading={users.loading} total={(users.data?.by_city ?? []).reduce((s, x) => s + x.v, 0)} height={320}>
           <Bars horizontal data={(users.data?.by_city ?? []).map((x) => ({ label: x.label ?? "", v: x.v }))} bars={[{ key: "v", name: t("chart.users") }]} />
         </ChartCard>
@@ -29,7 +29,7 @@ export default function AdminLocationsPage() {
           <Bars horizontal data={(events.data?.by_city ?? []).map((x) => ({ label: x.label ?? "", v: x.v }))} bars={[{ key: "v", name: t("chart.events") }]} />
         </ChartCard>
       </div>
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         {lists.map((l) => (
           <div key={l.title} className="space-y-2">
             <h2 className="text-sm font-semibold">{l.title}</h2>

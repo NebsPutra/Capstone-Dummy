@@ -242,7 +242,8 @@ export function AdminShell({ rank, role, children }: { rank: number; role: strin
             </Link>
           </nav>
         </header>
-        <main className="flex-1 space-y-6 px-4 py-6 md:px-8">{children}</main>
+        {/* Long emails, refs and ids break instead of widening the page on phones. */}
+        <main className="min-w-0 flex-1 space-y-6 px-4 py-6 [overflow-wrap:anywhere] md:px-8">{children}</main>
       </div>
     </div>
   );

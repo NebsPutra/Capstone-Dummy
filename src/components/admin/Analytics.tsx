@@ -52,7 +52,7 @@ export function UserCharts({ d, loading }: { d: UserAnalytics | null; loading: b
         <KpiCard label={t("metric.onboarded")} value={d?.onboarded} />
         <KpiCard label={t("metric.retention")} value={d ? (d.retention_base ? `${Math.round((100 * d.retained) / d.retention_base)}%` : "—") : undefined} />
       </div>
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <ChartCard title={t("chart.userGrowth")} loading={loading} total={d?.total}>
           <LineTrend data={d?.growth ?? []} lines={[{ key: "total", name: t("chart.total") }, { key: "new", name: t("chart.new") }]} />
         </ChartCard>
@@ -101,7 +101,7 @@ export function EventCharts({ d, loading }: { d: EventAnalytics | null; loading:
         <KpiCard label={t("metric.avgFee")} value={d ? (d.avg_fee ? formatRupiah(d.avg_fee, lang) : "—") : undefined} />
         <KpiCard label={`${t("metric.free")} / ${t("metric.paid")}`} value={d ? `${d.free} / ${d.paid}` : undefined} />
       </div>
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <ChartCard title={t("chart.participation")} loading={loading} total={trend.reduce((s, r) => s + r.created + r.joins, 0)}>
           <LineTrend data={trend} lines={[{ key: "created", name: t("chart.eventsCreated") }, { key: "joins", name: t("chart.joins") }]} />
         </ChartCard>
@@ -144,7 +144,7 @@ export function HobbyCharts({ d, loading }: { d: HobbyAnalytics | null; loading:
   const hobbyKeys = (d?.popular ?? []).filter((p) => p.v > 0).slice(0, 10);
   const genders = ["male", "female", "unknown"];
   return (
-    <div className="grid gap-4 lg:grid-cols-2">
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
       <ChartCard title={t("chart.popularHobbies")} loading={loading} total={sum(d?.popular)} height={340}>
         <Bars horizontal data={(d?.popular ?? []).map((x) => ({ label: L.interest(x), v: x.v, p: x.primary }))} bars={[{ key: "v", name: t("chart.selected") }, { key: "p", name: t("chart.primary") }]} />
       </ChartCard>
@@ -273,7 +273,7 @@ function SocialCharts({ d, loading }: { d: SocialAnalytics | null; loading: bool
         <KpiCard label={t("asocial.blocks")} value={d?.blocks} />
         <KpiCard label={t("asocial.usernameChanges")} value={d?.username_changes_in_range} />
       </div>
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <ChartCard title={t("asocial.newFriendships")} loading={loading} total={sum(d?.series)} className="lg:col-span-2">
           <LineTrend data={(d?.series ?? []).map((x) => ({ t: x.t, v: x.v }))} lines={[{ key: "v", name: t("asocial.requests") }]} area />
         </ChartCard>
@@ -311,7 +311,7 @@ function EngagementCharts({ from, to }: { from: string; to: string }) {
         <KpiCard label={t("aeng.messagingUsers")} value={m.data?.messaging_users} />
         <KpiCard label={t("aeng.messageReports")} value={m.data?.open_reports} />
       </div>
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <ChartCard title={t("aeng.commentsOverTime")} loading={c.loading} total={sum(c.data?.series)}>
           <LineTrend data={(c.data?.series ?? []).map((x) => ({ t: x.t, v: x.v }))} lines={[{ key: "v", name: t("aeng.comments") }]} area />
         </ChartCard>

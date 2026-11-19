@@ -23,7 +23,7 @@ export default function AdminDataQualityPage() {
     <div className="space-y-4">
       <PageHeader title={t("dq.title")} subtitle={t("dq.subtitle")} />
       {!data ? <div className="skeleton h-64" /> : (
-        <div className="grid gap-4 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <section className="card flex items-center justify-between p-5 text-sm">
             <span>{t("dq.orphan_auth_users")}</span>
             <span className={`text-2xl font-bold ${(data.orphan_auth_users as number) > 0 ? "text-danger" : ""}`}>{data.orphan_auth_users as number}</span>

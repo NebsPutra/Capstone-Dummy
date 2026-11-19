@@ -126,7 +126,7 @@ export default function ExportCenterPage() {
     <div className="max-w-5xl space-y-6">
       <PageHeader title={t("exp.title")} subtitle={t("exp.subtitle")} />
       <Alert tone="info"><span className="flex items-start gap-2"><ShieldCheck size={16} className="mt-0.5 shrink-0" />{t("exp.privacy")}</span></Alert>
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <section className="card space-y-2 p-5">
           <h2 className="text-sm font-semibold">{t("exp.dataset")}</h2>
           <div className="grid grid-cols-2 gap-2">
