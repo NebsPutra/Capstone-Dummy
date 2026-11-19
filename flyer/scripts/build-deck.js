@@ -64,7 +64,7 @@ function footer(slide, n) {
   const grad = await gradient(1920, 1080);
   // Cream variant of the logo so it stands out on the orange title/closing slides
   const logoCream = await png(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><rect width="48" height="48" rx="13" fill="#FFF8ED"/><path d="M12.5 37.5 24 11.5l11.5 26" fill="none" stroke="#EA580C" stroke-width="5.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.6 28.4Q24 34 30.4 28.4" fill="none" stroke="#EA580C" stroke-width="3.4" stroke-linecap="round"/></svg>`, 512);
-  const qrSvg = await QRCode.toString("https://komunitasa.vercel.app", { type: "svg", margin: 0, errorCorrectionLevel: "M", color: { dark: "#292524", light: "#FFF8ED" } });
+  const qrSvg = await QRCode.toString("https://kmnts.my.id", { type: "svg", margin: 0, errorCorrectionLevel: "M", color: { dark: "#292524", light: "#FFF8ED" } });
   const qr = await png(qrSvg, 800);
 
   // 1. Title
@@ -75,7 +75,7 @@ function footer(slide, n) {
     text(s, "CAPSTONE PROJECT", { x: 0.8, y: 2.55, w: 10, h: 0.5, fontSize: 20, bold: true, color: C.peach, charSpacing: 6 });
     text(s, "A Team", { x: 0.8, y: 3.0, w: 11, h: 1.6, fontSize: 96, bold: true, color: C.cream });
     text(s, "Komunitas: our community activity platform is set up, secured and live.", { x: 0.8, y: 4.7, w: 10.5, h: 0.6, fontSize: 22, color: C.cream });
-    text(s, "komunitasa.vercel.app   ·   28 September 2026", { x: 0.8, y: 6.45, w: 10, h: 0.4, fontSize: 16, bold: true, color: C.peach });
+    text(s, "kmnts.my.id   ·   28 September 2026", { x: 0.8, y: 6.45, w: 10, h: 0.4, fontSize: 16, bold: true, color: C.peach });
     s.addNotes("Welcome. We're A Team, and this is our capstone project, Komunitas. This short deck covers how we set up our new workspace, secured and checked the app, and put the latest version live.");
   }
 
@@ -191,7 +191,7 @@ function footer(slide, n) {
     s.addShape(pres.shapes.OVAL, { x: 0.92, y: 2.28, w: 0.19, h: 0.19, fill: { color: C.green }, line: { type: "none" } });
     text(s, "Ready · Production · 28 Sep 2026", { x: 1.25, y: 2.1, w: 3.8, h: 0.55, fontSize: 14, bold: true, color: C.ink, valign: "middle" });
     text(s, "Visit", { x: 0.7, y: 3.1, w: 6, h: 0.45, fontSize: 18, color: C.muted });
-    text(s, "komunitasa.vercel.app", { x: 0.7, y: 3.5, w: 7.2, h: 0.9, fontSize: 40, bold: true, color: C.deep });
+    text(s, "kmnts.my.id", { x: 0.7, y: 3.5, w: 7.2, h: 0.9, fontSize: 40, bold: true, color: C.deep });
     text(s, [
       { text: "Sign up with your email, pick your hobbies, and see what's happening near you.", options: { breakLine: true, paraSpaceAfter: 10 } },
       { text: "Every new change now goes through the same checks before it reaches the live site." },
@@ -200,7 +200,7 @@ function footer(slide, n) {
     s.addImage({ data: qr, x: 9.1, y: 2.35, w: 3.0, h: 3.0 });
     text(s, "Scan to open the app", { x: 8.6, y: 5.6, w: 4.0, h: 0.45, fontSize: 15, bold: true, color: C.ink, align: "center" });
     footer(s, 6);
-    s.addNotes("The new version is live on komunitasa.vercel.app. Scan the QR code to try it on your phone.");
+    s.addNotes("The new version is live on kmnts.my.id. Scan the QR code to try it on your phone.");
   }
 
   // 7. Closing
@@ -212,7 +212,7 @@ function footer(slide, n) {
     text(s, "Thank you from A Team", { x: 0.7, y: 3.95, w: W - 1.4, h: 0.6, fontSize: 24, color: C.peach, align: "center" });
     const pw = 5.2;
     s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: (W - pw) / 2, y: 5.05, w: pw, h: 0.75, rectRadius: 0.37, fill: { color: C.cream }, line: { type: "none" } });
-    text(s, "komunitasa.vercel.app", { x: (W - pw) / 2, y: 5.05, w: pw, h: 0.75, fontSize: 24, bold: true, color: C.deep, align: "center", valign: "middle" });
+    text(s, "kmnts.my.id", { x: (W - pw) / 2, y: 5.05, w: pw, h: 0.75, fontSize: 24, bold: true, color: C.deep, align: "center", valign: "middle" });
     s.addNotes("Thank you. Questions are welcome, and please give Komunitas a try.");
   }
 

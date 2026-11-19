@@ -13,7 +13,7 @@ export const BUSINESS = {
   institution: "Universitas Terbuka",
   country: "Indonesia",
   email: "bennedictusputra@gmail.com",
-  site: "https://komunitasa.vercel.app",
+  site: "https://kmnts.my.id",
 };
 
 export const LEGAL_DOCS = ["privacy", "terms", "refunds", "cookies"] as const;

@@ -92,7 +92,7 @@ as an alert in the admin dashboard.
 
 **Email alerts for new messages, comments, replies, friend requests and join requests:** in Supabase, go to **Database → Webhooks →
 Create a new hook**: table `notifications`, event **Insert**, type **HTTP Request**, method `POST`,
-URL `https://komunitasa.vercel.app/api/notifications/email`, and an HTTP header
+URL `https://kmnts.my.id/api/notifications/email`, and an HTTP header
 `x-webhook-secret` set to the same value as `NOTIFY_WEBHOOK_SECRET`. Each person gets at most one
 email per type every 15 minutes. Muting a type in Settings → Notifications stops its emails too.
 

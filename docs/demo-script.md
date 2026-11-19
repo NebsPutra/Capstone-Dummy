@@ -1,6 +1,6 @@
 # Live demo script (about 8 minutes)
 
-The demo runs on the live site, https://komunitasa.vercel.app. Each step lists what to click and a line to say, in English and Bahasa Indonesia. The slide deck (`flyer/komunitas-project-deck.pptx`, `flyer/PITCH DECK CAPSTONE.pptx`) comes before it, and the backup video is there in case the network fails.
+The demo runs on the live site, https://kmnts.my.id. Each step lists what to click and a line to say, in English and Bahasa Indonesia. The slide deck (`flyer/komunitas-project-deck.pptx`, `flyer/PITCH DECK CAPSTONE.pptx`) comes before it, and the backup video is there in case the network fails.
 
 ## The day before
 

@@ -9,7 +9,7 @@ const ev = {
   date: "2026-10-06",
   start: "19:00",
   end: "21:00:00",
-  url: "https://komunitasa.vercel.app/activities/abc",
+  url: "https://kmnts.my.id/activities/abc",
 };
 
 describe("calendar links", () => {

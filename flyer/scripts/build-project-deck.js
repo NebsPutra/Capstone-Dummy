@@ -98,7 +98,7 @@ function sectionSlide(pres, grad, num, title, sub) {
 
   const grad = await gradient(1920, 1080);
   const logoCream = await png(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><rect width="48" height="48" rx="13" fill="#FFF8ED"/><path d="M12.5 37.5 24 11.5l11.5 26" fill="none" stroke="#EA580C" stroke-width="5.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.6 28.4Q24 34 30.4 28.4" fill="none" stroke="#EA580C" stroke-width="3.4" stroke-linecap="round"/></svg>`, 512);
-  const qrSvg = await QRCode.toString("https://komunitasa.vercel.app", { type: "svg", margin: 0, errorCorrectionLevel: "M", color: { dark: "#292524", light: "#FFFFFF" } });
+  const qrSvg = await QRCode.toString("https://kmnts.my.id", { type: "svg", margin: 0, errorCorrectionLevel: "M", color: { dark: "#292524", light: "#FFFFFF" } });
   const qr = await png(qrSvg, 800);
   const tagline = T("Find activities. Meet people. Build community.", "Temukan aktivitas. Temui orang baru. Bangun komunitas.");
 
@@ -112,7 +112,7 @@ function sectionSlide(pres, grad, num, title, sub) {
     text(s, tagline, { x: 0.8, y: 4.35, w: 11.5, h: 0.6, fontSize: 26, color: C.cream });
     text(s, T("The whole project: aim, how to use it, how it's built, where data lives, and what we delivered.",
       "Seluruh proyek: tujuan, cara pakai, cara dibangun, tempat data disimpan, dan hasil akhirnya."), { x: 0.8, y: 5.0, w: 11, h: 0.5, fontSize: 16, color: C.peach });
-    text(s, T("komunitasa.vercel.app   ·   Universitas Terbuka   ·   September 2026", "komunitasa.vercel.app   ·   Universitas Terbuka   ·   September 2026"), { x: 0.8, y: 6.45, w: 11, h: 0.4, fontSize: 15, bold: true, color: C.peach });
+    text(s, T("kmnts.my.id   ·   Universitas Terbuka   ·   September 2026", "kmnts.my.id   ·   Universitas Terbuka   ·   September 2026"), { x: 0.8, y: 6.45, w: 11, h: 0.4, fontSize: 15, bold: true, color: C.peach });
     s.addNotes(T(
       "Welcome. We're A Team, and this is Komunitas, our capstone project. This deck covers the whole project from the bottom up: why we built it, how people use it, how it's built, where the data is stored, and what we ended up delivering.",
       "Selamat datang. Kami A Team, dan ini Komunitas, proyek capstone kami. Presentasi ini membahas seluruh proyek dari dasar: mengapa kami membangunnya, bagaimana orang memakainya, bagaimana aplikasinya dibangun, di mana datanya disimpan, dan apa hasil akhirnya."));
@@ -212,7 +212,7 @@ function sectionSlide(pres, grad, num, title, sub) {
       [fa.FaMobileAlt, T("Works in any browser", "Jalan di browser apa pun"), T("Phone first, with a bottom nav on mobile and a sidebar on desktop.", "Diutamakan untuk ponsel: menu bawah di ponsel, sidebar di desktop.")],
       [fa.FaPalette, T("Light, dark or system", "Terang, gelap, atau sistem"), T("Warm orange and cream design, Plus Jakarta Sans.", "Desain oranye dan krem yang hangat, font Plus Jakarta Sans.")],
       [fa.FaLanguage, T("English / Indonesian", "Inggris / Indonesia"), T("Switch language from the header on any page.", "Ganti bahasa dari header di halaman mana pun.")],
-      [fa.FaGlobe, T("Always up to date", "Selalu terbaru"), T("Live at komunitasa.vercel.app, updated on every release.", "Aktif di komunitasa.vercel.app, diperbarui setiap rilis.")],
+      [fa.FaGlobe, T("Always up to date", "Selalu terbaru"), T("Live at kmnts.my.id, updated on every release.", "Aktif di kmnts.my.id, diperbarui setiap rilis.")],
     ];
     for (let i = 0; i < pts.length; i++) {
       const y = 2.0 + i * 1.15;
@@ -584,7 +584,7 @@ function sectionSlide(pres, grad, num, title, sub) {
     card(pres, s, 8.75, 1.95, 3.85, 4.45, C.white);
     s.addImage({ data: qr, x: 9.3, y: 2.35, w: 2.75, h: 2.75 });
     text(s, T("Try it now", "Coba sekarang"), { x: 8.75, y: 5.3, w: 3.85, h: 0.4, fontSize: 17, bold: true, color: C.ink, align: "center" });
-    text(s, "komunitasa.vercel.app", { x: 8.75, y: 5.7, w: 3.85, h: 0.35, fontSize: 13, color: C.deep, align: "center" });
+    text(s, "kmnts.my.id", { x: 8.75, y: 5.7, w: 3.85, h: 0.35, fontSize: 13, color: C.deep, align: "center" });
     s.addNotes(T(
       "The newest features: full activities keep a waiting list that moves up automatically, and people get alerts for new activities that match their hobbies. Organizers can check people in with a QR code, and attendees rate the activity afterwards. Reminders and rating prompts go out by email and phone push. And organizers get time-savers: duplicate, edit a whole weekly series, CSV export and a big-screen QR so a room can join live. Scan this code to try it now.",
       "Fitur terbaru: aktivitas yang penuh punya daftar tunggu yang maju otomatis, dan pengguna mendapat peringatan untuk aktivitas baru yang sesuai hobinya. Penyelenggara bisa mencatat kehadiran dengan kode QR, dan peserta menilai aktivitasnya setelah selesai. Pengingat dan permintaan penilaian dikirim lewat email dan push di ponsel. Penyelenggara juga mendapat alat praktis: duplikat, ubah seluruh seri mingguan, ekspor CSV, dan QR layar besar agar seisi ruangan bisa ikut langsung. Pindai kode ini untuk mencoba sekarang."));
@@ -623,7 +623,7 @@ function sectionSlide(pres, grad, num, title, sub) {
     text(s, tagline, { x: 0.7, y: 3.7, w: W - 1.4, h: 0.6, fontSize: 22, color: C.peach, align: "center" });
     const pw = 5.2;
     pill(pres, s, (W - pw) / 2, 4.75, pw, 0.75, C.cream);
-    text(s, "komunitasa.vercel.app", { x: (W - pw) / 2, y: 4.75, w: pw, h: 0.75, fontSize: 24, bold: true, color: C.deep, align: "center", valign: "middle" });
+    text(s, "kmnts.my.id", { x: (W - pw) / 2, y: 4.75, w: pw, h: 0.75, fontSize: 24, bold: true, color: C.deep, align: "center", valign: "middle" });
     text(s, T("A Team · Capstone Project · Universitas Terbuka", "A Team · Proyek Capstone · Universitas Terbuka"), { x: 0.7, y: 6.3, w: W - 1.4, h: 0.4, fontSize: 15, bold: true, color: C.peach, align: "center" });
     s.addNotes(T(
       "Thank you from A Team. We're happy to take questions, and please try Komunitas on your phone.",

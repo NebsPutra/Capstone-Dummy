@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { notificationEmail } from "./notificationEmail";
 
 describe("notificationEmail", () => {
-  const origin = "https://komunitasa.vercel.app";
+  const origin = "https://kmnts.my.id";
 
   it("builds a bilingual email for a new message, linking into the app", () => {
     const e = notificationEmail(
